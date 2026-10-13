@@ -22,7 +22,7 @@ concurrency:
 jobs:
   mac:
     runs-on: macos-14
-    timeout-minutes: 90
+    timeout-minutes: 240
     env:
       MACOSX_DEPLOYMENT_TARGET: "11.0"
     steps:
@@ -33,8 +33,10 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      # Faster than the official release profile (thin LTO, one codegen unit), which would take
+      # well over an hour on a hosted runner; the app is the same, a little larger.
       - name: Build
-        run: cargo build --release -p pdfcraft
+        run: cargo build --release -p pdfcraft --config profile.release.lto=false --config profile.release.codegen-units=16
 
       - name: Make PdfCraft.app
         run: |
