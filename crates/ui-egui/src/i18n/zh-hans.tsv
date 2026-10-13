@@ -2316,3 +2316,25 @@ animation effects	Off	关
 	This document is trying to open a local file:	此文档正尝试打开本地文件：
 	Move tag earlier	将标签前移
 	Move tag later	将标签后移
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	在多个 PDF 中搜索…
+	Night reading	夜间阅读
+	Night: dark grey	夜间：深灰
+	Night: black	夜间：黑色
+	Night: sepia	夜间：棕褐
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	夜间阅读会把每一页调暗，并保留颜色的色相，红色仍是红色。图片也会变暗。
+	Search in multiple PDFs	在多个 PDF 中搜索
+	Add PDFs…	添加 PDF…
+	Add a folder…	添加文件夹…
+	Add PDFs or a folder to search them.	添加 PDF 或文件夹即可在其中搜索。
+	{n} files · reading {r}…	{n} 个文件 · 正在读取 {r} 个…
+	{name}: couldn't read it ({e})	{name}：无法读取（{e}）
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} 中没有可搜索的文本。请先识别文本（OCR）。
+	{count} in {files} files	{files} 个文件中共 {count}
+	Only the first {n} are listed.	仅列出前 {n} 个。
+	Choose a folder of PDFs	选择 PDF 文件夹
+	Choose PDFs to search	选择要搜索的 PDF
+	Searching in multiple PDFs needs the desktop app.	在多个 PDF 中搜索需要桌面应用。
+	At most {n} files can be searched at once.	一次最多可搜索 {n} 个文件。
+	That folder has no PDFs.	该文件夹中没有 PDF。

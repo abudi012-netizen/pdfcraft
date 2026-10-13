@@ -2426,3 +2426,25 @@ animation effects	Off	Vypnuto
 	This document is trying to open a local file:	Tento dokument se pokouší otevřít místní soubor:
 	Move tag earlier	Přesunout značku dříve
 	Move tag later	Přesunout značku později
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Hledat ve více PDF…
+	Night reading	Noční čtení
+	Night: dark grey	Noc: tmavě šedá
+	Night: black	Noc: černá
+	Night: sepia	Noc: sépie
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Noční čtení ztmaví každou stránku a zachová odstín barev, takže červená zůstane červenou. Obrázky se také ztmaví.
+	Search in multiple PDFs	Hledat ve více PDF
+	Add PDFs…	Přidat PDF…
+	Add a folder…	Přidat složku…
+	Add PDFs or a folder to search them.	Přidejte PDF nebo složku, abyste v nich mohli hledat.
+	{n} files · reading {r}…	Souborů: {n} · čtení: {r}…
+	{name}: couldn't read it ({e})	{name}: nelze přečíst ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} neobsahuje text k prohledání. Nejprve rozpoznejte text (OCR).
+	{count} in {files} files	{count} v souborech: {files}
+	Only the first {n} are listed.	Zobrazeno je jen prvních {n}.
+	Choose a folder of PDFs	Vyberte složku s PDF
+	Choose PDFs to search	Vyberte PDF k prohledání
+	Searching in multiple PDFs needs the desktop app.	Hledání ve více PDF vyžaduje desktopovou aplikaci.
+	At most {n} files can be searched at once.	Najednou lze prohledat nejvýše {n} souborů.
+	That folder has no PDFs.	Tato složka neobsahuje žádné PDF.

@@ -2362,3 +2362,25 @@ animation effects	Off	Ανενεργά
 	This document is trying to open a local file:	Αυτό το έγγραφο προσπαθεί να ανοίξει ένα τοπικό αρχείο:
 	Move tag earlier	Μετακίνηση ετικέτας νωρίτερα
 	Move tag later	Μετακίνηση ετικέτας αργότερα
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Αναζήτηση σε πολλά PDF…
+	Night reading	Νυχτερινή ανάγνωση
+	Night: dark grey	Νύχτα: σκούρο γκρι
+	Night: black	Νύχτα: μαύρο
+	Night: sepia	Νύχτα: σέπια
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Η νυχτερινή ανάγνωση σκουραίνει κάθε σελίδα και διατηρεί την απόχρωση των χρωμάτων, ώστε το κόκκινο να μένει κόκκινο. Σκουραίνουν και οι εικόνες.
+	Search in multiple PDFs	Αναζήτηση σε πολλά PDF
+	Add PDFs…	Προσθήκη PDF…
+	Add a folder…	Προσθήκη φακέλου…
+	Add PDFs or a folder to search them.	Προσθέστε PDF ή έναν φάκελο για να γίνει αναζήτηση σε αυτά.
+	{n} files · reading {r}…	{n} αρχεία · ανάγνωση {r}…
+	{name}: couldn't read it ({e})	{name}: δεν ήταν δυνατή η ανάγνωση ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	Το {name} δεν έχει κείμενο για αναζήτηση. Κάντε πρώτα αναγνώριση κειμένου (OCR).
+	{count} in {files} files	{count} σε {files} αρχεία
+	Only the first {n} are listed.	Εμφανίζονται μόνο τα πρώτα {n}.
+	Choose a folder of PDFs	Επιλογή φακέλου με PDF
+	Choose PDFs to search	Επιλογή PDF για αναζήτηση
+	Searching in multiple PDFs needs the desktop app.	Η αναζήτηση σε πολλά PDF απαιτεί την εφαρμογή υπολογιστή.
+	At most {n} files can be searched at once.	Μπορείτε να κάνετε αναζήτηση σε έως {n} αρχεία ταυτόχρονα.
+	That folder has no PDFs.	Αυτός ο φάκελος δεν έχει PDF.

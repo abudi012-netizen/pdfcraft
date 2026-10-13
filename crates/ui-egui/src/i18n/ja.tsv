@@ -2352,3 +2352,25 @@ animation effects	Off	オフ
 	This document is trying to open a local file:	この文書はローカルファイルを開こうとしています：
 	Move tag earlier	タグを前へ移動
 	Move tag later	タグを後へ移動
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	複数の PDF を検索…
+	Night reading	夜間読書
+	Night: dark grey	夜間: ダークグレー
+	Night: black	夜間: ブラック
+	Night: sepia	夜間: セピア
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	夜間読書では各ページを暗くし、色の色相は保たれます（赤は赤のまま）。画像も暗くなります。
+	Search in multiple PDFs	複数の PDF を検索
+	Add PDFs…	PDF を追加…
+	Add a folder…	フォルダーを追加…
+	Add PDFs or a folder to search them.	PDF またはフォルダーを追加すると検索できます。
+	{n} files · reading {r}…	{n} 個のファイル · {r} 個を読み込み中…
+	{name}: couldn't read it ({e})	{name}: 読み込めませんでした ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} には検索できるテキストがありません。先に文字認識 (OCR) を行ってください。
+	{count} in {files} files	{files} 個のファイルで {count}
+	Only the first {n} are listed.	最初の {n} 件のみ表示しています。
+	Choose a folder of PDFs	PDF のフォルダーを選択
+	Choose PDFs to search	検索する PDF を選択
+	Searching in multiple PDFs needs the desktop app.	複数の PDF の検索にはデスクトップアプリが必要です。
+	At most {n} files can be searched at once.	一度に検索できるファイルは最大 {n} 個です。
+	That folder has no PDFs.	そのフォルダーには PDF がありません。

@@ -2226,3 +2226,25 @@ animation effects	Off	關
 	This document is trying to open a local file:	此文件正嘗試開啟本機檔案：
 	Move tag earlier	將標記前移
 	Move tag later	將標記後移
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	在多個 PDF 中搜尋…
+	Night reading	夜間閱讀
+	Night: dark grey	夜間：深灰
+	Night: black	夜間：黑色
+	Night: sepia	夜間：棕褐
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	夜間閱讀會把每一頁調暗，並保留顏色的色相，紅色仍是紅色。圖片也會變暗。
+	Search in multiple PDFs	在多個 PDF 中搜尋
+	Add PDFs…	新增 PDF…
+	Add a folder…	新增資料夾…
+	Add PDFs or a folder to search them.	新增 PDF 或資料夾即可在其中搜尋。
+	{n} files · reading {r}…	{n} 個檔案 · 正在讀取 {r} 個…
+	{name}: couldn't read it ({e})	{name}：無法讀取（{e}）
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} 中沒有可搜尋的文字。請先辨識文字（OCR）。
+	{count} in {files} files	{files} 個檔案中共 {count}
+	Only the first {n} are listed.	僅列出前 {n} 個。
+	Choose a folder of PDFs	選擇 PDF 資料夾
+	Choose PDFs to search	選擇要搜尋的 PDF
+	Searching in multiple PDFs needs the desktop app.	在多個 PDF 中搜尋需要桌面應用程式。
+	At most {n} files can be searched at once.	一次最多可搜尋 {n} 個檔案。
+	That folder has no PDFs.	該資料夾中沒有 PDF。

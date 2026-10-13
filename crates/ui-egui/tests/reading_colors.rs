@@ -9,13 +9,18 @@ use pdfcraft_ui_egui::PdfCraftApp;
 
 /// One valid page (proper xref, so no repair banner covers the dialog): black text on white.
 fn pdf() -> Vec<u8> {
+    pdf_with("The quick brown fox")
+}
+
+/// [`pdf`] with other text on its page.
+fn pdf_with(text: &str) -> Vec<u8> {
     let objs: Vec<Vec<u8>> = vec![
         b"<< /Type /Catalog /Pages 2 0 R >>".to_vec(),
         b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>".to_vec(),
         b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 200] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>".to_vec(),
         {
-            let body = b"BT /F1 14 Tf 20 150 Td (The quick brown fox) Tj ET";
-            format!("<< /Length {} >>\nstream\n{}\nendstream", body.len(), String::from_utf8_lossy(body)).into_bytes()
+            let body = format!("BT /F1 14 Tf 20 150 Td ({text}) Tj ET");
+            format!("<< /Length {} >>\nstream\n{}\nendstream", body.len(), body).into_bytes()
         },
         b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>".to_vec(),
     ];
@@ -154,4 +159,97 @@ fn reading_colours_seed_on_open() {
     for view in &h.state().views {
         assert_eq!(h.state().session.reading_colors(view.id), Some(ReadingColors::default()));
     }
+}
+
+/// View ▸ Night reading turns night reading on for every open document with the last theme
+/// chosen, and off again; the theme survives being switched off and a restart.
+#[test]
+fn night_reading_toggles_and_remembers_its_theme() {
+    use pdfcraft_render::NightTheme;
+    let mut h = Harness::builder().with_size(egui::vec2(1200.0, 800.0)).build_eframe(|_cc| {
+        let mut app = PdfCraftApp::new();
+        app.set_option("language", "en").unwrap();
+        app.open_bytes("doc.pdf", None, pdf()).expect("opens");
+        app
+    });
+    h.run_steps(2);
+    let id = h.state().views[0].id;
+    assert!(h.state_mut().execute("view.night_reading"));
+    h.run_steps(1);
+    let night = |theme| ReadingColors { params: None, night: Some(theme) };
+    assert_eq!(h.state().session.reading_colors(id), Some(night(NightTheme::DarkGrey)));
+    // Choosing sepia in Preferences is remembered when night reading is switched off and on.
+    h.state_mut().set_reading_colors(night(NightTheme::Sepia));
+    assert!(h.state_mut().execute("view.night_reading"));
+    assert_eq!(h.state().session.reading_colors(id), Some(ReadingColors::default()));
+    assert!(h.state_mut().execute("view.night_reading"));
+    assert_eq!(h.state().session.reading_colors(id), Some(night(NightTheme::Sepia)));
+    h.run_steps(2);
+    // Another kind of reading colours gives way to night reading, and night reading to it.
+    h.state_mut().set_reading_colors(ReadingColors::WHITE_ON_BLACK);
+    assert!(h.state_mut().execute("view.night_reading"));
+    assert_eq!(h.state().reading_colors, night(NightTheme::Sepia));
+    // Restart: the setting and the remembered theme come back; junk keeps dark grey.
+    let mut restored = PdfCraftApp::new();
+    restored.restore(&h.state().persist());
+    assert_eq!((restored.reading_colors, restored.night_theme), (night(NightTheme::Sepia), NightTheme::Sepia));
+    let mut fresh = PdfCraftApp::new();
+    fresh.restore(r#"{"night_theme": "neon"}"#);
+    assert_eq!(fresh.night_theme, NightTheme::DarkGrey);
+}
+
+/// Edit ▸ Search in multiple PDFs: files that aren't open are read in the background, every
+/// match is listed by file, and opening one goes to that exact match in the file's own find.
+#[test]
+fn search_in_multiple_pdfs_finds_and_opens_the_match() {
+    let dir = std::env::temp_dir().join(format!("pdfcraft-search-files-ui-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(dir.join("a.pdf"), pdf_with("Paracetamol relieves pain")).unwrap();
+    std::fs::write(dir.join("b.pdf"), pdf_with("Ibuprofen or paracetamol, then paracetamol")).unwrap();
+    std::fs::write(dir.join("c.pdf"), pdf_with("Aspirin only")).unwrap();
+    std::fs::write(dir.join("broken.pdf"), b"not a pdf").unwrap();
+    let mut h = Harness::builder().with_size(egui::vec2(1200.0, 800.0)).build_eframe(|_cc| {
+        let mut app = PdfCraftApp::new();
+        app.set_option("language", "en").unwrap();
+        app
+    });
+    h.run_steps(1);
+    assert!(h.state_mut().execute("edit.search_files"));
+    h.state_mut().search_files_add(vec![dir.join("a.pdf"), dir.join("b.pdf"), dir.join("c.pdf"), dir.join("broken.pdf"), dir.join("a.pdf")]);
+    for _ in 0..400 {
+        h.run_steps(1);
+        if !h.state_mut().search_files_busy() {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(10));
+    }
+    assert!(!h.state_mut().search_files_busy(), "the files were read");
+    h.state_mut().search_files_query("PARACETAMOL", false, false);
+    h.run_steps(2);
+    let found = h.state_mut().search_files_results();
+    let names: Vec<(&str, usize)> = found.iter().map(|(n, p, _)| (n.as_str(), *p)).collect();
+    assert_eq!(names, [("a.pdf", 1), ("b.pdf", 1), ("b.pdf", 1)]);
+    assert!(h.query_by_label_contains("3 instances in 2 files").is_some(), "the count shows");
+    assert!(h.query_by_label_contains("broken.pdf: couldn't read it").is_some(), "the unreadable file says so");
+
+    // Opening the second match in b.pdf opens it and selects that very match.
+    h.state_mut().search_files_open_result(2);
+    for _ in 0..400 {
+        h.run_steps(1);
+        let state = h.state();
+        let done = state.views.len() == 1 && state.views[0].find.as_ref().is_some_and(|f| f.current.is_some() && f.matches.len() == 2);
+        if done && !h.state_mut().search_files_pending() {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+    assert!(!h.state().search_files_showing(), "the dialog closed");
+    let view = &h.state().views[0];
+    let name = h.state().session.get(view.id).map(|d| d.name.clone());
+    assert_eq!(name.as_deref(), Some("b.pdf"));
+    let find = view.find.as_ref().expect("the search carried into the document's find");
+    assert_eq!(find.query, "PARACETAMOL");
+    assert_eq!(find.current, Some(1), "the second match on the page is the current one");
+    let _ = std::fs::remove_dir_all(&dir);
 }

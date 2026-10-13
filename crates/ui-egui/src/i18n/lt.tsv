@@ -2596,3 +2596,25 @@ key	Space	Tarpas
 	This document is trying to open a local file:	Šis dokumentas bando atverti vietinį failą:
 	Move tag earlier	Perkelti žymą anksčiau
 	Move tag later	Perkelti žymą vėliau
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Ieškoti keliuose PDF…
+	Night reading	Naktinis skaitymas
+	Night: dark grey	Naktis: tamsiai pilka
+	Night: black	Naktis: juoda
+	Night: sepia	Naktis: sepija
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Naktinis skaitymas patamsina kiekvieną puslapį ir išlaiko spalvų atspalvį, todėl raudona lieka raudona. Paveikslėliai taip pat patamsinami.
+	Search in multiple PDFs	Ieškoti keliuose PDF
+	Add PDFs…	Pridėti PDF…
+	Add a folder…	Pridėti aplanką…
+	Add PDFs or a folder to search them.	Pridėkite PDF arba aplanką, kad galėtumėte juose ieškoti.
+	{n} files · reading {r}…	Failų: {n} · skaitoma: {r}…
+	{name}: couldn't read it ({e})	{name}: nepavyko perskaityti ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} neturi teksto paieškai. Pirmiausia atpažinkite tekstą (OCR).
+	{count} in {files} files	{count} failuose: {files}
+	Only the first {n} are listed.	Rodomi tik pirmieji {n}.
+	Choose a folder of PDFs	Pasirinkite PDF aplanką
+	Choose PDFs to search	Pasirinkite PDF paieškai
+	Searching in multiple PDFs needs the desktop app.	Paieškai keliuose PDF reikia kompiuterio programos.
+	At most {n} files can be searched at once.	Vienu metu galima ieškoti daugiausia {n} failuose.
+	That folder has no PDFs.	Šiame aplanke nėra PDF.

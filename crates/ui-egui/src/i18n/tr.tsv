@@ -2348,3 +2348,25 @@ animation effects	Off	Kapalı
 	This document is trying to open a local file:	Bu belge yerel bir dosya açmaya çalışıyor:
 	Move tag earlier	Etiketi daha erken taşı
 	Move tag later	Etiketi daha geç taşı
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Birden çok PDF'de ara…
+	Night reading	Gece okuma
+	Night: dark grey	Gece: koyu gri
+	Night: black	Gece: siyah
+	Night: sepia	Gece: sepya
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Gece okuma her sayfayı koyulaştırır ve renklerin tonunu korur; kırmızı kırmızı kalır. Resimler de koyulaşır.
+	Search in multiple PDFs	Birden çok PDF'de ara
+	Add PDFs…	PDF ekle…
+	Add a folder…	Klasör ekle…
+	Add PDFs or a folder to search them.	Aramak için PDF veya bir klasör ekleyin.
+	{n} files · reading {r}…	{n} dosya · {r} okunuyor…
+	{name}: couldn't read it ({e})	{name}: okunamadı ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} içinde aranacak metin yok. Önce metni tanıyın (OCR).
+	{count} in {files} files	{files} dosyada {count}
+	Only the first {n} are listed.	Yalnızca ilk {n} tanesi listelenir.
+	Choose a folder of PDFs	PDF klasörü seçin
+	Choose PDFs to search	Aranacak PDF'leri seçin
+	Searching in multiple PDFs needs the desktop app.	Birden çok PDF'de arama masaüstü uygulamasını gerektirir.
+	At most {n} files can be searched at once.	Aynı anda en fazla {n} dosyada arama yapılabilir.
+	That folder has no PDFs.	O klasörde PDF yok.

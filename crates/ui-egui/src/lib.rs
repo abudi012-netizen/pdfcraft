@@ -52,6 +52,7 @@ mod marks_ui;
 mod measure_ui;
 mod ocr_ui;
 mod optimize_ui;
+mod search_files_ui;
 mod search_ui;
 mod sign_ui;
 mod stamps_ui;
@@ -511,6 +512,11 @@ pub struct PdfCraftApp {
     /// The reading-colours preference (Preferences ▸ Reading colours): applied to every open
     /// document, and documents open with it (Acrobat's Replace Document Colors).
     pub reading_colors: pdfcraft_render::ReadingColors,
+    /// The look View ▸ Night reading turns on with: the last night theme chosen, kept while
+    /// night reading is off.
+    pub night_theme: pdfcraft_render::NightTheme,
+    /// Edit ▸ Search in multiple PDFs: its files, query and results, kept while it is closed.
+    pub(crate) search_files: Option<search_files_ui::SearchFiles>,
     /// The Linux portal is enabled only by the native host, and starts on the first System choice.
     #[cfg(target_os = "linux")]
     desktop_theme: Option<pdfcraft_platform::desktop_theme::DesktopTheme>,
@@ -882,6 +888,8 @@ impl PdfCraftApp {
             theme: ThemeKind::Light,
             theme_preference: ThemePreference::Light,
             reading_colors: Default::default(),
+            night_theme: pdfcraft_render::NightTheme::DarkGrey,
+            search_files: None,
             #[cfg(target_os = "linux")]
             desktop_theme: None,
             #[cfg(target_os = "linux")]
@@ -1885,12 +1893,26 @@ impl PdfCraftApp {
     /// Colors). A document the change actually touches re-renders.
     pub fn set_reading_colors(&mut self, colors: pdfcraft_render::ReadingColors) {
         self.reading_colors = colors;
+        if let Some(theme) = colors.night {
+            self.night_theme = theme;
+        }
         for i in 0..self.views.len() {
             // Idempotent per document: the engine says whether anything changed.
             if self.session.set_reading_colors(self.views[i].id, colors) {
                 self.views[i].invalidate_content();
             }
         }
+    }
+
+    /// View ▸ Night reading: darkens every open document's pages with the last night theme, or
+    /// turns night reading off again. Other reading colours give way to it.
+    pub fn toggle_night_reading(&mut self) {
+        let colors = if self.reading_colors.night.is_some() {
+            pdfcraft_render::ReadingColors::default()
+        } else {
+            pdfcraft_render::ReadingColors { params: None, night: Some(self.night_theme) }
+        };
+        self.set_reading_colors(colors);
     }
 
     /// Enable the Linux desktop portal in a native window. Headless contexts keep
@@ -2074,7 +2096,7 @@ impl PdfCraftApp {
     /// Serialize the user's persistent state (recent files, theme). Local only.
     pub fn persist(&self) -> String {
         let trusted: Vec<String> = self.session.trusted_certificates().iter().map(pdfcraft_engine::sign::x509::to_pem).collect();
-        serde_json::json!({
+        let mut state = serde_json::json!({
             "docking": self.docking,
             "docking_left_open": self.left_open,
             "docking_right": self.right,
@@ -2133,8 +2155,12 @@ impl PdfCraftApp {
             "combine_zoom": self.combine_zoom,
             "comments_panel_closed": self.comments_panel_closed,
             "right_panel_closed": self.right_panel_closed,
-        })
-        .to_string()
+        });
+        // Added outside the `json!` above, which is at the macro's recursion limit.
+        if let Some(map) = state.as_object_mut() {
+            map.insert("night_theme".into(), serde_json::to_value(self.night_theme).unwrap_or_default());
+        }
+        state.to_string()
     }
 
     /// Restore state written by `persist`. Unknown or malformed data is ignored.
@@ -2216,6 +2242,10 @@ impl PdfCraftApp {
         // fails to deserialize and keeps Off.
         if let Ok(colors) = serde_json::from_value::<pdfcraft_render::ReadingColors>(v["reading_colors"].clone()) {
             self.reading_colors = colors;
+        }
+        // Untrusted too: an unknown theme name keeps dark grey.
+        if let Ok(theme) = serde_json::from_value::<pdfcraft_render::NightTheme>(v["night_theme"].clone()) {
+            self.night_theme = theme;
         }
         // Settings are untrusted: a size out of range follows the system instead.
         self.ui_scale = v["ui_scale"].as_f64().and_then(ui_scale::valid);

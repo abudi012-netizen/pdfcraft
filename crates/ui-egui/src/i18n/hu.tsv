@@ -2351,3 +2351,25 @@ animation effects	Off	Ki
 	This document is trying to open a local file:	Ez a dokumentum egy helyi fájlt próbál megnyitni:
 	Move tag earlier	Címke korábbra helyezése
 	Move tag later	Címke későbbre helyezése
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Keresés több PDF-ben…
+	Night reading	Éjszakai olvasás
+	Night: dark grey	Éjszaka: sötétszürke
+	Night: black	Éjszaka: fekete
+	Night: sepia	Éjszaka: szépia
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Az éjszakai olvasás minden oldalt elsötétít, és megtartja a színek árnyalatát, így a piros piros marad. A képek is sötétebbek lesznek.
+	Search in multiple PDFs	Keresés több PDF-ben
+	Add PDFs…	PDF-ek hozzáadása…
+	Add a folder…	Mappa hozzáadása…
+	Add PDFs or a folder to search them.	Adjon hozzá PDF-eket vagy egy mappát a kereséshez.
+	{n} files · reading {r}…	{n} fájl · olvasás: {r}…
+	{name}: couldn't read it ({e})	{name}: nem olvasható ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	A(z) {name} nem tartalmaz kereshető szöveget. Először futtasson szövegfelismerést (OCR).
+	{count} in {files} files	{count}, {files} fájlban
+	Only the first {n} are listed.	Csak az első {n} látható.
+	Choose a folder of PDFs	PDF-eket tartalmazó mappa kiválasztása
+	Choose PDFs to search	Keresendő PDF-ek kiválasztása
+	Searching in multiple PDFs needs the desktop app.	A több PDF-ben való kereséshez az asztali alkalmazás kell.
+	At most {n} files can be searched at once.	Egyszerre legfeljebb {n} fájlban lehet keresni.
+	That folder has no PDFs.	Ebben a mappában nincs PDF.

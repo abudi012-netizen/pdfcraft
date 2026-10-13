@@ -1439,11 +1439,11 @@ title = "Search all PDFs in a folder"
 area = "B"
 tier = "P1"
 milestone = "M12"
-status = "planned"
-commands = []
-tools = []
-evidence = []
-notes = ""
+status = "partial"
+commands = ["edit.search_files"]
+tools = ["text_find_files"]
+evidence = ["crates/automation/tests/automation.rs::text_find_files_searches_unopened_pdfs", "crates/render/src/raster.rs::search_files_reads_and_finds_like_the_page_find", "crates/render/src/search_files.rs::finds_every_match_with_page_ordinal_and_context", "crates/ui-egui/src/search_files_ui.rs::folder_walk_finds_pdfs_in_subfolders_only", "crates/ui-egui/src/search_files_ui.rs::refresh_lists_matches_in_file_order_and_caps_them"]
+notes = "Edit ▸ Search in multiple PDFs: add PDFs or a folder (subfolders six levels down, up to 500 files), each read on a background thread; matches use the find's rules (case, whole words) and list by file and page with context; clicking one opens the file (or its tab) at that match with the search carried into its find. Desktop only. Still missing: password-protected files (skipped as unreadable), search indexes, and Acrobat's options such as bookmarks, comments and attachments."
 
 [[feature]]
 id = "view.search-boolean"
@@ -9078,10 +9078,10 @@ area = "M"
 tier = "P2"
 milestone = "M12"
 status = "shipped"
-commands = []
+commands = ["view.night_reading"]
 tools = ["view_reading_colors"]
-evidence = ["crates/automation/tests/automation.rs::reading_colors_through_tools", "crates/render/src/raster.rs::reading_colors_map_solid_paints_and_leave_images", "crates/render/src/raster.rs::reading_colors_tiles_match_full_render", "crates/render/src/raster.rs::print_preview_requests_render_with_reading_colors_off", "crates/ui-egui/tests/reading_colors.rs::reading_colours_preference_round_trips", "crates/ui-egui/tests/reading_colors.rs::reading_colours_seed_on_open"]
-notes = "View only, off by default: Preferences ▸ Reading colours holds the app-wide preference, seeded into every document as it opens (including created ones), and view_reading_colors reads and sets it per document (Acrobat's Replace Document Colors). Solid text paints and, by default, line-art paints (including stencil-mask image paints) are remapped by luminance — each lerps between the preset's text and background colour by how dark or light the original paint is — while images, shadings and tiling patterns pass through untouched. Presets: black on white, white on black, yellow on black, green on black, or a custom #RRGGBB pair; only_black limits the mapping to near-black paints (a 10% luminance threshold — our choice; Acrobat's was not observed). Display only: the document is not changed and print and export are unaffected; print previews and view snapshots render with the document's true colours (a preview matches the uncoloured printout, and a snapshot is an export surface), so reading colours apply to the reading view only. Closes #897 (duplicate #488)."
+evidence = ["crates/automation/tests/automation.rs::reading_colors_through_tools", "crates/automation/tests/automation.rs::night_reading_through_tools", "crates/render/src/raster.rs::night_reading_darkens_the_raster_and_keeps_hue", "crates/render/src/reading.rs::night_keeps_hues", "crates/render/src/raster.rs::reading_colors_map_solid_paints_and_leave_images", "crates/render/src/raster.rs::reading_colors_tiles_match_full_render", "crates/render/src/raster.rs::print_preview_requests_render_with_reading_colors_off", "crates/ui-egui/tests/reading_colors.rs::reading_colours_preference_round_trips", "crates/ui-egui/tests/reading_colors.rs::reading_colours_seed_on_open"]
+notes = "View only, off by default: Preferences ▸ Reading colours holds the app-wide preference, seeded into every document as it opens (including created ones), and view_reading_colors reads and sets it per document (Acrobat's Replace Document Colors). Solid text paints and, by default, line-art paints (including stencil-mask image paints) are remapped by luminance — each lerps between the preset's text and background colour by how dark or light the original paint is — while images, shadings and tiling patterns pass through untouched. Presets: black on white, white on black, yellow on black, green on black, or a custom #RRGGBB pair; only_black limits the mapping to near-black paints (a 10% luminance threshold — our choice; Acrobat's was not observed). Display only: the document is not changed and print and export are unaffected; print previews and view snapshots render with the document's true colours (a preview matches the uncoloured printout, and a snapshot is an export surface), so reading colours apply to the reading view only. Closes #897 (duplicate #488). Night reading (View ▸ Night reading, or the night modes of view_reading_colors; not an Acrobat feature) darkens the finished raster instead: each pixel's luminosity is inverted with its hue and saturation kept (the PDF Color blend), so red stays red and images darken too, then mapped onto a dark grey, black or sepia theme; tiles equal crops of the full render and print previews ignore it."
 
 [[feature]]
 id = "a11y.reflow-tagged"

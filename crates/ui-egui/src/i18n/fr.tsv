@@ -2352,3 +2352,25 @@ animation effects	Off	Désactivés
 	This document is trying to open a local file:	Ce document tente d’ouvrir un fichier local :
 	Move tag earlier	Déplacer la balise plus tôt
 	Move tag later	Déplacer la balise plus tard
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Rechercher dans plusieurs PDF…
+	Night reading	Lecture de nuit
+	Night: dark grey	Nuit : gris foncé
+	Night: black	Nuit : noir
+	Night: sepia	Nuit : sépia
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	La lecture de nuit assombrit chaque page en gardant la teinte des couleurs : le rouge reste rouge. Les images sont aussi assombries.
+	Search in multiple PDFs	Rechercher dans plusieurs PDF
+	Add PDFs…	Ajouter des PDF…
+	Add a folder…	Ajouter un dossier…
+	Add PDFs or a folder to search them.	Ajoutez des PDF ou un dossier pour y rechercher.
+	{n} files · reading {r}…	{n} fichiers · lecture de {r}…
+	{name}: couldn't read it ({e})	{name} : lecture impossible ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} ne contient pas de texte à rechercher. Lancez d'abord la reconnaissance de texte (OCR).
+	{count} in {files} files	{count} dans {files} fichiers
+	Only the first {n} are listed.	Seuls les {n} premiers sont affichés.
+	Choose a folder of PDFs	Choisir un dossier de PDF
+	Choose PDFs to search	Choisir les PDF à rechercher
+	Searching in multiple PDFs needs the desktop app.	La recherche dans plusieurs PDF nécessite l'application de bureau.
+	At most {n} files can be searched at once.	Au plus {n} fichiers peuvent être recherchés à la fois.
+	That folder has no PDFs.	Ce dossier ne contient aucun PDF.

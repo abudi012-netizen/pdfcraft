@@ -187,6 +187,19 @@ pub fn tools() -> Vec<ToolDef> {
             .with(schema(json!({ "doc": doc(), "query": { "type": "string", "minLength": 1 }, "limit": { "type": "integer", "minimum": 1, "description": "Maximum matches (default 500). When another match exists, next holds start_page and skip to continue. complete is false for either additional matches or failed pages; an exhausted search with warnings has no next." },
                 "start_page": { "type": "integer", "minimum": 1, "description": "Page to start searching from (default 1)." },
                 "skip": { "type": "integer", "minimum": 0, "description": "Matches to pass over on start_page before returning any (default 0)." } }), &["doc", "query"])),
+        t("text_find_files", "Search in multiple PDFs", "Edit ▸ Search in multiple PDFs: find a word or phrase in PDF files on disk that need not be open, with the same rules as text_find (case-insensitive unless case_sensitive, whitespace-normalised, whole_words optional). Returns, per file in the order given, the page count and each match's page, text and up to 40 characters of context before and after; no_text is true for a file with no text at all (a scan: run ocr_recognize_files first), failed_pages counts pages whose text couldn't be read, and a file that can't be read has error instead. At most limit matches in all (default 500); complete is false when more were left out. Nothing is written.")
+            .ro()
+            .cmd("edit.search_files")
+            .with(schema(
+                json!({
+                    "paths": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 500 },
+                    "query": { "type": "string", "minLength": 1 },
+                    "case_sensitive": { "type": "boolean" },
+                    "whole_words": { "type": "boolean" },
+                    "limit": { "type": "integer", "minimum": 1, "description": "Maximum matches across all files (default 500)." },
+                }),
+                &["paths", "query"],
+            )),
         t("page_rotate", "Rotate pages", "Rotate pages by a multiple of 90 degrees (positive is clockwise): the listed pages (default all), filtered like Acrobat's Rotate Pages by subset (all, even, odd page numbers) and orientation (all, landscape, portrait). Undoable.")
             .cmd("page.rotate")
             .with(schema(
@@ -730,12 +743,12 @@ pub fn tools() -> Vec<ToolDef> {
         t("comments_hide", "Hide all comments", "Hide or show every comment on the page (fields and links still draw). A view setting: the file doesn't change.")
             .cmd("comment.hide_all")
             .with(schema(json!({ "doc": doc(), "hidden": { "type": "boolean", "description": "Default true." } }), &["doc"])),
-        t("view_reading_colors", "Set reading colours", "Set the document's reading colours (Acrobat's Replace Document Colors, in the Reading Options): solid text and line-art paints are remapped for readability and the page clears to the background colour in page_render. A view setting: the file doesn't change. mode is one of: off, black-on-white, white-on-black, yellow-on-black, green-on-black, or custom (which takes text and background as #RRGGBB). only_black maps only near-black paints (default false) and line_art also maps line-art paints (default true); both override the mode's preset. A flag that differs from the mode's preset default makes the returned mode read custom, because the resulting params no longer match any preset. Returns the resulting setting.")
+        t("view_reading_colors", "Set reading colours", "Set the document's reading colours (Acrobat's Replace Document Colors, in the Reading Options): solid text and line-art paints are remapped for readability and the page clears to the background colour in page_render. A view setting: the file doesn't change. mode is one of: off, black-on-white, white-on-black, yellow-on-black, green-on-black, night, night-black, night-sepia, or custom (which takes text and background as #RRGGBB). The night modes are View ▸ Night reading: the finished page is darkened with each colour's lightness inverted and its hue kept (dark grey, black or sepia paper), images included; the other modes ignore only_black and line_art there. only_black maps only near-black paints (default false) and line_art also maps line-art paints (default true); both override the mode's preset. A flag that differs from the mode's preset default makes the returned mode read custom, because the resulting params no longer match any preset. Returns the resulting setting.")
             .cmd("a11y.reading_options")
             .with(schema(
                 json!({
                     "doc": doc(),
-                    "mode": { "type": "string", "enum": ["off", "black-on-white", "white-on-black", "yellow-on-black", "green-on-black", "custom"] },
+                    "mode": { "type": "string", "enum": ["off", "black-on-white", "white-on-black", "yellow-on-black", "green-on-black", "night", "night-black", "night-sepia", "custom"] },
                     "text": { "type": "string", "description": "With mode custom: the text colour, #RRGGBB." },
                     "background": { "type": "string", "description": "With mode custom: the background colour, #RRGGBB." },
                     "only_black": { "type": "boolean", "description": "Map only near-black paints. Default false." },

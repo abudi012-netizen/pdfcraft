@@ -1,0 +1,61 @@
+name: My Mac app
+
+# Builds PdfCraft for Apple silicon Macs from this fork and publishes it as the "my-mac-build"
+# release, ready to download: PdfCraft-mac.zip holds PdfCraft.app. It is ad-hoc signed (no Apple
+# developer account), so the first time macOS asks: open it with right-click ▸ Open, or allow it
+# in System Settings ▸ Privacy & Security ▸ Open Anyway.
+#
+# Runs on every push to main or a feat/ branch, and by hand from the Actions tab.
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: my-mac-app
+  cancel-in-progress: true
+
+jobs:
+  mac:
+    runs-on: macos-14
+    timeout-minutes: 90
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "11.0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        run: rustup toolchain install stable --profile minimal && rustup default stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo build --release -p pdfcraft
+
+      - name: Make PdfCraft.app
+        run: |
+          set -euo pipefail
+          VERSION="$(awk '/^\[/ { p = ($0 == "[workspace.package]"); next } p && $1 == "version" { gsub(/[" ]/, "", $3); print $3; exit }' Cargo.toml)"
+          SHORT="${VERSION%%-*}"
+          APP="PdfCraft.app"
+          mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+          cp target/release/pdfcraft "$APP/Contents/MacOS/PdfCraft"
+          sed -e "s/@VERSION@/$VERSION/g" -e "s/@SHORT_VERSION@/$SHORT/g" -e "s/@BUILD_SHA@/$GITHUB_SHA/g" \
+            packaging/macos/Info.plist.in > "$APP/Contents/Info.plist"
+          cp assets/app-icon/pdfcraft.icns "$APP/Contents/Resources/PdfCraft.icns"
+          codesign --force --deep --sign - "$APP"
+          ditto -c -k --keepParent "$APP" PdfCraft-mac.zip
+
+      - name: Publish the download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete my-mac-build --yes --cleanup-tag || true
+          gh release create my-mac-build PdfCraft-mac.zip \
+            --title "PdfCraft for Mac (my build)" \
+            --notes "Built from ${GITHUB_REF_NAME} at ${GITHUB_SHA}. Download PdfCraft-mac.zip, open it, and drag PdfCraft into Applications. The first time, right-click PdfCraft and choose Open." \
+            --target "$GITHUB_SHA" --prerelease

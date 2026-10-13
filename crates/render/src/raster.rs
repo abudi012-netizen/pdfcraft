@@ -370,6 +370,11 @@ fn render_page<'a>(
         let mut preview_settings = settings.clone();
         preview_settings.preview = req.preview;
         render_into(page, cache, &preview_settings, &rs, pixels.bytes_mut());
+        // Night reading darkens the finished raster. Pixel by pixel, so a tile matches the same
+        // area of a full-page render.
+        if let Some(theme) = reading.night {
+            crate::reading::apply_night(pixels.bytes_mut(), theme);
+        }
         Ok((w.into(), h.into(), pixels, None))
     }));
     match result {
@@ -5345,6 +5350,57 @@ trailer << /Root 1 0 R >>
         // white (its luminance is 7.2%, so 255·(1−0.0722) ≈ 237).
         assert_eq!(&full.rgba[..4], &[0, 0, 0, 255]);
         assert_eq!(&full.rgba[((60 * full.width + 50) * 4) as usize..][..4], &[237, 237, 237, 255]);
+    }
+
+    /// Night reading darkens the raster: white paper becomes the theme's background, the blue
+    /// rectangle stays blue (and turns lighter), tiles equal the crop of the full render, and
+    /// print previews ignore it like the other reading colours.
+    #[test]
+    fn night_reading_darkens_the_raster_and_keeps_hue() {
+        let night = ReadingColors { params: None, night: Some(crate::NightTheme::DarkGrey) };
+        let mut r = PageRenderer::new(Arc::new(ONE_PAGE.to_vec()), RenderConfig { reading_colors: night, ..Default::default() });
+        let full = r.render(RenderRequest { page: 0, kind: RequestKind::Pixels, tile: None, scale: 2.0, tag: 0, preview: false });
+        assert!(full.error.is_none(), "{:?}", full.error);
+        let bg = crate::NightTheme::DarkGrey.background();
+        assert_eq!(&full.rgba[..4], &[bg[0], bg[1], bg[2], 255]);
+        let blue = &full.rgba[((60 * full.width + 50) * 4) as usize..][..4];
+        assert!(blue[2] > blue[0] && blue[2] > blue[1] && blue[0] > 60, "the rectangle stays blue and lightens: {blue:?}");
+        let tile = Tile { x: 30, y: 40, w: 50, h: 30 };
+        let part = r.render(RenderRequest { page: 0, kind: RequestKind::Pixels, tile: Some(tile), scale: 2.0, tag: 0, preview: false });
+        for y in 0..30u32 {
+            for x in 0..50u32 {
+                let a = &full.rgba[(((y + 40) * full.width + x + 30) * 4) as usize..][..4];
+                let b = &part.rgba[((y * 50 + x) * 4) as usize..][..4];
+                assert_eq!(a, b, "pixel {x},{y}");
+            }
+        }
+        let print = r.render(RenderRequest { page: 0, kind: RequestKind::Pixels, tile: None, scale: 2.0, tag: PRINT_TAG, preview: false });
+        assert_eq!(&print.rgba[..4], &[255, 255, 255, 255]);
+    }
+
+    /// Search in multiple PDFs reads a real document's text and finds in it what the page find
+    /// would.
+    #[test]
+    fn search_files_reads_and_finds_like_the_page_find() {
+        let content = "BT /F1 12 Tf 10 40 Td (Paracetamol and paracetamol) Tj ET";
+        let pdf = format!(
+            "%PDF-1.4\n1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n\
+             3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 300 60] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj\n\
+             4 0 obj << /Length {} >> stream\n{content}\nendstream endobj\n\
+             5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\ntrailer << /Root 1 0 R >>\n%%EOF",
+            content.len()
+        );
+        let bytes = Arc::new(pdf.into_bytes());
+        let text = crate::search_files::extract_file_text(bytes.clone(), None, &|| false).expect("reads");
+        let hits = crate::search_files::find_in_file(&text, "PARACETAMOL", false, false, 10);
+        let page = PageRenderer::new(bytes, RenderConfig::default())
+            .render(RenderRequest { kind: RequestKind::Text, ..Default::default() })
+            .text
+            .expect("text");
+        assert_eq!(hits.len(), page.find_opts("PARACETAMOL", false, false).len());
+        assert_eq!(hits.len(), 2);
+        assert_eq!(hits[1].ordinal, 1);
+        assert_eq!(crate::search_files::extract_file_text(Arc::new(ONE_PAGE.to_vec()), None, &|| true), Err("cancelled".to_string()));
     }
 
     // A tile seam must not change the raster when large-page work is stitched back together.

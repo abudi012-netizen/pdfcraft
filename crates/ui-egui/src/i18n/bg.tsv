@@ -2315,3 +2315,25 @@ animation effects	Off	Изключени
 	This document is trying to open a local file:	Този документ се опитва да отвори локален файл:
 	Move tag earlier	Преместване на етикета по-рано
 	Move tag later	Преместване на етикета по-късно
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Търсене в няколко PDF файла…
+	Night reading	Нощно четене
+	Night: dark grey	Нощ: тъмносиво
+	Night: black	Нощ: черно
+	Night: sepia	Нощ: сепия
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Нощното четене затъмнява всяка страница и запазва оттенъка на цветовете, така че червеното остава червено. Изображенията също се затъмняват.
+	Search in multiple PDFs	Търсене в няколко PDF файла
+	Add PDFs…	Добавяне на PDF файлове…
+	Add a folder…	Добавяне на папка…
+	Add PDFs or a folder to search them.	Добавете PDF файлове или папка, за да търсите в тях.
+	{n} files · reading {r}…	Файлове: {n} · четат се: {r}…
+	{name}: couldn't read it ({e})	{name}: не можа да се прочете ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	В {name} няма текст за търсене. Първо разпознайте текста (OCR).
+	{count} in {files} files	{count} във файлове: {files}
+	Only the first {n} are listed.	Показани са само първите {n}.
+	Choose a folder of PDFs	Изберете папка с PDF файлове
+	Choose PDFs to search	Изберете PDF файлове за търсене
+	Searching in multiple PDFs needs the desktop app.	Търсенето в няколко PDF файла изисква настолното приложение.
+	At most {n} files can be searched at once.	Наведнъж може да се търси в най-много {n} файла.
+	That folder has no PDFs.	В тази папка няма PDF файлове.

@@ -2373,3 +2373,25 @@ animation effects	Off	معطّلة
 	This document is trying to open a local file:	يحاول هذا المستند فتح ملف محلي:
 	Move tag earlier	نقل العلامة للأعلى
 	Move tag later	نقل العلامة للأسفل
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	البحث في عدة ملفات PDF…
+	Night reading	القراءة الليلية
+	Night: dark grey	ليلي: رمادي داكن
+	Night: black	ليلي: أسود
+	Night: sepia	ليلي: بني داكن
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	تُعتم القراءة الليلية كل صفحة مع الحفاظ على درجة الألوان، فيبقى الأحمر أحمر. وتُعتم الصور أيضًا.
+	Search in multiple PDFs	البحث في عدة ملفات PDF
+	Add PDFs…	إضافة ملفات PDF…
+	Add a folder…	إضافة مجلد…
+	Add PDFs or a folder to search them.	أضف ملفات PDF أو مجلدًا للبحث فيها.
+	{n} files · reading {r}…	الملفات: {n} · جارٍ قراءة {r}…
+	{name}: couldn't read it ({e})	{name}: تعذرت قراءته ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	لا يحتوي {name} على نص للبحث فيه. تعرّف على النص (OCR) أولًا.
+	{count} in {files} files	{count} في {files} ملفات
+	Only the first {n} are listed.	تُعرض أول {n} نتيجة فقط.
+	Choose a folder of PDFs	اختر مجلدًا يحتوي على ملفات PDF
+	Choose PDFs to search	اختر ملفات PDF للبحث فيها
+	Searching in multiple PDFs needs the desktop app.	يتطلب البحث في عدة ملفات PDF تطبيق سطح المكتب.
+	At most {n} files can be searched at once.	يمكن البحث في {n} ملف على الأكثر في المرة الواحدة.
+	That folder has no PDFs.	لا يحتوي هذا المجلد على ملفات PDF.

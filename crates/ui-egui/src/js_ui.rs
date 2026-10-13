@@ -255,6 +255,9 @@ fn reading_mode_label(mode: &str) -> &'static str {
         "white-on-black" => "White on black",
         "yellow-on-black" => "Yellow on black",
         "green-on-black" => "Green on black",
+        "night" => "Night: dark grey",
+        "night-black" => "Night: black",
+        "night-sepia" => "Night: sepia",
         "custom" => "Custom",
         _ => "Off",
     }
@@ -415,6 +418,9 @@ pub(crate) fn preferences_body(ui: &mut egui::Ui, app: &mut PdfCraftApp, t: &Tok
                 ("white-on-black", "White on black"),
                 ("yellow-on-black", "Yellow on black"),
                 ("green-on-black", "Green on black"),
+                ("night", "Night: dark grey"),
+                ("night-black", "Night: black"),
+                ("night-sepia", "Night: sepia"),
                 ("custom", "Custom"),
             ] {
                 if ui.selectable_label(mode == m, tl!(label)).clicked() {
@@ -423,7 +429,7 @@ pub(crate) fn preferences_body(ui: &mut egui::Ui, app: &mut PdfCraftApp, t: &Tok
                         "custom" => {
                             // Custom starts from the colours already chosen, or black on white.
                             let colors = app.reading_colors.params.map_or(pdfcraft_render::ReadingColors::BLACK_ON_WHITE, |params| {
-                                pdfcraft_render::ReadingColors { params: Some(params) }
+                                pdfcraft_render::ReadingColors { params: Some(params), night: None }
                             });
                             app.set_reading_colors(colors);
                         }
@@ -458,6 +464,13 @@ pub(crate) fn preferences_body(ui: &mut egui::Ui, app: &mut PdfCraftApp, t: &Tok
         if changed {
             app.set_reading_colors(app.reading_colors);
         }
+    }
+    if app.reading_colors.night.is_some() {
+        ui.label(
+            egui::RichText::new(tl!("Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too."))
+                .small()
+                .color(t.text_muted),
+        );
     }
     ui.label(egui::RichText::new(tl!("Colours are remapped while rendering; the document itself never changes.")).small().color(t.text_muted));
     ui.add_space(8.0);

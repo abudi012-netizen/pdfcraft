@@ -2265,3 +2265,25 @@ animation effects	Off	ఆఫ్
 	This document is trying to open a local file:	ఈ పత్రం ఒక స్థానిక ఫైల్‌ను తెరవడానికి ప్రయత్నిస్తోంది:
 	Move tag earlier	ట్యాగ్‌ను ముందుకు తరలించు
 	Move tag later	ట్యాగ్‌ను వెనుకకు తరలించు
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	అనేక PDFలలో వెతకండి…
+	Night reading	రాత్రి పఠనం
+	Night: dark grey	రాత్రి: ముదురు బూడిద
+	Night: black	రాత్రి: నలుపు
+	Night: sepia	రాత్రి: సెపియా
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	రాత్రి పఠనం ప్రతి పేజీని ముదురుగా చేసి రంగుల ఛాయను ఉంచుతుంది, కాబట్టి ఎరుపు ఎరుపుగానే ఉంటుంది. చిత్రాలు కూడా ముదురుగా మారతాయి.
+	Search in multiple PDFs	అనేక PDFలలో వెతకండి
+	Add PDFs…	PDFలను జోడించండి…
+	Add a folder…	ఫోల్డర్‌ను జోడించండి…
+	Add PDFs or a folder to search them.	వెతకడానికి PDFలను లేదా ఫోల్డర్‌ను జోడించండి.
+	{n} files · reading {r}…	{n} ఫైళ్లు · {r} చదువుతోంది…
+	{name}: couldn't read it ({e})	{name}: చదవలేకపోయింది ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name}లో వెతకడానికి వచనం లేదు. ముందుగా వచనాన్ని గుర్తించండి (OCR).
+	{count} in {files} files	{files} ఫైళ్లలో {count}
+	Only the first {n} are listed.	మొదటి {n} మాత్రమే చూపబడ్డాయి.
+	Choose a folder of PDFs	PDFల ఫోల్డర్‌ను ఎంచుకోండి
+	Choose PDFs to search	వెతకడానికి PDFలను ఎంచుకోండి
+	Searching in multiple PDFs needs the desktop app.	అనేక PDFలలో వెతకడానికి డెస్క్‌టాప్ యాప్ అవసరం.
+	At most {n} files can be searched at once.	ఒకేసారి గరిష్ఠంగా {n} ఫైళ్లలో వెతకవచ్చు.
+	That folder has no PDFs.	ఆ ఫోల్డర్‌లో PDFలు లేవు.

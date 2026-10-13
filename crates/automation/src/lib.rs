@@ -24,6 +24,7 @@ mod measure;
 mod printing;
 mod reading;
 mod redact;
+mod search_files;
 mod signing;
 mod text_cache;
 mod tools;
@@ -187,6 +188,7 @@ impl Automation {
             "comment_image_preview" => return self.comment_image_preview(&a),
             "text_extract" => self.text_extract(&a)?,
             "text_find" => self.text_find(&a)?,
+            "text_find_files" => self.text_find_files(&a)?,
             "page_rotate" => {
                 let degrees = a.int("degrees")?;
                 if degrees % 90 != 0 {

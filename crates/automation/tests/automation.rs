@@ -5571,6 +5571,59 @@ fn reading_colors_through_tools() {
     assert_eq!(render(&mut a, 1), page1_off);
 }
 
+/// Night reading through `view_reading_colors`: the page darkens to the theme's background, the
+/// ink lightens, a red image keeps its hue instead of turning cyan, and off restores the render.
+#[test]
+fn night_reading_through_tools() {
+    let dir = reading_colors_workdir();
+    let mut a = auto(&dir);
+    let doc = ok(&mut a, "doc_open", json!({ "path": "a.pdf" }))["doc"].as_u64().unwrap();
+    let render = |a: &mut Automation, page: u64| png_pixels(&a.call("page_render", &json!({ "doc": doc, "page": page, "dpi": 72 })).unwrap()[0]);
+    let page2_off = render(&mut a, 2);
+    for (mode, background) in [("night", [30, 30, 32]), ("night-black", [0, 0, 0]), ("night-sepia", [42, 33, 25])] {
+        let echo = ok(&mut a, "view_reading_colors", json!({ "doc": doc, "mode": mode }));
+        assert_eq!(echo["mode"], mode);
+        let page2 = render(&mut a, 2);
+        assert_eq!(pixel(&page2, 10, 290), [background[0], background[1], background[2], 255], "{mode} paper");
+        let red = pixel(&page2, 140, 80);
+        assert!(red[0] > red[1] && red[0] > red[2], "{mode}: the red image stays red: {red:?}");
+    }
+    ok(&mut a, "view_reading_colors", json!({ "doc": doc, "mode": "off" }));
+    assert_eq!(render(&mut a, 2), page2_off);
+}
+
+/// `text_find_files` finds a phrase in PDFs on disk that aren't open, file by file and page by
+/// page, reports unreadable files and stays inside the root.
+#[test]
+fn text_find_files_searches_unopened_pdfs() {
+    let dir = reading_colors_workdir();
+    std::fs::write(dir.join("b.pdf"), reading_colors_fixture()).unwrap();
+    std::fs::write(dir.join("broken.pdf"), b"not a pdf").unwrap();
+    let mut a = auto(&dir);
+    let out = ok(&mut a, "text_find_files", json!({ "paths": ["a.pdf", "broken.pdf", "b.pdf"], "query": "page 2" }));
+    assert_eq!(out["count"], 2);
+    assert_eq!(out["complete"], true);
+    let files = out["files"].as_array().unwrap();
+    assert_eq!(files.len(), 3);
+    assert_eq!(files[0]["pages"], 2);
+    assert_eq!(files[0]["matches"][0]["page"], 2);
+    assert_eq!(files[0]["matches"][0]["text"], "Page 2");
+    assert!(files[1]["error"].is_string(), "{:?}", files[1]);
+    assert_eq!(files[2]["count"], 1);
+
+    // Whole words, case and the limit.
+    assert_eq!(ok(&mut a, "text_find_files", json!({ "paths": ["a.pdf"], "query": "pag", "whole_words": true }))["count"], 0);
+    assert_eq!(ok(&mut a, "text_find_files", json!({ "paths": ["a.pdf"], "query": "PAGE", "case_sensitive": true }))["count"], 0);
+    let capped = ok(&mut a, "text_find_files", json!({ "paths": ["a.pdf", "b.pdf"], "query": "page", "limit": 3 }));
+    assert_eq!((capped["count"].as_u64(), capped["complete"].as_bool()), (Some(3), Some(false)));
+
+    // Paths outside the root refuse the call; an empty query is refused too.
+    let outside = a.call("text_find_files", &json!({ "paths": ["../elsewhere.pdf"], "query": "page" }));
+    assert!(outside.is_err(), "{outside:?}");
+    let blank = a.call("text_find_files", &json!({ "paths": ["a.pdf"], "query": "   " }));
+    assert!(matches!(&blank, Err(ToolError::InvalidArgs(m)) if m.contains("query")), "{blank:?}");
+}
+
 #[test]
 fn private_crops_with_nested_state_resize_save_reopen_through_tools() {
     use pdfcraft_cos::{Dict, Document, Object, Stream, write_incremental};

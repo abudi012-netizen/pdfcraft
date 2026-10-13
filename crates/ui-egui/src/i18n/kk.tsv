@@ -2350,3 +2350,25 @@ animation effects	Off	Өшірулі
 	This document is trying to open a local file:	Бұл құжат жергілікті файлды ашуға әрекеттеніп жатыр:
 	Move tag earlier	Тегті ертерек жылжыту
 	Move tag later	Тегті кейінірек жылжыту
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Бірнеше PDF ішінен іздеу…
+	Night reading	Түнгі оқу
+	Night: dark grey	Түн: күңгірт сұр
+	Night: black	Түн: қара
+	Night: sepia	Түн: сепия
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Түнгі оқу әр бетті күңгірттейді және түстердің реңін сақтайды, сондықтан қызыл қызыл болып қалады. Суреттер де күңгірттеледі.
+	Search in multiple PDFs	Бірнеше PDF ішінен іздеу
+	Add PDFs…	PDF қосу…
+	Add a folder…	Қалта қосу…
+	Add PDFs or a folder to search them.	Іздеу үшін PDF немесе қалта қосыңыз.
+	{n} files · reading {r}…	Файлдар: {n} · оқылуда: {r}…
+	{name}: couldn't read it ({e})	{name}: оқу мүмкін болмады ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} ішінде іздейтін мәтін жоқ. Алдымен мәтінді танытыңыз (OCR).
+	{count} in {files} files	{files} файлда {count}
+	Only the first {n} are listed.	Тек алғашқы {n} көрсетілген.
+	Choose a folder of PDFs	PDF қалтасын таңдаңыз
+	Choose PDFs to search	Іздеу үшін PDF таңдаңыз
+	Searching in multiple PDFs needs the desktop app.	Бірнеше PDF ішінен іздеу үшін жұмыс үстелі қолданбасы қажет.
+	At most {n} files can be searched at once.	Бір уақытта ең көбі {n} файлдан іздеуге болады.
+	That folder has no PDFs.	Бұл қалтада PDF жоқ.

@@ -12,6 +12,7 @@ mod inspect;
 mod pixels;
 mod raster;
 mod reading;
+pub mod search_files;
 mod structure;
 pub mod text;
 
@@ -24,7 +25,7 @@ pub use raster::{
     MAX_PIXELS, MAX_SIDE, PRINT_TAG, PageRenderer, RenderConfig, RenderPool, RenderRequest, RenderStats, RenderWarning, RenderedPage, RequestKind,
     Retiring, Tile, device_pixels, effective_scale,
 };
-pub use reading::{ReadingColors, ReadingParams};
+pub use reading::{MODES as READING_MODES, NightTheme, ReadingColors, ReadingParams, apply_night};
 pub use text::{PageText, TextGlyph};
 
 /// Errors surfaced to the user when a document cannot be opened.

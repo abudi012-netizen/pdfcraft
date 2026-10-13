@@ -2357,3 +2357,25 @@ animation effects	Off	Izklopljeni
 	This document is trying to open a local file:	Ta dokument poskuša odpreti lokalno datoteko:
 	Move tag earlier	Premakni oznako prej
 	Move tag later	Premakni oznako pozneje
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Iskanje v več PDF-jih…
+	Night reading	Nočno branje
+	Night: dark grey	Noč: temno siva
+	Night: black	Noč: črna
+	Night: sepia	Noč: sepija
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Nočno branje potemni vsako stran in ohrani odtenek barv, zato rdeča ostane rdeča. Potemnijo tudi slike.
+	Search in multiple PDFs	Iskanje v več PDF-jih
+	Add PDFs…	Dodaj PDF-je…
+	Add a folder…	Dodaj mapo…
+	Add PDFs or a folder to search them.	Dodajte PDF-je ali mapo, da boste iskali v njih.
+	{n} files · reading {r}…	Datotek: {n} · branje: {r}…
+	{name}: couldn't read it ({e})	{name}: branje ni uspelo ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	{name} nima besedila za iskanje. Najprej prepoznajte besedilo (OCR).
+	{count} in {files} files	{count} v datotekah: {files}
+	Only the first {n} are listed.	Prikazanih je samo prvih {n}.
+	Choose a folder of PDFs	Izberite mapo s PDF-ji
+	Choose PDFs to search	Izberite PDF-je za iskanje
+	Searching in multiple PDFs needs the desktop app.	Iskanje v več PDF-jih zahteva namizno aplikacijo.
+	At most {n} files can be searched at once.	Naenkrat je mogoče preiskati največ {n} datotek.
+	That folder has no PDFs.	Ta mapa nima PDF-jev.

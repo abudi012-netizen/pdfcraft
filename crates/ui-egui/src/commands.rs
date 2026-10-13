@@ -259,6 +259,8 @@ impl PdfCraftApp {
                     None => self.full_screen = on,
                 }
             }
+            "view.night_reading" => self.toggle_night_reading(),
+            "edit.search_files" => self.open_search_files(),
             "view.read_mode" => self.switch_mode(if self.mode == Mode::Read { Mode::AllTools } else { Mode::Read }, false),
             "view.theme" => {
                 let next = if self.theme == ThemeKind::Light { ThemePreference::Dark } else { ThemePreference::Light };

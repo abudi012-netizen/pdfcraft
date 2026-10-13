@@ -2374,3 +2374,25 @@ animation effects	Off	Вимкнено
 	This document is trying to open a local file:	Цей документ намагається відкрити локальний файл:
 	Move tag earlier	Перемістити тег раніше
 	Move tag later	Перемістити тег пізніше
+
+# Search in multiple PDFs and Night reading
+	Search in multiple PDFs…	Пошук у кількох PDF…
+	Night reading	Нічне читання
+	Night: dark grey	Ніч: темно-сірий
+	Night: black	Ніч: чорний
+	Night: sepia	Ніч: сепія
+	Night reading darkens each page and keeps its colours' hues, so red stays red. Pictures are darkened too.	Нічне читання затемнює кожну сторінку й зберігає відтінок кольорів: червоний лишається червоним. Зображення теж затемнюються.
+	Search in multiple PDFs	Пошук у кількох PDF
+	Add PDFs…	Додати PDF…
+	Add a folder…	Додати теку…
+	Add PDFs or a folder to search them.	Додайте PDF або теку, щоб шукати в них.
+	{n} files · reading {r}…	Файлів: {n} · читається: {r}…
+	{name}: couldn't read it ({e})	{name}: не вдалося прочитати ({e})
+	{name} has no text to search. Recognize text (OCR) in it first.	У {name} немає тексту для пошуку. Спершу розпізнайте текст (OCR).
+	{count} in {files} files	{count} у файлах: {files}
+	Only the first {n} are listed.	Показано лише перші {n}.
+	Choose a folder of PDFs	Виберіть теку з PDF
+	Choose PDFs to search	Виберіть PDF для пошуку
+	Searching in multiple PDFs needs the desktop app.	Для пошуку в кількох PDF потрібен застосунок для комп'ютера.
+	At most {n} files can be searched at once.	За раз можна шукати щонайбільше в {n} файлах.
+	That folder has no PDFs.	У цій теці немає PDF.
