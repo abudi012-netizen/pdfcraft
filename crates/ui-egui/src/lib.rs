@@ -47,6 +47,8 @@ mod credits;
 mod crop;
 mod drag_pointer;
 mod export_ui;
+mod hide_labels_ui;
+mod highlights_ui;
 mod js_ui;
 mod marks_ui;
 mod measure_ui;
@@ -382,6 +384,8 @@ pub enum OsEvent {
     Open(Vec<String>),
     /// Quit (the Dock's Quit, logging out), asking about unsaved changes first.
     Quit,
+    /// Run this registry command (the macOS menu bar).
+    Command(String),
 }
 
 /// Returns the [`OsEvent`]s that arrived since it was last called (set by the desktop app).
@@ -555,6 +559,8 @@ pub struct PdfCraftApp {
     pub palette_query: String,
     pub all_tools_expanded: bool,
     pub recent: Vec<RecentFile>,
+    /// The page each recent file was left at (0-based), so the library reopens it there.
+    pub last_pages: std::collections::BTreeMap<String, usize>,
     /// Preferences: reopen the files that were open when PdfCraft last closed (#442).
     pub reopen_last_session: bool,
     /// The files open when PdfCraft last closed, read from the settings for
@@ -604,6 +610,8 @@ pub struct PdfCraftApp {
     pub unsaved_flag: std::sync::Arc<std::sync::atomic::AtomicBool>,
     /// Requests from the operating system, polled every frame (macOS Apple events).
     pub os_events: Option<OsEventsFn>,
+    /// Clicks in the menu bar at the top of the screen (macOS), set by the desktop app.
+    pub menu_events: Option<OsEventsFn>,
     /// Save delivers to the embedding page instead of downloading (web, see [`HostSaveFn`]).
     pub host_save: Option<HostSaveFn>,
     /// Reports unsaved work to the embedding page (web, see [`HostDirtyFn`]).
@@ -643,6 +651,14 @@ pub struct PdfCraftApp {
     /// Scan & OCR: the Recognize Text choices, the running job, and (tests) run it inline.
     pub ocr_draft: ocr_ui::OcrDraft,
     pub ocr_run: Option<ocr_ui::OcrRun>,
+    /// Auto hide labels in progress.
+    pub(crate) hide_run: Option<hide_labels_ui::HideRun>,
+    /// Collect highlights, when shown.
+    pub(crate) highlights_window: Option<highlights_ui::HighlightsWindow>,
+    /// View ▸ Side by side: the documents shown left and right.
+    pub side_by_side: Option<(DocId, DocId)>,
+    /// While drawing the half of side by side that isn't being worked on.
+    pub(crate) secondary_pane: bool,
     pub ocr_batch: Option<std::sync::Arc<std::sync::Mutex<ocr_ui::BatchProgress>>>,
     /// Background jobs (OCR, actions, listing pinned folders) run inline instead (tests).
     pub run_inline: bool,
@@ -886,7 +902,7 @@ impl PdfCraftApp {
             space_hand: None,
             comment_prefs: Default::default(),
             theme: ThemeKind::Light,
-            theme_preference: ThemePreference::Light,
+            theme_preference: ThemePreference::System,
             reading_colors: Default::default(),
             night_theme: pdfcraft_render::NightTheme::DarkGrey,
             search_files: None,
@@ -912,6 +928,7 @@ impl PdfCraftApp {
             palette_query: String::new(),
             all_tools_expanded: false,
             recent: Vec::new(),
+            last_pages: Default::default(),
             reopen_last_session: false,
             last_session: Default::default(),
             quit_session: None,
@@ -941,6 +958,7 @@ impl PdfCraftApp {
             failed_inbox: Default::default(),
             unsaved_flag: Default::default(),
             os_events: None,
+            menu_events: None,
             host_save: None,
             host_dirty: None,
             close_request: None,
@@ -963,6 +981,10 @@ impl PdfCraftApp {
             a11y_options: a11y_ui::A11yOptions::default(),
             ocr_draft: ocr_ui::OcrDraft::default(),
             ocr_run: None,
+            hide_run: None,
+            highlights_window: None,
+            side_by_side: None,
+            secondary_pane: false,
             ocr_batch: None,
             run_inline: false,
             custom_actions: Vec::new(),
@@ -1319,8 +1341,19 @@ impl PdfCraftApp {
         }
         if let Some(p) = path {
             self.recent.retain(|r| r.path != p);
+            // Reopen where the file was left (the lecture library), unless something asked for a page.
+            if let Some(&page) = self.last_pages.get(&p)
+                && page > 0
+                && page < pages
+                && let Some(view) = self.views.last_mut()
+                && view.goto.is_none()
+            {
+                view.goto = Some((page, 0.0));
+            }
             self.recent.insert(0, RecentFile { name: name.to_string(), path: p, pages, size });
-            self.recent.truncate(12);
+            self.recent.truncate(40);
+            let recent = &self.recent;
+            self.last_pages.retain(|p, _| recent.iter().any(|r| &r.path == p));
         }
         // What the form's scripts said while it opened (messages, errors) shows now, not with
         // the next edit.
@@ -1494,6 +1527,37 @@ impl PdfCraftApp {
                 ctx.send_viewport_cmd(egui::ViewportCommand::Decorations(!app_frame));
             }
             self.app_frame_shown = Some(app_frame);
+        }
+    }
+
+    /// View ▸ Side by side: show the active document next to the most recently used other one,
+    /// or go back to one document.
+    pub fn toggle_side_by_side(&mut self) {
+        if self.side_by_side.take().is_some() {
+            return;
+        }
+        let Some((i, id)) = self.active_ids() else { return };
+        // The tab to the right of the active one, or else the one to its left.
+        let other = self.views.get(i + 1).or_else(|| i.checked_sub(1).and_then(|j| self.views.get(j))).map(|v| v.id);
+        match other {
+            Some(other) => self.side_by_side = Some((id, other)),
+            None => self.notify_tr("Open a second PDF to see two side by side."),
+        }
+    }
+
+    /// Note the page the active document is at, for reopening it there from the library.
+    fn remember_page(&mut self) {
+        let Some((i, id)) = self.active_ids() else { return };
+        let Some(view) = self.views.get(i) else { return };
+        // A jump still on its way: the page shown is not the one being read yet.
+        if view.goto.is_some() {
+            return;
+        }
+        let page = view.current;
+        let Some(path) = self.session.get(id).and_then(|d| d.path.as_deref()) else { return };
+        if self.last_pages.get(path) != Some(&page) && self.recent.iter().any(|r| r.path == path) {
+            let path = path.to_owned();
+            self.last_pages.insert(path, page);
         }
     }
 
@@ -1694,6 +1758,12 @@ impl PdfCraftApp {
 
     #[cfg(not(target_arch = "wasm32"))]
     pub fn open_path(&mut self, path: &str) {
+        self.open_path_then(path, None);
+    }
+
+    /// [`Self::open_path`], then run `then` on the document once it is open (a tool chosen with
+    /// no document open). An inline open runs it at once; a background open when it lands.
+    fn open_path_then(&mut self, path: &str, then: Option<&'static str>) {
         let name = std::path::Path::new(path).file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| path.to_string());
         // Taken before reading: a build that rewrites the file meanwhile still counts as a change.
         let stamp = file_watch::Stamp::at(path);
@@ -1710,6 +1780,11 @@ impl PdfCraftApp {
                         && let Some(doc) = self.views.last().map(|view| view.id)
                     {
                         self.watch.known_as(doc, stamp);
+                        if let Some(command) = then
+                            && self.password_prompt.is_none()
+                        {
+                            self.execute(command);
+                        }
                     }
                 }
                 Err(error) => self.notify_fmt("Couldn't read {name}: {e}", &[("name", &name), ("e", &error.to_string())]),
@@ -1726,7 +1801,7 @@ impl PdfCraftApp {
             activate: true,
             after_open: None,
             recovered: None,
-            then: None,
+            then,
         }) {
             self.notify_fmt("Couldn't open {name}: {e}", &[("name", &name), ("e", &error)]);
         }
@@ -1994,13 +2069,11 @@ impl PdfCraftApp {
         let command = spec.id;
         self.ask_one(pickers::Ask::File(dialog), None, move |app, path| {
             let path = path.to_string_lossy().into_owned();
-            let before = app.views.len();
-            app.open_path(&path);
+            // The tool runs once the file is open, however long the opening takes.
+            app.open_path_then(&path, Some(command));
             if let Some(prompt) = app.password_prompt.as_mut().filter(|p| p.path.as_deref() == Some(path.as_str())) {
                 // Encrypted: the tool runs once the password is in.
                 prompt.then = Some(command);
-            } else if app.views.len() > before && app.active.is_some() {
-                app.execute(command);
             }
         });
     }
@@ -2158,6 +2231,7 @@ impl PdfCraftApp {
         });
         // Added outside the `json!` above, which is at the macro's recursion limit.
         if let Some(map) = state.as_object_mut() {
+            map.insert("last_pages".into(), serde_json::to_value(&self.last_pages).unwrap_or_default());
             map.insert("night_theme".into(), serde_json::to_value(self.night_theme).unwrap_or_default());
         }
         state.to_string()
@@ -2187,6 +2261,10 @@ impl PdfCraftApp {
             #[cfg(not(target_arch = "wasm32"))]
             let r: Vec<RecentFile> = r.into_iter().filter(|f| std::path::Path::new(&f.path).exists()).collect();
             self.recent = r;
+        }
+        if let Ok(pages) = serde_json::from_value::<std::collections::BTreeMap<String, usize>>(v["last_pages"].clone()) {
+            // Only the files still in Recent.
+            self.last_pages = pages.into_iter().filter(|(p, _)| self.recent.iter().any(|r| &r.path == p)).collect();
         }
         if let Some(on) = v["reopen_last_session"].as_bool() {
             self.reopen_last_session = on;
@@ -2855,7 +2933,8 @@ impl eframe::App for PdfCraftApp {
         for (name, e) in failed {
             self.notify_fmt("Couldn't open {name}: {e}", &[("name", &name), ("e", &e)]);
         }
-        let os_events = self.os_events.as_mut().map(|poll| poll()).unwrap_or_default();
+        let mut os_events = self.os_events.as_mut().map(|poll| poll()).unwrap_or_default();
+        os_events.extend(self.menu_events.as_mut().map(|poll| poll()).unwrap_or_default());
         for e in os_events {
             match e {
                 #[cfg(not(target_arch = "wasm32"))]
@@ -2864,6 +2943,7 @@ impl eframe::App for PdfCraftApp {
                 OsEvent::Open(_) => {}
                 // Like closing the window: `guard_quit` asks about unsaved changes.
                 OsEvent::Quit => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                OsEvent::Command(id) => self.run_command(&id),
             }
         }
         if let Some((_, id)) = self.active_ids() {
@@ -2912,6 +2992,8 @@ impl eframe::App for PdfCraftApp {
         }
         self.poll_export();
         self.poll_ocr();
+        self.poll_hide_labels();
+        self.remember_page();
         self.poll_optimize();
         self.poll_action();
         self.process_file_requests();
@@ -2952,6 +3034,21 @@ impl eframe::App for PdfCraftApp {
                     }
                 },
             );
+            // Moving the pointer to the top edge shows a way out, for those who don't know Esc.
+            let near_top = ctx.input(|i| i.pointer.hover_pos().is_some_and(|p| p.y < 56.0));
+            if near_top {
+                let screen = ctx.content_rect();
+                egui::Area::new(egui::Id::new("full_screen_exit"))
+                    .order(egui::Order::Foreground)
+                    .fixed_pos(egui::pos2(screen.center().x - 90.0, screen.top() + 12.0))
+                    .show(&ctx, |ui| {
+                        egui::Frame::popup(ui.style()).show(ui, |ui| {
+                            if widgets::ghost_button(ui, "minimize", tl!("Exit full screen (Esc)")).clicked() {
+                                self.set_full_screen(&ctx, false);
+                            }
+                        });
+                    });
+            }
             dialogs::show(self, &ctx);
             // Notices too: a refused field value or a failed save must be seen in full screen.
             self.show_progress(&ctx);
@@ -2985,7 +3082,7 @@ impl eframe::App for PdfCraftApp {
                 match self.active {
                     None if self.combine_showing() => combine_ui::page(self, ui),
                     None => home::show(self, ui),
-                    Some(index) => canvas::document_area(self, index, ui),
+                    Some(index) => canvas::document_areas(self, index, ui),
                 }
             } else {
                 docking::show(self, ui);

@@ -274,3 +274,186 @@ mod tests {
         assert!((0.0..=1.0).contains(&c), "{c}");
     }
 }
+
+/// Auto hide labels: the boxes of every word on a page, found in its text and, when the
+/// recognition models are installed, read from its pictures, merged into one box per label.
+pub mod hide_labels {
+    use super::{Edit, EditError, Ocr, OcrJob, Session, covered};
+    use crate::{DocId, NewAnnotation, Shape, Style};
+    use pdfcraft_render::{RenderRequest, RequestKind};
+
+    /// What [`find`] found on one page: label boxes in PDF user space `[x0, y0, x1, y1]`.
+    #[derive(Clone, Debug, PartialEq)]
+    pub struct PageLabels {
+        pub page: usize,
+        pub boxes: Vec<[f64; 4]>,
+    }
+
+    /// Most boxes on one page: past this a page is prose, not a labelled diagram, and merging
+    /// stays cheap.
+    const MAX_BOXES: usize = 4000;
+    /// Points of white around each label, so no edge of a letter shows.
+    const PAD: f32 = 1.5;
+
+    /// Whether two boxes (view space, y down) belong to one label: on the same line, and closer
+    /// than about a word space.
+    fn same_label(a: [f32; 4], b: [f32; 4]) -> bool {
+        let h = (a[3] - a[1]).max(b[3] - b[1]).max(0.5);
+        let overlap = a[3].min(b[3]) - a[1].max(b[1]);
+        let shortest = (a[3] - a[1]).min(b[3] - b[1]).max(0.1);
+        let gap = (a[0].max(b[0]) - a[2].min(b[2])).max(0.0);
+        overlap >= 0.5 * shortest && gap <= 0.8 * h
+    }
+
+    /// Merges glyph and word boxes into label boxes. Non-finite or empty boxes are dropped.
+    pub fn merge(boxes: &[[f32; 4]]) -> Vec<[f32; 4]> {
+        let mut out: Vec<[f32; 4]> =
+            boxes.iter().copied().filter(|r| r.iter().all(|v| v.is_finite()) && r[2] > r[0] && r[3] > r[1]).take(MAX_BOXES).collect();
+        // Join pairs until nothing changes; each join removes a box, so this ends.
+        loop {
+            let mut joined = false;
+            let mut i = 0;
+            while i < out.len() {
+                let mut j = i + 1;
+                while j < out.len() {
+                    let (Some(&a), Some(&b)) = (out.get(i), out.get(j)) else { break };
+                    if same_label(a, b) {
+                        if let Some(slot) = out.get_mut(i) {
+                            *slot = [a[0].min(b[0]), a[1].min(b[1]), a[2].max(b[2]), a[3].max(b[3])];
+                        }
+                        out.swap_remove(j);
+                        joined = true;
+                    } else {
+                        j += 1;
+                    }
+                }
+                i += 1;
+            }
+            if !joined {
+                return out;
+            }
+        }
+    }
+
+    impl OcrJob {
+        /// Finds the labels on the job's pages. With `ocr`, words in pictures are read too;
+        /// without it only the page's own text is found. `progress(done, total)` as in
+        /// [`OcrJob::run`].
+        pub fn find_labels(self, ocr: Option<&Ocr>, mut progress: impl FnMut(usize, usize) -> bool) -> Vec<PageLabels> {
+            let config = pdfcraft_render::RenderConfig { password: self.password.as_deref().map(std::sync::Arc::from), ..Default::default() };
+            let mut r = pdfcraft_render::PageRenderer::new(self.bytes.clone(), config);
+            let total = self.pages.len();
+            let mut out = Vec::new();
+            for (done, &page) in self.pages.iter().enumerate() {
+                if !progress(done, total) {
+                    break;
+                }
+                let Some(info) = self.infos.get(page) else { continue };
+                // The page's own text, in view space.
+                let mut found: Vec<[f32; 4]> = r
+                    .render(RenderRequest { page, kind: RequestKind::Text, scale: 1.0, ..Default::default() })
+                    .text
+                    .map(|t| t.glyphs.iter().filter(|g| !g.text.trim().is_empty()).map(|g| g.rect).collect())
+                    .unwrap_or_default();
+                if let Some(ocr) = ocr {
+                    let wanted = self.settings.dpi.clamp(72.0, 600.0) / 72.0;
+                    let scale = self.native.get(page).copied().flatten().map_or(wanted, |n| n.clamp(1.0, wanted));
+                    let shot = r.render(RenderRequest { page, scale, ..Default::default() });
+                    if shot.error.is_none()
+                        && let Ok(lines) = ocr.recognize(&shot.rgba, shot.width, shot.height)
+                    {
+                        let px = shot.width as f32 / info.width.max(1e-3);
+                        let text = found.clone();
+                        for w in lines.iter().flat_map(|l| &l.words) {
+                            let rect = w.rect.map(|v| v / px.max(1e-3));
+                            // Words the text layer already has are found once.
+                            if covered(rect, &text) < super::ALREADY_ON_PAGE {
+                                found.push(rect);
+                            }
+                        }
+                    }
+                }
+                let boxes = merge(&found)
+                    .into_iter()
+                    .map(|[x0, y0, x1, y1]| {
+                        let a = info.view_to_user(x0 - PAD, y0 - PAD);
+                        let b = info.view_to_user(x1 + PAD, y1 + PAD);
+                        [a[0].min(b[0]) as f64, a[1].min(b[1]) as f64, a[0].max(b[0]) as f64, a[1].max(b[1]) as f64]
+                    })
+                    .collect();
+                out.push(PageLabels { page, boxes });
+            }
+            progress(total, total);
+            out
+        }
+    }
+
+    /// The look of a hidden label: an opaque white box with a white border.
+    pub fn style() -> Style {
+        Style { color: [1.0, 1.0, 1.0], opacity: 1.0, width: 1.0, fill: Some([1.0, 1.0, 1.0]) }
+    }
+
+    /// The text every automatically hidden label carries, so they can be told from hand-drawn ones.
+    pub const CONTENTS: &str = "Hidden label";
+
+    /// The one undoable step that covers every label in `found` with a white box, or `None` when
+    /// nothing was found.
+    pub fn edit(found: &[PageLabels], author: &str) -> Option<Edit> {
+        let edits: Vec<Edit> = found
+            .iter()
+            .flat_map(|p| {
+                p.boxes.iter().map(move |&rect| {
+                    Edit::AddAnnotation(NewAnnotation {
+                        page: p.page,
+                        shape: Shape::Rectangle { rect },
+                        style: style(),
+                        contents: CONTENTS.to_owned(),
+                        author: author.to_owned(),
+                    })
+                })
+            })
+            .collect();
+        (!edits.is_empty()).then(|| Edit::Batch { label: "Auto hide labels".into(), edits })
+    }
+
+    impl Session {
+        /// Covers every label found by [`OcrJob::find_labels`] with a white box, as one undoable
+        /// step. Returns how many labels were hidden.
+        pub fn hide_labels(&mut self, id: DocId, found: &[PageLabels], author: &str) -> Result<usize, EditError> {
+            let count = found.iter().map(|p| p.boxes.len()).sum();
+            if let Some(e) = edit(found, author) {
+                self.apply(id, e)?;
+            }
+            Ok(count)
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::merge;
+
+        #[test]
+        fn letters_on_a_line_become_one_label() {
+            let letters: Vec<[f32; 4]> = (0..5).map(|i| [10.0 + 6.0 * i as f32, 100.0, 15.5 + 6.0 * i as f32, 110.0]).collect();
+            assert_eq!(merge(&letters), vec![[10.0, 100.0, 39.5, 110.0]]);
+        }
+
+        #[test]
+        fn far_words_and_other_lines_stay_apart() {
+            let boxes = [[10.0, 100.0, 40.0, 110.0], [200.0, 100.0, 240.0, 110.0], [10.0, 140.0, 40.0, 150.0]];
+            assert_eq!(merge(&boxes).len(), 3);
+        }
+
+        #[test]
+        fn words_a_space_apart_join() {
+            let boxes = [[10.0, 100.0, 40.0, 110.0], [44.0, 100.0, 70.0, 110.0]];
+            assert_eq!(merge(&boxes), vec![[10.0, 100.0, 70.0, 110.0]]);
+        }
+
+        #[test]
+        fn broken_boxes_are_dropped() {
+            assert!(merge(&[[f32::NAN, 0.0, 1.0, 1.0], [5.0, 5.0, 5.0, 9.0], [1.0, 1.0, 0.0, 0.0]]).is_empty());
+            assert!(merge(&[]).is_empty());
+        }
+    }
+}

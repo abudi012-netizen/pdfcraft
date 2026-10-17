@@ -22,6 +22,7 @@ fn dialogs(app: &mut PdfCraftApp, ctx: &egui::Context) {
     remote_link_prompt(app, ctx);
     crate::updates::dialog(app, ctx);
     crate::search_files_ui::dialog(app, ctx);
+    crate::highlights_ui::window(app, ctx);
     let Some(dialog) = app.dialog else {
         app.props_draft = None;
         app.view_draft = None;

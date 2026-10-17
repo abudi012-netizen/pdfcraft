@@ -2618,3 +2618,36 @@ key	Space	Tarpas
 	Searching in multiple PDFs needs the desktop app.	Paieškai keliuose PDF reikia kompiuterio programos.
 	At most {n} files can be searched at once.	Vienu metu galima ieškoti daugiausia {n} failuose.
 	That folder has no PDFs.	Šiame aplanke nėra PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Paslėpti užrašą baltu stačiakampiu
+	Hide label	Paslėpti užrašą
+	Auto hide labels on this page	Automatiškai paslėpti užrašus šiame puslapyje
+	Auto hide labels on all pages	Automatiškai paslėpti užrašus visuose puslapiuose
+	Auto hide labels	Automatiškai paslėpti užrašus
+	Collect highlights	Surinkti paryškinimus
+	Side by side	Greta
+	Search PDFs	Ieškoti PDF failuose
+	Full screen ({key})	Visas ekranas ({key})
+	Exit full screen (Esc)	Išeiti iš viso ekrano (Esc)
+	Hide labels to study	Paslėpti užrašus mokymuisi
+	Hide a label by hand	Paslėpti užrašą rankiniu būdu
+	Show or hide all labels	Rodyti arba slėpti visus užrašus
+	Labels are already being hidden	Užrašai jau slepiami
+	Hiding labels… page {d} of {t}	Slepiami užrašai… {d} puslapis iš {t}
+	No labels found on this page	Šiame puslapyje užrašų nerasta
+	Hid {n} labels. Hide all comments shows them again.	Paslėpta užrašų: {n}. „Slėpti visus komentarus“ vėl juos parodys.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Paslėpta užrašų: {n} (užrašams paveikslėliuose reikia teksto atpažinimo, kuris neįdiegtas).
+	Highlights	Paryškinimai
+	Save as text…	Įrašyti kaip tekstą…
+	Copy all	Kopijuoti viską
+	Page {p}	{p} puslapis
+	(no text: recognize text on this page first)	(nėra teksto: pirmiausia atpažinkite šio puslapio tekstą)
+	Go to this page	Eiti į šį puslapį
+	Copied	Nukopijuota
+	This document has no highlights yet. Select text and choose Highlight first.	Šiame dokumente dar nėra paryškinimų. Pirmiausia pažymėkite tekstą ir pasirinkite „Paryškinti“.
+	Your lectures	Jūsų paskaitos
+	Continue at page {p}	Tęsti nuo {p} puslapio
+	Other files	Kiti failai
+	Close side by side	Uždaryti rodinį greta
+	Open a second PDF to see two side by side.	Atverkite antrą PDF, kad matytumėte du greta.

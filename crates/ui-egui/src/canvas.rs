@@ -2047,6 +2047,63 @@ pub fn shortcuts(view: &mut DocView, ctx: &egui::Context) {
 /// of the previous screen in view.
 const KEY_SCROLL_LINE: f32 = 40.0;
 
+/// The document area: the active document, or two documents side by side (View ▸ Side by side).
+/// Clicking into either half makes that document the active one, so tools, keys and edits always
+/// go to the document under the pointer.
+pub fn document_areas(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
+    let pair = app.side_by_side.and_then(|(l, r)| {
+        let li = app.views.iter().position(|v| v.id == l)?;
+        let ri = app.views.iter().position(|v| v.id == r)?;
+        (index == li || index == ri).then_some((li, ri))
+    });
+    let Some((left, right)) = pair else {
+        document_area(app, index, ui);
+        return;
+    };
+    let t = Tokens::get(ui.ctx());
+    let full = ui.max_rect();
+    let gap = 6.0;
+    let half = ((full.width() - gap) / 2.0).max(0.0);
+    let panes = [
+        (left, Rect::from_min_size(full.min, vec2(half, full.height()))),
+        (right, Rect::from_min_max(pos2(full.min.x + half + gap, full.min.y), full.max)),
+    ];
+    // A press in a half makes its document active before either half draws.
+    let pressed = ui.input(|i| if i.pointer.any_pressed() { i.pointer.interact_pos() } else { None });
+    if let Some(p) = pressed
+        && let Some(&(i, _)) = panes.iter().find(|(_, r)| r.contains(p))
+        && app.active != Some(i)
+    {
+        app.active = Some(i);
+    }
+    let active = app.active.unwrap_or(index);
+    ui.painter().rect_filled(Rect::from_min_size(pos2(full.min.x + half, full.min.y), vec2(gap, full.height())), 0.0, t.divider);
+    for (i, rect) in panes {
+        app.secondary_pane = i != active;
+        ui.scope_builder(egui::UiBuilder::new().max_rect(rect), |ui| {
+            ui.set_clip_rect(rect);
+            document_area(app, i, ui);
+        });
+        if i == active {
+            ui.painter().rect_stroke(rect.shrink(1.0), CornerRadius::ZERO, Stroke::new(2.0, t.accent.gamma_multiply(0.6)), egui::StrokeKind::Inside);
+        }
+    }
+    app.secondary_pane = false;
+    // A way back to one document, at the top right of the right half.
+    let right_rect = panes[1].1;
+    egui::Area::new(egui::Id::new("side-by-side-close"))
+        .order(egui::Order::Middle)
+        .pivot(Align2::RIGHT_TOP)
+        .fixed_pos(right_rect.right_top() + vec2(-14.0, right_rect.height() - 52.0))
+        .show(ui.ctx(), |ui| {
+            egui::Frame::popup(ui.style()).show(ui, |ui| {
+                if crate::widgets::ghost_button(ui, "x", tl!("Close side by side")).clicked() {
+                    app.side_by_side = None;
+                }
+            });
+        });
+}
+
 pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
     // Keyboard scrolling applies to this frame's page view only, never later.
@@ -3425,7 +3482,10 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     if let Some((name, action)) = app.views[index].forms.button.take() {
         run_button(app, index, &name, action);
     }
-    quick_bar(app, avail, ui);
+    // Side by side: the tools float over the document being worked on only.
+    if !app.secondary_pane {
+        quick_bar(app, avail, ui);
+    }
     if let Some((source, file, destination)) = remote_open {
         app.open_remote_link(source, file, destination);
     }
@@ -3616,7 +3676,7 @@ fn find_bar(view: &mut DocView, pages: usize, area: Rect, ui: &mut egui::Ui, t: 
     let mut close = false;
     let mut step: Option<bool> = None;
     let searched = view.texts.len() + view.text_failed.len();
-    egui::Area::new(egui::Id::new("find-bar"))
+    egui::Area::new(egui::Id::new(("find-bar", view.id)))
         .order(egui::Order::Middle)
         .pivot(Align2::RIGHT_TOP)
         .fixed_pos(area.right_top() + vec2(-18.0, 12.0))
@@ -4030,6 +4090,52 @@ fn quick_bar(app: &mut PdfCraftApp, area: Rect, ui: &mut egui::Ui) {
                             if let Some(command) = crate::fill_sign::signature_entries(ui, app, &t) {
                                 app.execute(command);
                                 ui.close();
+                            }
+                        });
+                    // Study ▸: hide the labels of a diagram to test yourself. Automatic hiding is its
+                    // own action, apart from drawing a box by hand.
+                    let resp = icons::button(ui, "scan-text", 32.0, false, tl!("Hide labels to study"));
+                    let r = resp.rect;
+                    let tri = [r.right_bottom() + vec2(-4.0, -4.0), r.right_bottom() + vec2(-9.0, -4.0), r.right_bottom() + vec2(-4.0, -9.0)];
+                    ui.painter().add(egui::Shape::convex_polygon(tri.to_vec(), t.text_faint, Stroke::NONE));
+                    let open = resp.clicked() || resp.secondary_clicked();
+                    egui::Popup::menu(&resp)
+                        .open_memory(open.then_some(egui::SetOpenCommand::Toggle))
+                        .align(egui::RectAlign::RIGHT_START)
+                        .gap(6.0)
+                        .show(|ui| {
+                            ui.set_min_width(230.0);
+                            let rows: [(&str, &str, &str); 5] = [
+                                ("scan-text", "Auto hide labels on this page", "comment.autohide"),
+                                ("scan-text", "Auto hide labels on all pages", "comment.autohide_all"),
+                                ("eye-off", "Hide a label by hand", "comment.hidelabel"),
+                                ("eye", "Show or hide all labels", "comment.hide_all"),
+                                ("highlighter", "Collect highlights", "comment.highlights"),
+                            ];
+                            for (i, (icon, label, command)) in rows.into_iter().enumerate() {
+                                if i == 2 || i == 4 {
+                                    ui.separator();
+                                }
+                                let (row, click) = ui.allocate_exact_size(vec2(230.0, 28.0), Sense::click());
+                                let press = theme::Press::track(ui, &click);
+                                press.wash(ui, row, 4, false);
+                                let body = row.translate(press.offset());
+                                icons::paint(ui, Rect::from_min_size(body.min + vec2(8.0, 6.0), vec2(16.0, 16.0)), icon, 16.0, t.text);
+                                crate::widgets::paint_left(
+                                    ui,
+                                    body.left_center() + vec2(34.0, 0.0),
+                                    tl!(label),
+                                    theme::regular(13.0),
+                                    t.text,
+                                    row.width() - 42.0,
+                                );
+                                let click = theme::hand(click);
+                                let info = tl!(label).to_string();
+                                click.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, info.clone()));
+                                if click.clicked() {
+                                    app.execute(command);
+                                    ui.close();
+                                }
                             }
                         });
                     if matches!(current_fill, Some(crate::fill_sign::FillTool::Text | crate::fill_sign::FillTool::Date)) {

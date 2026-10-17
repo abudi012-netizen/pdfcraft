@@ -439,10 +439,23 @@ pub fn mode_bar(app: &mut PdfCraftApp, ui: &mut egui::Ui) {
                         if icons::button(ui, "info", 32.0, false, &tip).clicked() {
                             app.dialog = Some(Dialog::Properties(PropsTab::Description));
                         }
+                        let tip = crate::commands::command_tip(ui.ctx(), tl!("Full screen ({key})"), "view.full_screen");
+                        if icons::button(ui, "maximize", 32.0, false, &tip).clicked() {
+                            app.run_command("view.full_screen");
+                        }
+                        let on = app.side_by_side.is_some();
+                        if icons::button(ui, "columns-2", 32.0, on, tl!("Side by side")).clicked() {
+                            app.run_command("view.side_by_side");
+                        }
                     });
                     ui.add_space(8.0);
                     if widgets::search_box(ui, tl!("Find tools and commands"), 260.0).clicked() {
                         app.palette_open = true;
+                    }
+                    ui.add_space(6.0);
+                    // Searching every lecture at once is a feature of its own, not a dialog to find.
+                    if widgets::ghost_button(ui, "file-search", tl!("Search PDFs")).on_hover_text(tl!("Search in multiple PDFs")).clicked() {
+                        app.run_command("edit.search_files");
                     }
                 });
             });

@@ -2248,3 +2248,36 @@ animation effects	Off	關
 	Searching in multiple PDFs needs the desktop app.	在多個 PDF 中搜尋需要桌面應用程式。
 	At most {n} files can be searched at once.	一次最多可搜尋 {n} 個檔案。
 	That folder has no PDFs.	該資料夾中沒有 PDF。
+
+# Study tools, library, side by side
+	Hide a label with a white box	以白框隱藏標籤
+	Hide label	隱藏標籤
+	Auto hide labels on this page	自動隱藏本頁標籤
+	Auto hide labels on all pages	自動隱藏所有頁面的標籤
+	Auto hide labels	自動隱藏標籤
+	Collect highlights	彙整醒目提示
+	Side by side	並排
+	Search PDFs	搜尋 PDF
+	Full screen ({key})	全螢幕 ({key})
+	Exit full screen (Esc)	離開全螢幕 (Esc)
+	Hide labels to study	隱藏標籤以便讀書
+	Hide a label by hand	手動隱藏標籤
+	Show or hide all labels	顯示或隱藏所有標籤
+	Labels are already being hidden	正在隱藏標籤
+	Hiding labels… page {d} of {t}	正在隱藏標籤… 第 {d} 頁，共 {t} 頁
+	No labels found on this page	本頁找不到標籤
+	Hid {n} labels. Hide all comments shows them again.	已隱藏 {n} 個標籤。「隱藏所有註解」可再次顯示。
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	已隱藏 {n} 個標籤（圖片中的標籤需要文字辨識，但尚未安裝）。
+	Highlights	醒目提示
+	Save as text…	另存為文字…
+	Copy all	全部拷貝
+	Page {p}	第 {p} 頁
+	(no text: recognize text on this page first)	（無文字：請先辨識本頁文字）
+	Go to this page	前往此頁
+	Copied	已拷貝
+	This document has no highlights yet. Select text and choose Highlight first.	此文件尚無醒目提示。請先選取文字並選擇「醒目提示」。
+	Your lectures	你的課程
+	Continue at page {p}	從第 {p} 頁繼續
+	Other files	其他檔案
+	Close side by side	關閉並排
+	Open a second PDF to see two side by side.	請再開啟一個 PDF 以並排檢視兩份文件。

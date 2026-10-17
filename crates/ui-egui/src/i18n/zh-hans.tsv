@@ -2338,3 +2338,36 @@ animation effects	Off	关
 	Searching in multiple PDFs needs the desktop app.	在多个 PDF 中搜索需要桌面应用。
 	At most {n} files can be searched at once.	一次最多可搜索 {n} 个文件。
 	That folder has no PDFs.	该文件夹中没有 PDF。
+
+# Study tools, library, side by side
+	Hide a label with a white box	用白框隐藏标签
+	Hide label	隐藏标签
+	Auto hide labels on this page	自动隐藏本页标签
+	Auto hide labels on all pages	自动隐藏所有页面的标签
+	Auto hide labels	自动隐藏标签
+	Collect highlights	汇总高亮
+	Side by side	并排
+	Search PDFs	搜索 PDF
+	Full screen ({key})	全屏 ({key})
+	Exit full screen (Esc)	退出全屏 (Esc)
+	Hide labels to study	隐藏标签以便学习
+	Hide a label by hand	手动隐藏标签
+	Show or hide all labels	显示或隐藏所有标签
+	Labels are already being hidden	正在隐藏标签
+	Hiding labels… page {d} of {t}	正在隐藏标签… 第 {d} 页，共 {t} 页
+	No labels found on this page	本页未找到标签
+	Hid {n} labels. Hide all comments shows them again.	已隐藏 {n} 个标签。“隐藏所有注释”可再次显示。
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	已隐藏 {n} 个标签（图片中的标签需要文字识别，但尚未安装）。
+	Highlights	高亮
+	Save as text…	另存为文本…
+	Copy all	全部复制
+	Page {p}	第 {p} 页
+	(no text: recognize text on this page first)	（无文字：请先识别本页文字）
+	Go to this page	转到此页
+	Copied	已复制
+	This document has no highlights yet. Select text and choose Highlight first.	此文档还没有高亮。请先选择文字并选择“高亮”。
+	Your lectures	你的课程
+	Continue at page {p}	从第 {p} 页继续
+	Other files	其他文件
+	Close side by side	关闭并排
+	Open a second PDF to see two side by side.	请再打开一个 PDF 以并排查看两个文档。

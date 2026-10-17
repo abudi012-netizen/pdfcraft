@@ -18,6 +18,16 @@ fn card_lift(ui: &egui::Ui, t: &Tokens, rect: Rect, press: theme::Press) {
     }
 }
 
+/// The course a file belongs to: the name of the folder it is in.
+fn course_of(path: &str) -> String {
+    std::path::Path::new(path)
+        .parent()
+        .and_then(|d| d.file_name())
+        .map(|n| n.to_string_lossy().into_owned())
+        .filter(|n| !n.is_empty())
+        .unwrap_or_else(|| tl!("Other files").to_owned())
+}
+
 pub fn show(app: &mut PdfCraftApp, ui: &mut egui::Ui) {
     let t = Tokens::get(ui.ctx());
     egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
@@ -130,7 +140,7 @@ pub fn show(app: &mut PdfCraftApp, ui: &mut egui::Ui) {
             ui.add_space(26.0);
             let mut clear = false;
             ui.horizontal(|ui| {
-                ui.label(egui::RichText::new(tl!("Recent")).font(theme::semibold(17.0)));
+                ui.label(egui::RichText::new(tl!("Your lectures")).font(theme::semibold(17.0)));
                 if !app.recent.is_empty() {
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                         let resp = widgets::ghost_button(ui, "trash-2", tl!("Clear"));
@@ -145,7 +155,30 @@ pub fn show(app: &mut PdfCraftApp, ui: &mut egui::Ui) {
             }
             let mut open = None;
             let mut remove = None;
+            // The library: files grouped by the folder they are in (one folder per course), the
+            // course used most recently first, and each file's place kept.
+            let mut courses: Vec<(String, Vec<&crate::RecentFile>)> = Vec::new();
             for r in &app.recent {
+                let course = course_of(&r.path);
+                match courses.iter_mut().find(|(c, _)| *c == course) {
+                    Some((_, files)) => files.push(r),
+                    None => courses.push((course, vec![r])),
+                }
+            }
+            let rows: Vec<(Option<&str>, &crate::RecentFile)> = courses
+                .iter()
+                .flat_map(|(course, files)| files.iter().enumerate().map(move |(i, r)| ((i == 0).then_some(course.as_str()), *r)))
+                .collect();
+            for (heading, r) in rows {
+                if let Some(course) = heading {
+                    ui.add_space(10.0);
+                    ui.horizontal(|ui| {
+                        icons::paint(ui, Rect::from_min_size(ui.cursor().min + vec2(0.0, 1.0), vec2(16.0, 16.0)), "folder", 15.0, t.icon);
+                        ui.add_space(22.0);
+                        ui.label(egui::RichText::new(course).font(theme::semibold(13.5)).color(t.text_muted));
+                    });
+                    ui.add_space(2.0);
+                }
                 let (rect, resp) = ui.allocate_exact_size(vec2(ui.available_width(), 46.0), Sense::click());
                 resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, &r.name));
                 let press = theme::Press::track(ui, &resp);
@@ -183,7 +216,20 @@ pub fn show(app: &mut PdfCraftApp, ui: &mut egui::Ui) {
                 let detail = ui.painter().text(
                     body.right_center() - vec2(48.0, 0.0),
                     Align2::RIGHT_CENTER,
-                    format!("{}  ·  {}", crate::i18n::trn(crate::i18n::current(), r.pages as u64, "{n} page", "{n} pages"), human_size(r.size)),
+                    match app.last_pages.get(&r.path).filter(|p| **p > 0 && **p < r.pages) {
+                        Some(p) => format!(
+                            "{}  ·  {}",
+                            crate::i18n::fmt(tl!("Continue at page {p}"), &[("p", &(p + 1).to_string())]),
+                            crate::i18n::trn(crate::i18n::current(), r.pages as u64, "{n} page", "{n} pages")
+                        ),
+                        None => {
+                            format!(
+                                "{}  ·  {}",
+                                crate::i18n::trn(crate::i18n::current(), r.pages as u64, "{n} page", "{n} pages"),
+                                human_size(r.size)
+                            )
+                        }
+                    },
                     theme::regular(12.0),
                     t.text_muted,
                 );

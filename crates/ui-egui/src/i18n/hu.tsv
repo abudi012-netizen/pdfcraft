@@ -2373,3 +2373,36 @@ animation effects	Off	Ki
 	Searching in multiple PDFs needs the desktop app.	A több PDF-ben való kereséshez az asztali alkalmazás kell.
 	At most {n} files can be searched at once.	Egyszerre legfeljebb {n} fájlban lehet keresni.
 	That folder has no PDFs.	Ebben a mappában nincs PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Felirat elrejtése fehér kerettel
+	Hide label	Felirat elrejtése
+	Auto hide labels on this page	Feliratok automatikus elrejtése ezen az oldalon
+	Auto hide labels on all pages	Feliratok automatikus elrejtése minden oldalon
+	Auto hide labels	Feliratok automatikus elrejtése
+	Collect highlights	Kiemelések összegyűjtése
+	Side by side	Egymás mellett
+	Search PDFs	Keresés PDF-ekben
+	Full screen ({key})	Teljes képernyő ({key})
+	Exit full screen (Esc)	Kilépés a teljes képernyőből (Esc)
+	Hide labels to study	Feliratok elrejtése tanuláshoz
+	Hide a label by hand	Felirat kézi elrejtése
+	Show or hide all labels	Az összes felirat megjelenítése vagy elrejtése
+	Labels are already being hidden	A feliratok elrejtése már folyamatban van
+	Hiding labels… page {d} of {t}	Feliratok elrejtése… {d}/{t}. oldal
+	No labels found on this page	Ezen az oldalon nem található felirat
+	Hid {n} labels. Hide all comments shows them again.	{n} felirat elrejtve. Az Összes megjegyzés elrejtése újra megjeleníti őket.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} felirat elrejtve (a képeken lévő feliratokhoz szövegfelismerés kell, amely nincs telepítve).
+	Highlights	Kiemelések
+	Save as text…	Mentés szövegként…
+	Copy all	Az összes másolása
+	Page {p}	{p}. oldal
+	(no text: recognize text on this page first)	(nincs szöveg: előbb ismertesse fel a szöveget ezen az oldalon)
+	Go to this page	Ugrás erre az oldalra
+	Copied	Másolva
+	This document has no highlights yet. Select text and choose Highlight first.	Ebben a dokumentumban még nincs kiemelés. Előbb jelöljön ki szöveget, és válassza a Kiemelés lehetőséget.
+	Your lectures	Az előadásai
+	Continue at page {p}	Folytatás a(z) {p}. oldalon
+	Other files	Egyéb fájlok
+	Close side by side	Egymás melletti nézet bezárása
+	Open a second PDF to see two side by side.	Nyisson meg egy második PDF-et, hogy kettőt lásson egymás mellett.

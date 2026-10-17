@@ -2379,3 +2379,36 @@ animation effects	Off	Izklopljeni
 	Searching in multiple PDFs needs the desktop app.	Iskanje v več PDF-jih zahteva namizno aplikacijo.
 	At most {n} files can be searched at once.	Naenkrat je mogoče preiskati največ {n} datotek.
 	That folder has no PDFs.	Ta mapa nima PDF-jev.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Skrij oznako z belim okvirjem
+	Hide label	Skrij oznako
+	Auto hide labels on this page	Samodejno skrij oznake na tej strani
+	Auto hide labels on all pages	Samodejno skrij oznake na vseh straneh
+	Auto hide labels	Samodejno skrij oznake
+	Collect highlights	Zberi poudarke
+	Side by side	Drug ob drugem
+	Search PDFs	Iskanje po PDF-jih
+	Full screen ({key})	Celozaslonski način ({key})
+	Exit full screen (Esc)	Izhod iz celozaslonskega načina (Esc)
+	Hide labels to study	Skrij oznake za učenje
+	Hide a label by hand	Skrij oznako ročno
+	Show or hide all labels	Pokaži ali skrij vse oznake
+	Labels are already being hidden	Oznake se že skrivajo
+	Hiding labels… page {d} of {t}	Skrivanje oznak … stran {d} od {t}
+	No labels found on this page	Na tej strani ni bilo najdenih oznak
+	Hid {n} labels. Hide all comments shows them again.	Skritih oznak: {n}. »Skrij vse komentarje« jih znova prikaže.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Skritih oznak: {n} (oznake v slikah potrebujejo prepoznavanje besedila, ki ni nameščeno).
+	Highlights	Poudarki
+	Save as text…	Shrani kot besedilo …
+	Copy all	Kopiraj vse
+	Page {p}	Stran {p}
+	(no text: recognize text on this page first)	(ni besedila: najprej prepoznajte besedilo na tej strani)
+	Go to this page	Pojdi na to stran
+	Copied	Kopirano
+	This document has no highlights yet. Select text and choose Highlight first.	Ta dokument še nima poudarkov. Najprej izberite besedilo in izberite Poudari.
+	Your lectures	Vaša predavanja
+	Continue at page {p}	Nadaljuj na strani {p}
+	Other files	Druge datoteke
+	Close side by side	Zapri pogled drug ob drugem
+	Open a second PDF to see two side by side.	Odprite drugi PDF, da vidite dva drug ob drugem.

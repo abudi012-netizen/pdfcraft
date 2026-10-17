@@ -261,6 +261,10 @@ impl PdfCraftApp {
             }
             "view.night_reading" => self.toggle_night_reading(),
             "edit.search_files" => self.open_search_files(),
+            "comment.autohide" => self.auto_hide_labels(false),
+            "comment.autohide_all" => self.auto_hide_labels(true),
+            "comment.highlights" => self.collect_highlights(),
+            "view.side_by_side" => self.toggle_side_by_side(),
             "view.read_mode" => self.switch_mode(if self.mode == Mode::Read { Mode::AllTools } else { Mode::Read }, false),
             "view.theme" => {
                 let next = if self.theme == ThemeKind::Light { ThemePreference::Dark } else { ThemePreference::Light };

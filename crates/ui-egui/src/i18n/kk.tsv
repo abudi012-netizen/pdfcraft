@@ -2372,3 +2372,36 @@ animation effects	Off	Өшірулі
 	Searching in multiple PDFs needs the desktop app.	Бірнеше PDF ішінен іздеу үшін жұмыс үстелі қолданбасы қажет.
 	At most {n} files can be searched at once.	Бір уақытта ең көбі {n} файлдан іздеуге болады.
 	That folder has no PDFs.	Бұл қалтада PDF жоқ.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Белгіні ақ шаршымен жасыру
+	Hide label	Белгіні жасыру
+	Auto hide labels on this page	Осы беттегі белгілерді автоматты түрде жасыру
+	Auto hide labels on all pages	Барлық беттердегі белгілерді автоматты түрде жасыру
+	Auto hide labels	Белгілерді автоматты түрде жасыру
+	Collect highlights	Ерекшеленгендерді жинау
+	Side by side	Қатар
+	Search PDFs	PDF ішінен іздеу
+	Full screen ({key})	Толық экран ({key})
+	Exit full screen (Esc)	Толық экраннан шығу (Esc)
+	Hide labels to study	Оқу үшін белгілерді жасыру
+	Hide a label by hand	Белгіні қолмен жасыру
+	Show or hide all labels	Барлық белгілерді көрсету немесе жасыру
+	Labels are already being hidden	Белгілер қазірдің өзінде жасырылуда
+	Hiding labels… page {d} of {t}	Белгілер жасырылуда… {t} беттің {d}-і
+	No labels found on this page	Бұл бетте белгілер табылмады
+	Hid {n} labels. Hide all comments shows them again.	{n} белгі жасырылды. «Барлық түсініктемелерді жасыру» оларды қайта көрсетеді.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} белгі жасырылды (суреттердегі белгілерге мәтінді тану қажет, ол орнатылмаған).
+	Highlights	Ерекшеленгендер
+	Save as text…	Мәтін ретінде сақтау…
+	Copy all	Барлығын көшіру
+	Page {p}	{p}-бет
+	(no text: recognize text on this page first)	(мәтін жоқ: алдымен осы беттегі мәтінді таныңыз)
+	Go to this page	Осы бетке өту
+	Copied	Көшірілді
+	This document has no highlights yet. Select text and choose Highlight first.	Бұл құжатта әлі ерекшеленген мәтін жоқ. Алдымен мәтінді таңдап, «Ерекшелеу» пәрменін таңдаңыз.
+	Your lectures	Сіздің дәрістеріңіз
+	Continue at page {p}	{p}-беттен жалғастыру
+	Other files	Басқа файлдар
+	Close side by side	Қатар көрінісін жабу
+	Open a second PDF to see two side by side.	Екеуін қатар көру үшін екінші PDF ашыңыз.

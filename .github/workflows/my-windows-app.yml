@@ -37,11 +37,17 @@ jobs:
           PDFCRAFT_REQUIRE_WINRES: "1"
         run: cargo build --release -p pdfcraft --config profile.release.lto=false --config profile.release.codegen-units=16
 
+      # Text recognition models: Auto hide labels reads the labels inside pictures with them.
+      - name: Fetch the OCR models
+        run: cargo xtask models
+
       - name: Make PdfCraft-windows.zip
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force PdfCraft | Out-Null
           Copy-Item target/release/pdfcraft.exe PdfCraft/
+          New-Item -ItemType Directory -Force PdfCraft/models | Out-Null
+          Copy-Item assets/models/* PdfCraft/models/
           Compress-Archive -Path PdfCraft -DestinationPath PdfCraft-windows.zip -Force
 
       - name: Publish the download

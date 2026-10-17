@@ -2354,3 +2354,36 @@ animation effects	Off	Wyłączone
 	Searching in multiple PDFs needs the desktop app.	Wyszukiwanie w wielu plikach PDF wymaga aplikacji komputerowej.
 	At most {n} files can be searched at once.	Naraz można przeszukać najwyżej {n} plików.
 	That folder has no PDFs.	Ten folder nie zawiera plików PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Ukryj etykietę białym prostokątem
+	Hide label	Ukryj etykietę
+	Auto hide labels on this page	Automatycznie ukryj etykiety na tej stronie
+	Auto hide labels on all pages	Automatycznie ukryj etykiety na wszystkich stronach
+	Auto hide labels	Automatycznie ukryj etykiety
+	Collect highlights	Zbierz wyróżnienia
+	Side by side	Obok siebie
+	Search PDFs	Szukaj w plikach PDF
+	Full screen ({key})	Pełny ekran ({key})
+	Exit full screen (Esc)	Zamknij pełny ekran (Esc)
+	Hide labels to study	Ukryj etykiety do nauki
+	Hide a label by hand	Ukryj etykietę ręcznie
+	Show or hide all labels	Pokaż lub ukryj wszystkie etykiety
+	Labels are already being hidden	Etykiety są już ukrywane
+	Hiding labels… page {d} of {t}	Ukrywanie etykiet… strona {d} z {t}
+	No labels found on this page	Na tej stronie nie znaleziono etykiet
+	Hid {n} labels. Hide all comments shows them again.	Ukryto etykiet: {n}. „Ukryj wszystkie komentarze” pokaże je ponownie.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Ukryto etykiet: {n} (etykiety na obrazach wymagają rozpoznawania tekstu, które nie jest zainstalowane).
+	Highlights	Wyróżnienia
+	Save as text…	Zapisz jako tekst…
+	Copy all	Kopiuj wszystko
+	Page {p}	Strona {p}
+	(no text: recognize text on this page first)	(brak tekstu: najpierw rozpoznaj tekst na tej stronie)
+	Go to this page	Przejdź do tej strony
+	Copied	Skopiowano
+	This document has no highlights yet. Select text and choose Highlight first.	Ten dokument nie ma jeszcze wyróżnień. Najpierw zaznacz tekst i wybierz Wyróżnij.
+	Your lectures	Twoje wykłady
+	Continue at page {p}	Kontynuuj od strony {p}
+	Other files	Inne pliki
+	Close side by side	Zamknij widok obok siebie
+	Open a second PDF to see two side by side.	Otwórz drugi plik PDF, aby zobaczyć dwa obok siebie.

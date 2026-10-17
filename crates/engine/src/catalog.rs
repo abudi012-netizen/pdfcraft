@@ -224,6 +224,8 @@ pub static TOOL_GROUPS: &[ToolGroup] = &[
                     item("Rectangle", "square", "comment.square", Ready),
                     item("Oval", "circle", "comment.circle", Ready),
                     item("Hide label", "eye-off", "comment.hidelabel", Ready),
+                    item("Auto hide labels", "scan-text", "comment.autohide", Ready),
+                    item("Collect highlights", "highlighter", "comment.highlights", Ready),
                     item("Line", "minus", "comment.line", Ready),
                     item("Arrow", "move-right", "comment.arrow", Ready),
                     item("Cloud", "cloud", "comment.cloud", Planned("M5")),

@@ -2383,3 +2383,36 @@ animation effects	Off	Disattivati
 	Searching in multiple PDFs needs the desktop app.	La ricerca in più PDF richiede l'app desktop.
 	At most {n} files can be searched at once.	Si possono cercare al massimo {n} file alla volta.
 	That folder has no PDFs.	Quella cartella non contiene PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Nascondi un'etichetta con un riquadro bianco
+	Hide label	Nascondi etichetta
+	Auto hide labels on this page	Nascondi automaticamente le etichette in questa pagina
+	Auto hide labels on all pages	Nascondi automaticamente le etichette in tutte le pagine
+	Auto hide labels	Nascondi etichette automaticamente
+	Collect highlights	Raccogli evidenziazioni
+	Side by side	Affiancati
+	Search PDFs	Cerca nei PDF
+	Full screen ({key})	Schermo intero ({key})
+	Exit full screen (Esc)	Esci da schermo intero (Esc)
+	Hide labels to study	Nascondi etichette per studiare
+	Hide a label by hand	Nascondi un'etichetta a mano
+	Show or hide all labels	Mostra o nascondi tutte le etichette
+	Labels are already being hidden	Le etichette sono già in fase di occultamento
+	Hiding labels… page {d} of {t}	Occultamento etichette… pagina {d} di {t}
+	No labels found on this page	Nessuna etichetta trovata in questa pagina
+	Hid {n} labels. Hide all comments shows them again.	{n} etichette nascoste. Nascondi tutti i commenti le mostra di nuovo.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} etichette nascoste (le etichette nelle immagini richiedono il riconoscimento del testo, che non è installato).
+	Highlights	Evidenziazioni
+	Save as text…	Salva come testo…
+	Copy all	Copia tutto
+	Page {p}	Pagina {p}
+	(no text: recognize text on this page first)	(nessun testo: riconosci prima il testo in questa pagina)
+	Go to this page	Vai a questa pagina
+	Copied	Copiato
+	This document has no highlights yet. Select text and choose Highlight first.	Questo documento non ha ancora evidenziazioni. Seleziona del testo e scegli Evidenzia.
+	Your lectures	Le tue lezioni
+	Continue at page {p}	Continua da pagina {p}
+	Other files	Altri file
+	Close side by side	Chiudi affiancati
+	Open a second PDF to see two side by side.	Apri un secondo PDF per vederne due affiancati.

@@ -2504,3 +2504,36 @@ animation effects	Off	Desactivados
 	Searching in multiple PDFs needs the desktop app.	Buscar en varios PDF requiere la aplicación de escritorio.
 	At most {n} files can be searched at once.	Se pueden buscar como máximo {n} archivos a la vez.
 	That folder has no PDFs.	Esa carpeta no tiene PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Ocultar una etiqueta con un cuadro blanco
+	Hide label	Ocultar etiqueta
+	Auto hide labels on this page	Ocultar automáticamente las etiquetas de esta página
+	Auto hide labels on all pages	Ocultar automáticamente las etiquetas de todas las páginas
+	Auto hide labels	Ocultar etiquetas automáticamente
+	Collect highlights	Reunir resaltados
+	Side by side	En paralelo
+	Search PDFs	Buscar en PDF
+	Full screen ({key})	Pantalla completa ({key})
+	Exit full screen (Esc)	Salir de pantalla completa (Esc)
+	Hide labels to study	Ocultar etiquetas para estudiar
+	Hide a label by hand	Ocultar una etiqueta a mano
+	Show or hide all labels	Mostrar u ocultar todas las etiquetas
+	Labels are already being hidden	Ya se están ocultando las etiquetas
+	Hiding labels… page {d} of {t}	Ocultando etiquetas… página {d} de {t}
+	No labels found on this page	No se encontraron etiquetas en esta página
+	Hid {n} labels. Hide all comments shows them again.	Se ocultaron {n} etiquetas. Ocultar todos los comentarios las vuelve a mostrar.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Se ocultaron {n} etiquetas (las etiquetas dentro de imágenes necesitan el reconocimiento de texto, que no está instalado).
+	Highlights	Resaltados
+	Save as text…	Guardar como texto…
+	Copy all	Copiar todo
+	Page {p}	Página {p}
+	(no text: recognize text on this page first)	(sin texto: primero reconozca el texto de esta página)
+	Go to this page	Ir a esta página
+	Copied	Copiado
+	This document has no highlights yet. Select text and choose Highlight first.	Este documento aún no tiene resaltados. Seleccione texto y elija Resaltar primero.
+	Your lectures	Sus clases
+	Continue at page {p}	Continuar en la página {p}
+	Other files	Otros archivos
+	Close side by side	Cerrar vista en paralelo
+	Open a second PDF to see two side by side.	Abra un segundo PDF para ver dos en paralelo.

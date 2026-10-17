@@ -2448,3 +2448,36 @@ animation effects	Off	Vypnuto
 	Searching in multiple PDFs needs the desktop app.	Hledání ve více PDF vyžaduje desktopovou aplikaci.
 	At most {n} files can be searched at once.	Najednou lze prohledat nejvýše {n} souborů.
 	That folder has no PDFs.	Tato složka neobsahuje žádné PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Skrýt popisek bílým rámečkem
+	Hide label	Skrýt popisek
+	Auto hide labels on this page	Automaticky skrýt popisky na této stránce
+	Auto hide labels on all pages	Automaticky skrýt popisky na všech stránkách
+	Auto hide labels	Automaticky skrýt popisky
+	Collect highlights	Shromáždit zvýraznění
+	Side by side	Vedle sebe
+	Search PDFs	Hledat v PDF
+	Full screen ({key})	Celá obrazovka ({key})
+	Exit full screen (Esc)	Ukončit celou obrazovku (Esc)
+	Hide labels to study	Skrýt popisky ke studiu
+	Hide a label by hand	Skrýt popisek ručně
+	Show or hide all labels	Zobrazit nebo skrýt všechny popisky
+	Labels are already being hidden	Popisky se už skrývají
+	Hiding labels… page {d} of {t}	Skrývání popisků… stránka {d} z {t}
+	No labels found on this page	Na této stránce nebyly nalezeny žádné popisky
+	Hid {n} labels. Hide all comments shows them again.	Skryto popisků: {n}. Skrýt všechny komentáře je znovu zobrazí.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Skryto popisků: {n} (popisky v obrázcích vyžadují rozpoznávání textu, které není nainstalováno).
+	Highlights	Zvýraznění
+	Save as text…	Uložit jako text…
+	Copy all	Kopírovat vše
+	Page {p}	Stránka {p}
+	(no text: recognize text on this page first)	(žádný text: nejprve rozpoznejte text na této stránce)
+	Go to this page	Přejít na tuto stránku
+	Copied	Zkopírováno
+	This document has no highlights yet. Select text and choose Highlight first.	Tento dokument zatím nemá žádná zvýraznění. Nejprve vyberte text a zvolte Zvýraznit.
+	Your lectures	Vaše přednášky
+	Continue at page {p}	Pokračovat na stránce {p}
+	Other files	Další soubory
+	Close side by side	Zavřít zobrazení vedle sebe
+	Open a second PDF to see two side by side.	Otevřete druhé PDF, abyste viděli dvě vedle sebe.

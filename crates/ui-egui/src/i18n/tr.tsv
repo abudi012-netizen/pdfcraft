@@ -2370,3 +2370,36 @@ animation effects	Off	Kapalı
 	Searching in multiple PDFs needs the desktop app.	Birden çok PDF'de arama masaüstü uygulamasını gerektirir.
 	At most {n} files can be searched at once.	Aynı anda en fazla {n} dosyada arama yapılabilir.
 	That folder has no PDFs.	O klasörde PDF yok.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Etiketi beyaz kutuyla gizle
+	Hide label	Etiketi gizle
+	Auto hide labels on this page	Bu sayfadaki etiketleri otomatik gizle
+	Auto hide labels on all pages	Tüm sayfalardaki etiketleri otomatik gizle
+	Auto hide labels	Etiketleri otomatik gizle
+	Collect highlights	Vurguları topla
+	Side by side	Yan yana
+	Search PDFs	PDF'lerde ara
+	Full screen ({key})	Tam ekran ({key})
+	Exit full screen (Esc)	Tam ekrandan çık (Esc)
+	Hide labels to study	Çalışmak için etiketleri gizle
+	Hide a label by hand	Etiketi elle gizle
+	Show or hide all labels	Tüm etiketleri göster veya gizle
+	Labels are already being hidden	Etiketler zaten gizleniyor
+	Hiding labels… page {d} of {t}	Etiketler gizleniyor… sayfa {d} / {t}
+	No labels found on this page	Bu sayfada etiket bulunamadı
+	Hid {n} labels. Hide all comments shows them again.	{n} etiket gizlendi. Tüm yorumları gizle onları yeniden gösterir.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} etiket gizlendi (resimlerdeki etiketler için metin tanıma gerekir ve yüklü değil).
+	Highlights	Vurgular
+	Save as text…	Metin olarak kaydet…
+	Copy all	Tümünü kopyala
+	Page {p}	Sayfa {p}
+	(no text: recognize text on this page first)	(metin yok: önce bu sayfadaki metni tanıyın)
+	Go to this page	Bu sayfaya git
+	Copied	Kopyalandı
+	This document has no highlights yet. Select text and choose Highlight first.	Bu belgede henüz vurgu yok. Önce metin seçip Vurgula'yı seçin.
+	Your lectures	Dersleriniz
+	Continue at page {p}	Sayfa {p} konumundan devam et
+	Other files	Diğer dosyalar
+	Close side by side	Yan yana görünümü kapat
+	Open a second PDF to see two side by side.	İkisini yan yana görmek için ikinci bir PDF açın.

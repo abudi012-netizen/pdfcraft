@@ -2375,3 +2375,36 @@ animation effects	Off	Aus
 	Searching in multiple PDFs needs the desktop app.	Die Suche in mehreren PDFs erfordert die Desktop-App.
 	At most {n} files can be searched at once.	Es können höchstens {n} Dateien gleichzeitig durchsucht werden.
 	That folder has no PDFs.	Dieser Ordner enthält keine PDFs.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Beschriftung mit weißem Kasten verdecken
+	Hide label	Beschriftung verdecken
+	Auto hide labels on this page	Beschriftungen auf dieser Seite automatisch verdecken
+	Auto hide labels on all pages	Beschriftungen auf allen Seiten automatisch verdecken
+	Auto hide labels	Beschriftungen automatisch verdecken
+	Collect highlights	Markierungen sammeln
+	Side by side	Nebeneinander
+	Search PDFs	PDFs durchsuchen
+	Full screen ({key})	Vollbild ({key})
+	Exit full screen (Esc)	Vollbild beenden (Esc)
+	Hide labels to study	Beschriftungen zum Lernen verdecken
+	Hide a label by hand	Beschriftung von Hand verdecken
+	Show or hide all labels	Alle Beschriftungen ein- oder ausblenden
+	Labels are already being hidden	Beschriftungen werden bereits verdeckt
+	Hiding labels… page {d} of {t}	Beschriftungen werden verdeckt … Seite {d} von {t}
+	No labels found on this page	Auf dieser Seite wurden keine Beschriftungen gefunden
+	Hid {n} labels. Hide all comments shows them again.	{n} Beschriftungen verdeckt. „Alle Kommentare ausblenden“ zeigt sie wieder.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} Beschriftungen verdeckt (Beschriftungen in Bildern brauchen die Texterkennung, die nicht installiert ist).
+	Highlights	Markierungen
+	Save as text…	Als Text speichern …
+	Copy all	Alles kopieren
+	Page {p}	Seite {p}
+	(no text: recognize text on this page first)	(kein Text: zuerst Text auf dieser Seite erkennen)
+	Go to this page	Zu dieser Seite
+	Copied	Kopiert
+	This document has no highlights yet. Select text and choose Highlight first.	Dieses Dokument hat noch keine Markierungen. Wählen Sie zuerst Text aus und markieren Sie ihn.
+	Your lectures	Ihre Vorlesungen
+	Continue at page {p}	Weiter auf Seite {p}
+	Other files	Weitere Dateien
+	Close side by side	Nebeneinander schließen
+	Open a second PDF to see two side by side.	Öffnen Sie ein zweites PDF, um zwei nebeneinander zu sehen.

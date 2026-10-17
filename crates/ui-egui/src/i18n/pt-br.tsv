@@ -2388,3 +2388,36 @@ animation effects	Off	Desativados
 	Searching in multiple PDFs needs the desktop app.	Pesquisar em vários PDFs requer o aplicativo para computador.
 	At most {n} files can be searched at once.	No máximo {n} arquivos podem ser pesquisados de uma vez.
 	That folder has no PDFs.	Essa pasta não tem PDFs.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Ocultar um rótulo com uma caixa branca
+	Hide label	Ocultar rótulo
+	Auto hide labels on this page	Ocultar rótulos automaticamente nesta página
+	Auto hide labels on all pages	Ocultar rótulos automaticamente em todas as páginas
+	Auto hide labels	Ocultar rótulos automaticamente
+	Collect highlights	Reunir destaques
+	Side by side	Lado a lado
+	Search PDFs	Pesquisar PDFs
+	Full screen ({key})	Tela cheia ({key})
+	Exit full screen (Esc)	Sair da tela cheia (Esc)
+	Hide labels to study	Ocultar rótulos para estudar
+	Hide a label by hand	Ocultar um rótulo à mão
+	Show or hide all labels	Mostrar ou ocultar todos os rótulos
+	Labels are already being hidden	Os rótulos já estão sendo ocultados
+	Hiding labels… page {d} of {t}	Ocultando rótulos… página {d} de {t}
+	No labels found on this page	Nenhum rótulo encontrado nesta página
+	Hid {n} labels. Hide all comments shows them again.	{n} rótulos ocultados. Ocultar todos os comentários os mostra de novo.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} rótulos ocultados (rótulos dentro de imagens precisam do reconhecimento de texto, que não está instalado).
+	Highlights	Destaques
+	Save as text…	Salvar como texto…
+	Copy all	Copiar tudo
+	Page {p}	Página {p}
+	(no text: recognize text on this page first)	(sem texto: reconheça o texto desta página primeiro)
+	Go to this page	Ir para esta página
+	Copied	Copiado
+	This document has no highlights yet. Select text and choose Highlight first.	Este documento ainda não tem destaques. Selecione um texto e escolha Destacar primeiro.
+	Your lectures	Suas aulas
+	Continue at page {p}	Continuar na página {p}
+	Other files	Outros arquivos
+	Close side by side	Fechar lado a lado
+	Open a second PDF to see two side by side.	Abra um segundo PDF para ver dois lado a lado.

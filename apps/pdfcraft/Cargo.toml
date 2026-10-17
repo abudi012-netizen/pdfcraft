@@ -29,6 +29,9 @@ log = { workspace = true }
 # crate registers the handler (Objective-C interop needs unsafe, which our workspace forbids)
 # behind a safe API. Same version as PhotoCraft. Pinned exactly: review the diff before bumping.
 fmv-macos-events = "=0.1.0"
+# The menu bar at the top of the screen (File, Edit, View, Window, Help), as in every Mac app.
+# Safe API over AppKit's NSMenu; the commands it lists come from the engine's registry.
+muda = { version = "0.21", default-features = false }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 # Asks the Wayland compositor which GPU it draws with (linux-dmabuf feedback), so the window is

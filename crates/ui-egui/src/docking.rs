@@ -409,7 +409,7 @@ pub fn show(app: &mut crate::PdfCraftApp, ui: &mut egui::Ui) {
                 match app.active {
                     None if app.combine_showing() => crate::combine_ui::page(app, ui),
                     None => crate::home::show(app, ui),
-                    Some(index) => crate::canvas::document_area(app, index, ui),
+                    Some(index) => crate::canvas::document_areas(app, index, ui),
                 }
             }
             Panel::Tools => crate::panels::left_panel(app, ui),

@@ -2374,3 +2374,36 @@ animation effects	Off	Désactivés
 	Searching in multiple PDFs needs the desktop app.	La recherche dans plusieurs PDF nécessite l'application de bureau.
 	At most {n} files can be searched at once.	Au plus {n} fichiers peuvent être recherchés à la fois.
 	That folder has no PDFs.	Ce dossier ne contient aucun PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Masquer une étiquette avec un cadre blanc
+	Hide label	Masquer l’étiquette
+	Auto hide labels on this page	Masquer automatiquement les étiquettes de cette page
+	Auto hide labels on all pages	Masquer automatiquement les étiquettes de toutes les pages
+	Auto hide labels	Masquer les étiquettes automatiquement
+	Collect highlights	Rassembler les surlignages
+	Side by side	Côte à côte
+	Search PDFs	Rechercher dans les PDF
+	Full screen ({key})	Plein écran ({key})
+	Exit full screen (Esc)	Quitter le plein écran (Échap)
+	Hide labels to study	Masquer les étiquettes pour réviser
+	Hide a label by hand	Masquer une étiquette à la main
+	Show or hide all labels	Afficher ou masquer toutes les étiquettes
+	Labels are already being hidden	Les étiquettes sont déjà en cours de masquage
+	Hiding labels… page {d} of {t}	Masquage des étiquettes… page {d} sur {t}
+	No labels found on this page	Aucune étiquette trouvée sur cette page
+	Hid {n} labels. Hide all comments shows them again.	{n} étiquettes masquées. « Masquer tous les commentaires » les réaffiche.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} étiquettes masquées (les étiquettes dans les images nécessitent la reconnaissance de texte, qui n’est pas installée).
+	Highlights	Surlignages
+	Save as text…	Enregistrer en texte…
+	Copy all	Tout copier
+	Page {p}	Page {p}
+	(no text: recognize text on this page first)	(pas de texte : reconnaissez d’abord le texte de cette page)
+	Go to this page	Aller à cette page
+	Copied	Copié
+	This document has no highlights yet. Select text and choose Highlight first.	Ce document n’a pas encore de surlignages. Sélectionnez du texte et choisissez Surligner d’abord.
+	Your lectures	Vos cours
+	Continue at page {p}	Reprendre à la page {p}
+	Other files	Autres fichiers
+	Close side by side	Fermer l’affichage côte à côte
+	Open a second PDF to see two side by side.	Ouvrez un second PDF pour en voir deux côte à côte.

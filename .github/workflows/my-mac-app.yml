@@ -38,6 +38,10 @@ jobs:
       - name: Build
         run: cargo build --release -p pdfcraft --config profile.release.lto=false --config profile.release.codegen-units=16
 
+      # Text recognition models: Auto hide labels reads the labels inside pictures with them.
+      - name: Fetch the OCR models
+        run: cargo xtask models
+
       - name: Make PdfCraft.app
         run: |
           set -euo pipefail
@@ -49,6 +53,8 @@ jobs:
           sed -e "s/@VERSION@/$VERSION/g" -e "s/@SHORT_VERSION@/$SHORT/g" -e "s/@BUILD_SHA@/$GITHUB_SHA/g" \
             packaging/macos/Info.plist.in > "$APP/Contents/Info.plist"
           cp assets/app-icon/pdfcraft.icns "$APP/Contents/Resources/PdfCraft.icns"
+          mkdir -p "$APP/Contents/Resources/models"
+          cp assets/models/* "$APP/Contents/Resources/models/"
           codesign --force --deep --sign - "$APP"
           ditto -c -k --keepParent "$APP" PdfCraft-mac.zip
 

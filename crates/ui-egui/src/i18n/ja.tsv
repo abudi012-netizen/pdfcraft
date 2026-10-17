@@ -2374,3 +2374,36 @@ animation effects	Off	オフ
 	Searching in multiple PDFs needs the desktop app.	複数の PDF の検索にはデスクトップアプリが必要です。
 	At most {n} files can be searched at once.	一度に検索できるファイルは最大 {n} 個です。
 	That folder has no PDFs.	そのフォルダーには PDF がありません。
+
+# Study tools, library, side by side
+	Hide a label with a white box	白い四角でラベルを隠す
+	Hide label	ラベルを隠す
+	Auto hide labels on this page	このページのラベルを自動で隠す
+	Auto hide labels on all pages	すべてのページのラベルを自動で隠す
+	Auto hide labels	ラベルを自動で隠す
+	Collect highlights	ハイライトをまとめる
+	Side by side	左右に並べて表示
+	Search PDFs	PDF を検索
+	Full screen ({key})	全画面表示 ({key})
+	Exit full screen (Esc)	全画面表示を終了 (Esc)
+	Hide labels to study	ラベルを隠して学習
+	Hide a label by hand	手動でラベルを隠す
+	Show or hide all labels	すべてのラベルを表示/非表示
+	Labels are already being hidden	ラベルはすでに隠しています
+	Hiding labels… page {d} of {t}	ラベルを隠しています… {t} ページ中 {d} ページ
+	No labels found on this page	このページにラベルが見つかりません
+	Hid {n} labels. Hide all comments shows them again.	{n} 個のラベルを隠しました。「すべての注釈を非表示」で再表示できます。
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} 個のラベルを隠しました (画像内のラベルにはテキスト認識が必要ですが、インストールされていません)。
+	Highlights	ハイライト
+	Save as text…	テキストとして保存…
+	Copy all	すべてコピー
+	Page {p}	{p} ページ
+	(no text: recognize text on this page first)	(テキストなし: 先にこのページのテキスト認識を実行してください)
+	Go to this page	このページへ移動
+	Copied	コピーしました
+	This document has no highlights yet. Select text and choose Highlight first.	この文書にはまだハイライトがありません。先にテキストを選択してハイライトしてください。
+	Your lectures	あなたの講義
+	Continue at page {p}	{p} ページから続ける
+	Other files	その他のファイル
+	Close side by side	左右表示を閉じる
+	Open a second PDF to see two side by side.	左右に並べるには 2 つ目の PDF を開いてください。

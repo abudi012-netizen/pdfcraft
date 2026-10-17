@@ -2384,3 +2384,36 @@ animation effects	Off	Ανενεργά
 	Searching in multiple PDFs needs the desktop app.	Η αναζήτηση σε πολλά PDF απαιτεί την εφαρμογή υπολογιστή.
 	At most {n} files can be searched at once.	Μπορείτε να κάνετε αναζήτηση σε έως {n} αρχεία ταυτόχρονα.
 	That folder has no PDFs.	Αυτός ο φάκελος δεν έχει PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Απόκρυψη ετικέτας με λευκό πλαίσιο
+	Hide label	Απόκρυψη ετικέτας
+	Auto hide labels on this page	Αυτόματη απόκρυψη ετικετών σε αυτή τη σελίδα
+	Auto hide labels on all pages	Αυτόματη απόκρυψη ετικετών σε όλες τις σελίδες
+	Auto hide labels	Αυτόματη απόκρυψη ετικετών
+	Collect highlights	Συλλογή επισημάνσεων
+	Side by side	Δίπλα-δίπλα
+	Search PDFs	Αναζήτηση σε PDF
+	Full screen ({key})	Πλήρης οθόνη ({key})
+	Exit full screen (Esc)	Έξοδος από πλήρη οθόνη (Esc)
+	Hide labels to study	Απόκρυψη ετικετών για μελέτη
+	Hide a label by hand	Απόκρυψη ετικέτας με το χέρι
+	Show or hide all labels	Εμφάνιση ή απόκρυψη όλων των ετικετών
+	Labels are already being hidden	Οι ετικέτες ήδη αποκρύπτονται
+	Hiding labels… page {d} of {t}	Απόκρυψη ετικετών… σελίδα {d} από {t}
+	No labels found on this page	Δεν βρέθηκαν ετικέτες σε αυτή τη σελίδα
+	Hid {n} labels. Hide all comments shows them again.	Αποκρύφτηκαν {n} ετικέτες. Η «Απόκρυψη όλων των σχολίων» τις εμφανίζει ξανά.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Αποκρύφτηκαν {n} ετικέτες (οι ετικέτες μέσα σε εικόνες χρειάζονται αναγνώριση κειμένου, που δεν είναι εγκατεστημένη).
+	Highlights	Επισημάνσεις
+	Save as text…	Αποθήκευση ως κείμενο…
+	Copy all	Αντιγραφή όλων
+	Page {p}	Σελίδα {p}
+	(no text: recognize text on this page first)	(χωρίς κείμενο: αναγνωρίστε πρώτα το κείμενο αυτής της σελίδας)
+	Go to this page	Μετάβαση σε αυτή τη σελίδα
+	Copied	Αντιγράφηκε
+	This document has no highlights yet. Select text and choose Highlight first.	Αυτό το έγγραφο δεν έχει ακόμη επισημάνσεις. Επιλέξτε κείμενο και επιλέξτε Επισήμανση πρώτα.
+	Your lectures	Οι διαλέξεις σας
+	Continue at page {p}	Συνέχεια στη σελίδα {p}
+	Other files	Άλλα αρχεία
+	Close side by side	Κλείσιμο προβολής δίπλα-δίπλα
+	Open a second PDF to see two side by side.	Ανοίξτε ένα δεύτερο PDF για να δείτε δύο δίπλα-δίπλα.

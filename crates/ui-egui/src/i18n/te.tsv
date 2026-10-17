@@ -2287,3 +2287,36 @@ animation effects	Off	ఆఫ్
 	Searching in multiple PDFs needs the desktop app.	అనేక PDFలలో వెతకడానికి డెస్క్‌టాప్ యాప్ అవసరం.
 	At most {n} files can be searched at once.	ఒకేసారి గరిష్ఠంగా {n} ఫైళ్లలో వెతకవచ్చు.
 	That folder has no PDFs.	ఆ ఫోల్డర్‌లో PDFలు లేవు.
+
+# Study tools, library, side by side
+	Hide a label with a white box	తెల్ల పెట్టెతో లేబుల్‌ను దాచండి
+	Hide label	లేబుల్‌ను దాచండి
+	Auto hide labels on this page	ఈ పేజీలోని లేబుళ్లను స్వయంచాలకంగా దాచండి
+	Auto hide labels on all pages	అన్ని పేజీలలోని లేబుళ్లను స్వయంచాలకంగా దాచండి
+	Auto hide labels	లేబుళ్లను స్వయంచాలకంగా దాచండి
+	Collect highlights	హైలైట్‌లను సేకరించండి
+	Side by side	పక్కపక్కనే
+	Search PDFs	PDFలలో వెతకండి
+	Full screen ({key})	పూర్తి స్క్రీన్ ({key})
+	Exit full screen (Esc)	పూర్తి స్క్రీన్ నుండి నిష్క్రమించండి (Esc)
+	Hide labels to study	చదువుకోవడానికి లేబుళ్లను దాచండి
+	Hide a label by hand	లేబుల్‌ను చేతితో దాచండి
+	Show or hide all labels	అన్ని లేబుళ్లను చూపండి లేదా దాచండి
+	Labels are already being hidden	లేబుళ్లు ఇప్పటికే దాచబడుతున్నాయి
+	Hiding labels… page {d} of {t}	లేబుళ్లు దాచబడుతున్నాయి… {t}లో {d}వ పేజీ
+	No labels found on this page	ఈ పేజీలో లేబుళ్లు కనబడలేదు
+	Hid {n} labels. Hide all comments shows them again.	{n} లేబుళ్లు దాచబడ్డాయి. అన్ని వ్యాఖ్యలను దాచు వాటిని మళ్లీ చూపుతుంది.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	{n} లేబుళ్లు దాచబడ్డాయి (చిత్రాలలోని లేబుళ్లకు వచన గుర్తింపు అవసరం, అది ఇన్‌స్టాల్ కాలేదు).
+	Highlights	హైలైట్‌లు
+	Save as text…	వచనంగా సేవ్ చేయండి…
+	Copy all	అన్నింటినీ కాపీ చేయండి
+	Page {p}	{p}వ పేజీ
+	(no text: recognize text on this page first)	(వచనం లేదు: ముందుగా ఈ పేజీలో వచనాన్ని గుర్తించండి)
+	Go to this page	ఈ పేజీకి వెళ్లండి
+	Copied	కాపీ చేయబడింది
+	This document has no highlights yet. Select text and choose Highlight first.	ఈ పత్రంలో ఇంకా హైలైట్‌లు లేవు. ముందుగా వచనాన్ని ఎంచుకుని హైలైట్ ఎంచుకోండి.
+	Your lectures	మీ ఉపన్యాసాలు
+	Continue at page {p}	{p}వ పేజీ నుండి కొనసాగించండి
+	Other files	ఇతర ఫైళ్లు
+	Close side by side	పక్కపక్కన వీక్షణను మూసివేయండి
+	Open a second PDF to see two side by side.	రెండింటిని పక్కపక్కనే చూడటానికి రెండవ PDFను తెరవండి.

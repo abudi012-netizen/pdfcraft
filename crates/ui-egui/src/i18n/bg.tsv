@@ -2337,3 +2337,36 @@ animation effects	Off	Изключени
 	Searching in multiple PDFs needs the desktop app.	Търсенето в няколко PDF файла изисква настолното приложение.
 	At most {n} files can be searched at once.	Наведнъж може да се търси в най-много {n} файла.
 	That folder has no PDFs.	В тази папка няма PDF файлове.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Скриване на надпис с бяло поле
+	Hide label	Скриване на надпис
+	Auto hide labels on this page	Автоматично скриване на надписите на тази страница
+	Auto hide labels on all pages	Автоматично скриване на надписите на всички страници
+	Auto hide labels	Автоматично скриване на надписи
+	Collect highlights	Събиране на маркирания
+	Side by side	Един до друг
+	Search PDFs	Търсене в PDF
+	Full screen ({key})	Цял екран ({key})
+	Exit full screen (Esc)	Изход от цял екран (Esc)
+	Hide labels to study	Скриване на надписи за учене
+	Hide a label by hand	Ръчно скриване на надпис
+	Show or hide all labels	Показване или скриване на всички надписи
+	Labels are already being hidden	Надписите вече се скриват
+	Hiding labels… page {d} of {t}	Скриване на надписи… страница {d} от {t}
+	No labels found on this page	На тази страница не са открити надписи
+	Hid {n} labels. Hide all comments shows them again.	Скрити надписи: {n}. „Скриване на всички коментари“ ги показва отново.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Скрити надписи: {n} (надписите в изображения изискват разпознаване на текст, което не е инсталирано).
+	Highlights	Маркирания
+	Save as text…	Запазване като текст…
+	Copy all	Копиране на всичко
+	Page {p}	Страница {p}
+	(no text: recognize text on this page first)	(няма текст: първо разпознайте текста на тази страница)
+	Go to this page	Към тази страница
+	Copied	Копирано
+	This document has no highlights yet. Select text and choose Highlight first.	Този документ още няма маркирания. Първо изберете текст и изберете „Маркиране“.
+	Your lectures	Вашите лекции
+	Continue at page {p}	Продължаване от страница {p}
+	Other files	Други файлове
+	Close side by side	Затваряне на изгледа един до друг
+	Open a second PDF to see two side by side.	Отворете втори PDF, за да видите два един до друг.

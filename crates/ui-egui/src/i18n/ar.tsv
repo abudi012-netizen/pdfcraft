@@ -2395,3 +2395,36 @@ animation effects	Off	معطّلة
 	Searching in multiple PDFs needs the desktop app.	يتطلب البحث في عدة ملفات PDF تطبيق سطح المكتب.
 	At most {n} files can be searched at once.	يمكن البحث في {n} ملف على الأكثر في المرة الواحدة.
 	That folder has no PDFs.	لا يحتوي هذا المجلد على ملفات PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	إخفاء تسمية بمربع أبيض
+	Hide label	إخفاء التسمية
+	Auto hide labels on this page	إخفاء التسميات تلقائيًا في هذه الصفحة
+	Auto hide labels on all pages	إخفاء التسميات تلقائيًا في كل الصفحات
+	Auto hide labels	إخفاء التسميات تلقائيًا
+	Collect highlights	جمع النصوص المظللة
+	Side by side	جنبًا إلى جنب
+	Search PDFs	البحث في ملفات PDF
+	Full screen ({key})	ملء الشاشة ({key})
+	Exit full screen (Esc)	الخروج من ملء الشاشة (Esc)
+	Hide labels to study	إخفاء التسميات للمذاكرة
+	Hide a label by hand	إخفاء تسمية يدويًا
+	Show or hide all labels	إظهار كل التسميات أو إخفاؤها
+	Labels are already being hidden	يجري إخفاء التسميات بالفعل
+	Hiding labels… page {d} of {t}	جارٍ إخفاء التسميات… الصفحة {d} من {t}
+	No labels found on this page	لم يتم العثور على تسميات في هذه الصفحة
+	Hid {n} labels. Hide all comments shows them again.	تم إخفاء {n} من التسميات. خيار «إخفاء كل التعليقات» يُظهرها من جديد.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	تم إخفاء {n} من التسميات (التسميات داخل الصور تحتاج إلى التعرف على النص، وهو غير مثبت).
+	Highlights	النصوص المظللة
+	Save as text…	حفظ كنص…
+	Copy all	نسخ الكل
+	Page {p}	الصفحة {p}
+	(no text: recognize text on this page first)	(لا يوجد نص: شغّل التعرف على النص في هذه الصفحة أولًا)
+	Go to this page	الانتقال إلى هذه الصفحة
+	Copied	تم النسخ
+	This document has no highlights yet. Select text and choose Highlight first.	لا يحتوي هذا المستند على نصوص مظللة بعد. حدّد نصًا واختر «تظليل» أولًا.
+	Your lectures	محاضراتك
+	Continue at page {p}	المتابعة من الصفحة {p}
+	Other files	ملفات أخرى
+	Close side by side	إغلاق العرض جنبًا إلى جنب
+	Open a second PDF to see two side by side.	افتح ملف PDF ثانيًا لعرض ملفين جنبًا إلى جنب.

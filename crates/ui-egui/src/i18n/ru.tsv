@@ -2287,3 +2287,36 @@ animation effects	Off	Выкл
 	Searching in multiple PDFs needs the desktop app.	Для поиска в нескольких PDF нужно настольное приложение.
 	At most {n} files can be searched at once.	За один раз можно искать не более чем в {n} файлах.
 	That folder has no PDFs.	В этой папке нет PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Скрыть подпись белым прямоугольником
+	Hide label	Скрыть подпись
+	Auto hide labels on this page	Автоматически скрыть подписи на этой странице
+	Auto hide labels on all pages	Автоматически скрыть подписи на всех страницах
+	Auto hide labels	Автоматически скрыть подписи
+	Collect highlights	Собрать выделения
+	Side by side	Рядом
+	Search PDFs	Поиск по PDF
+	Full screen ({key})	Полноэкранный режим ({key})
+	Exit full screen (Esc)	Выйти из полноэкранного режима (Esc)
+	Hide labels to study	Скрыть подписи для повторения
+	Hide a label by hand	Скрыть подпись вручную
+	Show or hide all labels	Показать или скрыть все подписи
+	Labels are already being hidden	Подписи уже скрываются
+	Hiding labels… page {d} of {t}	Скрытие подписей… страница {d} из {t}
+	No labels found on this page	На этой странице подписи не найдены
+	Hid {n} labels. Hide all comments shows them again.	Скрыто подписей: {n}. «Скрыть все комментарии» снова покажет их.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Скрыто подписей: {n} (для подписей на изображениях нужно распознавание текста, которое не установлено).
+	Highlights	Выделения
+	Save as text…	Сохранить как текст…
+	Copy all	Копировать всё
+	Page {p}	Страница {p}
+	(no text: recognize text on this page first)	(нет текста: сначала распознайте текст на этой странице)
+	Go to this page	Перейти на эту страницу
+	Copied	Скопировано
+	This document has no highlights yet. Select text and choose Highlight first.	В этом документе пока нет выделений. Сначала выделите текст и выберите «Выделить».
+	Your lectures	Ваши лекции
+	Continue at page {p}	Продолжить со страницы {p}
+	Other files	Другие файлы
+	Close side by side	Закрыть режим «рядом»
+	Open a second PDF to see two side by side.	Откройте второй PDF, чтобы видеть два рядом.

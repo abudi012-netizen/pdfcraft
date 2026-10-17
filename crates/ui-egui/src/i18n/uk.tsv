@@ -2396,3 +2396,36 @@ animation effects	Off	Вимкнено
 	Searching in multiple PDFs needs the desktop app.	Для пошуку в кількох PDF потрібен застосунок для комп'ютера.
 	At most {n} files can be searched at once.	За раз можна шукати щонайбільше в {n} файлах.
 	That folder has no PDFs.	У цій теці немає PDF.
+
+# Study tools, library, side by side
+	Hide a label with a white box	Приховати підпис білим прямокутником
+	Hide label	Приховати підпис
+	Auto hide labels on this page	Автоматично приховати підписи на цій сторінці
+	Auto hide labels on all pages	Автоматично приховати підписи на всіх сторінках
+	Auto hide labels	Автоматично приховати підписи
+	Collect highlights	Зібрати виділення
+	Side by side	Поруч
+	Search PDFs	Пошук у PDF
+	Full screen ({key})	Повноекранний режим ({key})
+	Exit full screen (Esc)	Вийти з повноекранного режиму (Esc)
+	Hide labels to study	Приховати підписи для навчання
+	Hide a label by hand	Приховати підпис вручну
+	Show or hide all labels	Показати або приховати всі підписи
+	Labels are already being hidden	Підписи вже приховуються
+	Hiding labels… page {d} of {t}	Приховування підписів… сторінка {d} з {t}
+	No labels found on this page	На цій сторінці підписів не знайдено
+	Hid {n} labels. Hide all comments shows them again.	Приховано підписів: {n}. «Приховати всі коментарі» знову покаже їх.
+	Hid {n} labels (labels inside pictures need text recognition, which isn't installed).	Приховано підписів: {n} (для підписів на зображеннях потрібне розпізнавання тексту, яке не встановлено).
+	Highlights	Виділення
+	Save as text…	Зберегти як текст…
+	Copy all	Копіювати все
+	Page {p}	Сторінка {p}
+	(no text: recognize text on this page first)	(немає тексту: спершу розпізнайте текст на цій сторінці)
+	Go to this page	Перейти на цю сторінку
+	Copied	Скопійовано
+	This document has no highlights yet. Select text and choose Highlight first.	У цьому документі ще немає виділень. Спершу виділіть текст і виберіть «Виділити».
+	Your lectures	Ваші лекції
+	Continue at page {p}	Продовжити зі сторінки {p}
+	Other files	Інші файли
+	Close side by side	Закрити режим «поруч»
+	Open a second PDF to see two side by side.	Відкрийте другий PDF, щоб бачити два поруч.
