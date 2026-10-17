@@ -1,0 +1,51 @@
+name: Dictionary data
+
+# Builds the offline dictionaries behind Define and Translate (WordNet, Wiktionary, MeSH) and
+# publishes them as the "dictionary-data" release, which the Mac and Windows app builds bundle.
+# Runs when the builder changes, and by hand from the Actions tab.
+
+on:
+  push:
+    paths: [".github/scripts/build_dictionaries.py", ".github/workflows/dictionary-data.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dictionary-data
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the dictionaries
+        run: |
+          set -o pipefail
+          python3 .github/scripts/build_dictionaries.py out/dictionaries work 2>&1 | tee build-log.txt
+
+      - name: Package
+        if: always()
+        run: |
+          mkdir -p out/dictionaries
+          tar -C out -czf dictionaries.tar.gz dictionaries
+          ls -l dictionaries.tar.gz out/dictionaries | tee -a build-log.txt
+          head -n 3 out/dictionaries/define.tsv >> build-log.txt || true
+          head -n 3 out/dictionaries/translate.tsv >> build-log.txt || true
+
+      - name: Publish
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dictionary-data --yes --cleanup-tag || true
+          files="build-log.txt"
+          if [ -s out/dictionaries/define.tsv ]; then files="dictionaries.tar.gz build-log.txt"; fi
+          gh release create dictionary-data $files \
+            --title "Dictionary data (for my builds)" \
+            --notes "Offline dictionaries for Define and Translate, built from Open English WordNet (CC BY 4.0), Wiktionary via kaikki.org (CC BY-SA 4.0) and MeSH (U.S. National Library of Medicine). See CREDITS.txt inside." \
+            --target "$GITHUB_SHA" --prerelease
