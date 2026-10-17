@@ -2441,3 +2441,23 @@ animation effects	Off	معطّلة
 	German	الألمانية
 	French	الفرنسية
 	Spanish	الإسبانية
+
+# AI assistant (Ollama)
+	AI answer · check important facts	إجابة الذكاء الاصطناعي · تحقّق من الحقائق المهمة
+	Ask	اسأل
+	Ask a question about this lecture	اطرح سؤالًا عن هذه المحاضرة
+	Download the model	تنزيل النموذج
+	Downloading {model}…	جارٍ تنزيل {model}…
+	Explain with AI	شرح بالذكاء الاصطناعي
+	Get Ollama (free)	احصل على Ollama (مجانًا)
+	On this Mac, with Ollama	على هذا الماك، باستخدام Ollama
+	Reading the lecture…	جارٍ قراءة المحاضرة…
+	Starting…	جارٍ البدء…
+	Stop	إيقاف
+	The answer comes from the lecture's text, on this Mac.	تأتي الإجابة من نص المحاضرة، على هذا الماك.
+	Thinking…	جارٍ التفكير…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	لا يحتوي ملف PDF هذا على نص للقراءة. شغّل التعرف على النص (المسح الضوئي وOCR) أولًا.
+	Try again	إعادة المحاولة
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	لم يتم تنزيل {model} بعد ({size}). يُنزَّل مرة واحدة ثم يعمل دون اتصال.
+	The AI assistant runs in the Mac app with Ollama.	يعمل مساعد الذكاء الاصطناعي في تطبيق الماك باستخدام Ollama.
+	Select the text first, then choose this again.	حدّد النص أولًا، ثم اختر هذا مرة أخرى.

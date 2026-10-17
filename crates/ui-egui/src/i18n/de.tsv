@@ -2421,3 +2421,23 @@ animation effects	Off	Aus
 	German	Deutsch
 	French	Französisch
 	Spanish	Spanisch
+
+# AI assistant (Ollama)
+	AI answer · check important facts	KI-Antwort · wichtige Fakten prüfen
+	Ask	Fragen
+	Ask a question about this lecture	Eine Frage zu dieser Vorlesung stellen
+	Download the model	Modell herunterladen
+	Downloading {model}…	{model} wird heruntergeladen …
+	Explain with AI	Mit KI erklären
+	Get Ollama (free)	Ollama holen (kostenlos)
+	On this Mac, with Ollama	Auf diesem Mac, mit Ollama
+	Reading the lecture…	Vorlesung wird gelesen …
+	Starting…	Wird gestartet …
+	Stop	Stopp
+	The answer comes from the lecture's text, on this Mac.	Die Antwort stammt aus dem Text der Vorlesung, auf diesem Mac.
+	Thinking…	Denkt nach …
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	Dieses PDF hat keinen lesbaren Text. Führen Sie zuerst die Texterkennung (Scannen und OCR) aus.
+	Try again	Erneut versuchen
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} ist noch nicht heruntergeladen ({size}). Es wird einmal geladen und funktioniert dann offline.
+	The AI assistant runs in the Mac app with Ollama.	Der KI-Assistent läuft in der Mac-App mit Ollama.
+	Select the text first, then choose this again.	Wählen Sie zuerst den Text aus und wählen Sie dies dann erneut.

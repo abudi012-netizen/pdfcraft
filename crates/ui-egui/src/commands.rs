@@ -265,6 +265,13 @@ impl PdfCraftApp {
             "comment.autohide_all" => self.auto_hide_labels(true),
             "comment.highlights" => self.collect_highlights(),
             "view.side_by_side" => self.toggle_side_by_side(),
+            "ai.summary" => self.open_ai(crate::ai::Task::Summarize, None, None),
+            "ai.ask" => self.open_ai(crate::ai::Task::Ask, None, None),
+            "ai.translate" | "ai.explain" => {
+                let (text, page) = self.active.and_then(|i| self.views.get(i)).map(|v| (v.selected_text(), v.selection_page())).unwrap_or_default();
+                let task = if id == "ai.translate" { crate::ai::Task::Translate } else { crate::ai::Task::Explain };
+                self.open_ai(task, text, page);
+            }
             "view.read_mode" => self.switch_mode(if self.mode == Mode::Read { Mode::AllTools } else { Mode::Read }, false),
             "view.theme" => {
                 let next = if self.theme == ThemeKind::Light { ThemePreference::Dark } else { ThemePreference::Light };

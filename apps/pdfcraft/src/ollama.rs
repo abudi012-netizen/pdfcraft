@@ -1,0 +1,106 @@
+//! The AI assistant's model, run on this Mac by Ollama (https://ollama.com): PdfCraft talks to
+//! it over `http://127.0.0.1:11434` only, so lectures never leave the computer. Ollama keeps
+//! the models; PdfCraft only asks it to download one, list them and answer.
+
+use std::io::{BufRead, BufReader};
+use std::time::Duration;
+
+use pdfcraft_ui_egui::ai::{AiBackend, Ask};
+
+const BASE: &str = "http://127.0.0.1:11434";
+/// Most bytes of one answer read (a runaway model must not fill memory).
+const MAX_ANSWER: usize = 512 * 1024;
+
+pub struct Ollama {
+    quick: ureq::Agent,
+    long: ureq::Agent,
+}
+
+impl Ollama {
+    pub fn new() -> Self {
+        let agent = |secs: Option<u64>| {
+            ureq::Agent::config_builder()
+                .timeout_global(secs.map(Duration::from_secs))
+                .timeout_connect(Some(Duration::from_secs(3)))
+                .http_status_as_error(false)
+                .build()
+                .new_agent()
+        };
+        // Answers and downloads take as long as they take; listing models is quick.
+        Ollama { quick: agent(Some(5)), long: agent(None) }
+    }
+
+    fn not_running(e: impl std::fmt::Display) -> String {
+        format!("Ollama isn't running ({e}). Install it from ollama.com, open it, then try again.")
+    }
+
+    /// POST `body` to `path` and hand each line of the streamed JSON answer to `line`.
+    fn stream(&self, path: &str, body: &serde_json::Value, line: &mut dyn FnMut(&serde_json::Value) -> bool) -> Result<(), String> {
+        let mut response =
+            self.long.post(format!("{BASE}{path}")).header("Content-Type", "application/json").send(body.to_string()).map_err(Self::not_running)?;
+        let status = response.status().as_u16();
+        let reader = BufReader::new(response.body_mut().as_reader());
+        if !(200..300).contains(&status) {
+            let text: String = reader.lines().map_while(Result::ok).collect::<Vec<_>>().join(" ");
+            let msg = serde_json::from_str::<serde_json::Value>(&text).ok().and_then(|v| v["error"].as_str().map(str::to_owned)).unwrap_or(text);
+            return Err(format!("Ollama said: {msg}"));
+        }
+        for l in reader.lines() {
+            let l = l.map_err(|e| format!("the answer stopped ({e})"))?;
+            if l.trim().is_empty() {
+                continue;
+            }
+            let v: serde_json::Value = serde_json::from_str(&l).map_err(|e| format!("unreadable answer ({e})"))?;
+            if let Some(e) = v["error"].as_str() {
+                return Err(format!("Ollama said: {e}"));
+            }
+            if !line(&v) || v["done"].as_bool() == Some(true) {
+                break;
+            }
+        }
+        Ok(())
+    }
+}
+
+impl AiBackend for Ollama {
+    fn models(&self) -> Result<Vec<String>, String> {
+        let mut response = self.quick.get(format!("{BASE}/api/tags")).call().map_err(Self::not_running)?;
+        let body = response.body_mut().with_config().limit(4 << 20).read_to_string().map_err(Self::not_running)?;
+        let v: serde_json::Value = serde_json::from_str(&body).map_err(|e| format!("unreadable answer from Ollama ({e})"))?;
+        Ok(v["models"].as_array().into_iter().flatten().filter_map(|m| m["name"].as_str().map(str::to_owned)).collect())
+    }
+
+    fn pull(&self, model: &str, progress: &mut dyn FnMut(f32) -> bool) -> Result<(), String> {
+        let body = serde_json::json!({ "model": model, "stream": true });
+        let mut stopped = false;
+        self.stream("/api/pull", &body, &mut |v| {
+            if let (Some(done), Some(total)) = (v["completed"].as_f64(), v["total"].as_f64())
+                && total > 0.0
+            {
+                stopped = !progress((done / total).clamp(0.0, 1.0) as f32);
+            }
+            !stopped && v["status"].as_str() != Some("success")
+        })?;
+        if stopped { Err("the download was stopped".into()) } else { Ok(()) }
+    }
+
+    fn ask(&self, ask: &Ask, text: &mut dyn FnMut(&str) -> bool) -> Result<(), String> {
+        let body = serde_json::json!({
+            "model": ask.model,
+            "stream": true,
+            "messages": [
+                { "role": "system", "content": ask.system },
+                { "role": "user", "content": ask.prompt },
+            ],
+            // Room for a whole lecture; Ollama's default context is much smaller.
+            "options": { "num_ctx": ask.context, "temperature": 0.3 },
+        });
+        let mut received = 0usize;
+        self.stream("/api/chat", &body, &mut |v| {
+            let part = v["message"]["content"].as_str().unwrap_or("");
+            received = received.saturating_add(part.len());
+            received <= MAX_ANSWER && text(part)
+        })
+    }
+}
+

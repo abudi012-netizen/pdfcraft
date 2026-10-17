@@ -2419,3 +2419,23 @@ animation effects	Off	Ki
 	German	Német
 	French	Francia
 	Spanish	Spanyol
+
+# AI assistant (Ollama)
+	AI answer · check important facts	MI-válasz · ellenőrizze a fontos tényeket
+	Ask	Kérdés
+	Ask a question about this lecture	Tegyen fel kérdést erről az előadásról
+	Download the model	A modell letöltése
+	Downloading {model}…	{model} letöltése…
+	Explain with AI	Magyarázat MI-vel
+	Get Ollama (free)	Ollama beszerzése (ingyenes)
+	On this Mac, with Ollama	Ezen a Macen, Ollamával
+	Reading the lecture…	Az előadás olvasása…
+	Starting…	Indítás…
+	Stop	Leállítás
+	The answer comes from the lecture's text, on this Mac.	A válasz az előadás szövegéből készül, ezen a Macen.
+	Thinking…	Gondolkodik…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	Ebben a PDF-ben nincs olvasható szöveg. Előbb futtassa a szövegfelismerést (Szkennelés és OCR).
+	Try again	Újra
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	A(z) {model} még nincs letöltve ({size}). Egyszer kell letölteni, utána offline működik.
+	The AI assistant runs in the Mac app with Ollama.	Az MI-asszisztens a Mac-alkalmazásban fut Ollamával.
+	Select the text first, then choose this again.	Előbb jelölje ki a szöveget, majd válassza újra ezt.

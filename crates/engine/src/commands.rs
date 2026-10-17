@@ -243,6 +243,11 @@ pub const COMMANDS: &[CommandSpec] = &[
     c("comment.autohide_all", "Auto hide labels on all pages", None, None, Annotate, "scan-text"),
     c("comment.highlights", "Collect highlights", None, None, Document, "highlighter"),
     c("view.side_by_side", "Side by side", VIEW, None, Document, "columns-2"),
+    // The AI assistant: a model on this computer (the Mac app, through Ollama).
+    c("ai.summary", "Summarize", None, None, Document, "sparkles"),
+    c("ai.ask", "Ask about this document", None, None, Document, "message-circle-reply"),
+    c("ai.translate", "Translate", None, None, Document, "languages"),
+    c("ai.explain", "Explain with AI", None, None, Document, "sparkles"),
     c("comment.polygon", "Draw a polygon", None, None, Annotate, "pentagon"),
     c("comment.polyline", "Draw connected lines", None, None, Annotate, "spline"),
     c("comment.cloud", "Draw a cloud", None, None, Annotate, "cloud"),

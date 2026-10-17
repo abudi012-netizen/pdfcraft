@@ -2664,3 +2664,23 @@ key	Space	Tarpas
 	German	Vokiečių
 	French	Prancūzų
 	Spanish	Ispanų
+
+# AI assistant (Ollama)
+	AI answer · check important facts	DI atsakymas · patikrinkite svarbius faktus
+	Ask	Klausti
+	Ask a question about this lecture	Užduokite klausimą apie šią paskaitą
+	Download the model	Atsisiųsti modelį
+	Downloading {model}…	Atsisiunčiama {model}…
+	Explain with AI	Paaiškinti su DI
+	Get Ollama (free)	Gauti Ollama (nemokamai)
+	On this Mac, with Ollama	Šiame „Mac“, su Ollama
+	Reading the lecture…	Skaitoma paskaita…
+	Starting…	Paleidžiama…
+	Stop	Sustabdyti
+	The answer comes from the lecture's text, on this Mac.	Atsakymas grindžiamas paskaitos tekstu, šiame „Mac“.
+	Thinking…	Galvoju…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	Šiame PDF nėra teksto. Pirmiausia paleiskite teksto atpažinimą (Skenavimas ir OCR).
+	Try again	Bandyti dar kartą
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} dar neatsisiųstas ({size}). Atsisiunčiamas vieną kartą, paskui veikia neprisijungus.
+	The AI assistant runs in the Mac app with Ollama.	DI asistentas veikia „Mac“ programoje su Ollama.
+	Select the text first, then choose this again.	Pirmiausia pažymėkite tekstą, tada vėl pasirinkite šį veiksmą.

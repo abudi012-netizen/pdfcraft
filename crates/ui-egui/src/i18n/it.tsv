@@ -2429,3 +2429,23 @@ animation effects	Off	Disattivati
 	German	Tedesco
 	French	Francese
 	Spanish	Spagnolo
+
+# AI assistant (Ollama)
+	AI answer · check important facts	Risposta dell'IA · verifica i fatti importanti
+	Ask	Chiedi
+	Ask a question about this lecture	Fai una domanda su questa lezione
+	Download the model	Scarica il modello
+	Downloading {model}…	Download di {model}…
+	Explain with AI	Spiega con l'IA
+	Get Ollama (free)	Ottieni Ollama (gratis)
+	On this Mac, with Ollama	Su questo Mac, con Ollama
+	Reading the lecture…	Lettura della lezione…
+	Starting…	Avvio…
+	Stop	Interrompi
+	The answer comes from the lecture's text, on this Mac.	La risposta deriva dal testo della lezione, su questo Mac.
+	Thinking…	Sto pensando…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	Questo PDF non ha testo da leggere. Esegui prima il riconoscimento del testo (Scansione e OCR).
+	Try again	Riprova
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} non è ancora scaricato ({size}). Si scarica una volta, poi funziona offline.
+	The AI assistant runs in the Mac app with Ollama.	L'assistente IA funziona nell'app per Mac con Ollama.
+	Select the text first, then choose this again.	Seleziona prima il testo, poi scegli di nuovo questa opzione.

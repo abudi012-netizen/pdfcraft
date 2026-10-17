@@ -2416,3 +2416,23 @@ animation effects	Off	Kapalı
 	German	Almanca
 	French	Fransızca
 	Spanish	İspanyolca
+
+# AI assistant (Ollama)
+	AI answer · check important facts	Yapay zekâ yanıtı · önemli bilgileri kontrol edin
+	Ask	Sor
+	Ask a question about this lecture	Bu ders hakkında bir soru sorun
+	Download the model	Modeli indir
+	Downloading {model}…	{model} indiriliyor…
+	Explain with AI	Yapay zekâ ile açıkla
+	Get Ollama (free)	Ollama'yı edinin (ücretsiz)
+	On this Mac, with Ollama	Bu Mac'te, Ollama ile
+	Reading the lecture…	Ders okunuyor…
+	Starting…	Başlatılıyor…
+	Stop	Durdur
+	The answer comes from the lecture's text, on this Mac.	Yanıt, bu Mac'teki ders metninden gelir.
+	Thinking…	Düşünüyor…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	Bu PDF'de okunacak metin yok. Önce metin tanıma (Tarama ve OCR) çalıştırın.
+	Try again	Tekrar dene
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} henüz indirilmedi ({size}). Bir kez indirilir, sonra çevrimdışı çalışır.
+	The AI assistant runs in the Mac app with Ollama.	Yapay zekâ asistanı Mac uygulamasında Ollama ile çalışır.
+	Select the text first, then choose this again.	Önce metni seçin, sonra bunu yeniden seçin.

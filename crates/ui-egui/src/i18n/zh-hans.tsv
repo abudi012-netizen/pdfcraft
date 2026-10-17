@@ -2384,3 +2384,23 @@ animation effects	Off	关
 	German	德语
 	French	法语
 	Spanish	西班牙语
+
+# AI assistant (Ollama)
+	AI answer · check important facts	AI 回答 · 请核实重要事实
+	Ask	提问
+	Ask a question about this lecture	就本讲义提问
+	Download the model	下载模型
+	Downloading {model}…	正在下载 {model}…
+	Explain with AI	用 AI 解释
+	Get Ollama (free)	获取 Ollama（免费）
+	On this Mac, with Ollama	在这台 Mac 上，使用 Ollama
+	Reading the lecture…	正在阅读讲义…
+	Starting…	正在启动…
+	Stop	停止
+	The answer comes from the lecture's text, on this Mac.	回答基于这台 Mac 上的讲义文字。
+	Thinking…	正在思考…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	此 PDF 没有可读文字。请先进行文字识别（扫描和 OCR）。
+	Try again	重试
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} 尚未下载（{size}）。下载一次后即可离线使用。
+	The AI assistant runs in the Mac app with Ollama.	AI 助手在 Mac 应用中通过 Ollama 运行。
+	Select the text first, then choose this again.	请先选择文字，然后再次选择此项。

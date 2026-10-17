@@ -50,6 +50,9 @@ const fn item(label: &'static str, icon: &'static str, command: &'static str, av
 
 use Availability::{Planned, Provider, Ready};
 
+/// The AI assistant runs in the Mac app (with Ollama); elsewhere it still needs a provider.
+const AI: Availability = if cfg!(target_os = "macos") { Ready } else { Provider };
+
 const RED: [u8; 3] = [0xE0, 0x3E, 0x3E];
 const PURPLE: [u8; 3] = [0x8E, 0x4E, 0xE6];
 const BLUE: [u8; 3] = [0x3A, 0x6F, 0xE8];
@@ -518,13 +521,14 @@ pub static TOOL_GROUPS: &[ToolGroup] = &[
         icon: "sparkles",
         hue: PINK,
         badge: Some("Optional"),
-        availability: Provider,
+        availability: AI,
         sections: &[ToolSection {
-            title: "Bring your own model (off by default)",
+            title: if cfg!(target_os = "macos") { "On this Mac, with Ollama" } else { "Bring your own model (off by default)" },
             items: &[
-                item("Summarize", "sparkles", "ai.summary", Provider),
-                item("Ask about this document", "message-circle-reply", "ai.ask", Provider),
-                item("Translate", "languages", "ai.translate", Provider),
+                item("Summarize", "sparkles", "ai.summary", AI),
+                item("Ask about this document", "message-circle-reply", "ai.ask", AI),
+                item("Translate", "languages", "ai.translate", AI),
+                item("Explain with AI", "sparkles", "ai.explain", AI),
             ],
         }],
     },

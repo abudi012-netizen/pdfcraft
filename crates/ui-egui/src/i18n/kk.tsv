@@ -2418,3 +2418,23 @@ animation effects	Off	Өшірулі
 	German	Неміс тілі
 	French	Француз тілі
 	Spanish	Испан тілі
+
+# AI assistant (Ollama)
+	AI answer · check important facts	ЖИ жауабы · маңызды деректерді тексеріңіз
+	Ask	Сұрау
+	Ask a question about this lecture	Осы дәріс туралы сұрақ қойыңыз
+	Download the model	Модельді жүктеп алу
+	Downloading {model}…	{model} жүктелуде…
+	Explain with AI	ЖИ арқылы түсіндіру
+	Get Ollama (free)	Ollama алу (тегін)
+	On this Mac, with Ollama	Осы Mac-та, Ollama арқылы
+	Reading the lecture…	Дәріс оқылуда…
+	Starting…	Басталуда…
+	Stop	Тоқтату
+	The answer comes from the lecture's text, on this Mac.	Жауап осы Mac-тағы дәріс мәтінінен алынады.
+	Thinking…	Ойлануда…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	Бұл PDF-те оқылатын мәтін жоқ. Алдымен мәтінді тану (Сканерлеу және OCR) іске қосыңыз.
+	Try again	Қайталау
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} әлі жүктелмеген ({size}). Бір рет жүктеледі, содан кейін желісіз жұмыс істейді.
+	The AI assistant runs in the Mac app with Ollama.	ЖИ көмекшісі Mac қолданбасында Ollama арқылы жұмыс істейді.
+	Select the text first, then choose this again.	Алдымен мәтінді таңдап, содан кейін мұны қайта таңдаңыз.

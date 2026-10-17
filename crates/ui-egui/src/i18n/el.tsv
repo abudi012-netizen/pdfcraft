@@ -2430,3 +2430,23 @@ animation effects	Off	Ανενεργά
 	German	Γερμανικά
 	French	Γαλλικά
 	Spanish	Ισπανικά
+
+# AI assistant (Ollama)
+	AI answer · check important facts	Απάντηση AI · ελέγξτε τα σημαντικά στοιχεία
+	Ask	Ερώτηση
+	Ask a question about this lecture	Κάντε μια ερώτηση για αυτή τη διάλεξη
+	Download the model	Λήψη του μοντέλου
+	Downloading {model}…	Λήψη {model}…
+	Explain with AI	Εξήγηση με AI
+	Get Ollama (free)	Αποκτήστε το Ollama (δωρεάν)
+	On this Mac, with Ollama	Σε αυτό το Mac, με Ollama
+	Reading the lecture…	Ανάγνωση της διάλεξης…
+	Starting…	Έναρξη…
+	Stop	Διακοπή
+	The answer comes from the lecture's text, on this Mac.	Η απάντηση προέρχεται από το κείμενο της διάλεξης, σε αυτό το Mac.
+	Thinking…	Σκέφτεται…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	Αυτό το PDF δεν έχει κείμενο. Εκτελέστε πρώτα αναγνώριση κειμένου (Σάρωση και OCR).
+	Try again	Δοκιμή ξανά
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	Το {model} δεν έχει ληφθεί ακόμη ({size}). Λαμβάνεται μία φορά και μετά λειτουργεί εκτός σύνδεσης.
+	The AI assistant runs in the Mac app with Ollama.	Ο βοηθός AI λειτουργεί στην εφαρμογή Mac με το Ollama.
+	Select the text first, then choose this again.	Επιλέξτε πρώτα το κείμενο και μετά επιλέξτε ξανά αυτό.

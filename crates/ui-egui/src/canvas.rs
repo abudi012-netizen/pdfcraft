@@ -394,6 +394,8 @@ pub struct DocView {
     pub pending_edit: Option<Edit>,
     /// Define / Translate asked for on the selection: the text, where to show the card, translate?
     pub lookup_request: Option<(String, Pos2, bool)>,
+    /// The AI assistant asked for on the selection: the command (`ai.explain`, `ai.translate`).
+    pub ai_request: Option<&'static str>,
     /// Edit text: the lines per page (with the document generation they were read at), and the
     /// line being edited.
     pub(crate) edit_lines: HashMap<usize, (u64, Vec<pdfcraft_engine::TextBlock>)>,
@@ -640,6 +642,7 @@ impl DocView {
             organize_range: Default::default(),
             pending_edit: None,
             lookup_request: None,
+            ai_request: None,
             edit_lines: HashMap::new(),
             line_editor: None,
             text_background: Default::default(),
@@ -997,6 +1000,11 @@ impl DocView {
     }
 
     /// Selected text, if any (⌘C).
+    /// The page the text selection is on.
+    pub fn selection_page(&self) -> Option<usize> {
+        self.selection.map(|s| s.page)
+    }
+
     pub fn selected_text(&self) -> Option<String> {
         let s = self.selection?;
         let t = self.texts.get(&s.page)?;
@@ -2136,6 +2144,7 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     let editing_content =
         (app.left_open && app.left == crate::LeftPanel::Tool("edit")) || matches!(app.quick_tool, QuickTool::AddText | QuickTool::EditText);
     let text_style = app.text_style.clone();
+    let ai_on = app.ai.is_some();
     let view = &mut app.views[index];
     // Opened without the owner password and something is restricted.
     let secured = doc.security_summary().is_some_and(|s| !(s.owner || (s.permissions.modify() && s.permissions.assemble())));
@@ -3230,7 +3239,7 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     view.viewport_screen = out.inner_rect;
     view.auto_scroll.paint(ui, avail);
     if unobstructed && matches!(tool, QuickTool::Select | QuickTool::ColumnSelect) {
-        selection_actions(ui, avail, view, info, prefs, allowed && !comments_hidden);
+        selection_actions(ui, avail, view, info, prefs, allowed && !comments_hidden, ai_on);
     }
 
     // Collect all main-page demand, including cached surfaces, for byte admission later.
@@ -3505,6 +3514,9 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     if let Some((text, at, translate)) = app.views[index].lookup_request.take() {
         app.open_lookup(text, at, translate);
     }
+    if let Some(command) = app.views[index].ai_request.take() {
+        app.execute(command);
+    }
     // Side by side: the tools float over the document being worked on only.
     if !app.secondary_pane {
         quick_bar(app, avail, ui);
@@ -3516,6 +3528,7 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
 
 #[derive(Clone, Copy)]
 enum SelectionAction {
+    Explain,
     Define,
     Translate,
     Note,
@@ -3525,7 +3538,15 @@ enum SelectionAction {
 }
 
 /// Actions on an existing text selection, next to the selected words.
-fn selection_actions(ui: &mut egui::Ui, viewport: Rect, view: &mut DocView, info: &DocInfo, prefs: &comments::CommentPrefs, can_comment: bool) {
+fn selection_actions(
+    ui: &mut egui::Ui,
+    viewport: Rect,
+    view: &mut DocView,
+    info: &DocInfo,
+    prefs: &comments::CommentPrefs,
+    can_comment: bool,
+    ai: bool,
+) {
     if ui.input(|input| input.pointer.is_decidedly_dragging()) {
         return;
     }
@@ -3554,6 +3575,9 @@ fn selection_actions(ui: &mut egui::Ui, viewport: Rect, view: &mut DocView, info
                 if ui.button(tl!("Translate")).clicked() {
                     chosen = Some(SelectionAction::Translate);
                 }
+                if ai && ui.button(tl!("Explain with AI")).clicked() {
+                    chosen = Some(SelectionAction::Explain);
+                }
                 ui.separator();
                 for (label, action) in [
                     (tl!("Add comment"), SelectionAction::Note),
@@ -3580,6 +3604,10 @@ fn selection_actions(ui: &mut egui::Ui, viewport: Rect, view: &mut DocView, info
         }
         SelectionAction::Define | SelectionAction::Translate => {
             view.lookup_request = Some((selected, pos2(x, y + 44.0), matches!(action, SelectionAction::Translate)));
+            return;
+        }
+        SelectionAction::Explain => {
+            view.ai_request = Some("ai.explain");
             return;
         }
         _ => {}
@@ -3613,7 +3641,7 @@ fn selection_actions(ui: &mut egui::Ui, viewport: Rect, view: &mut DocView, info
             }));
         }
         // Done above.
-        SelectionAction::Copy | SelectionAction::Define | SelectionAction::Translate => {}
+        SelectionAction::Copy | SelectionAction::Define | SelectionAction::Translate | SelectionAction::Explain => {}
     }
 }
 

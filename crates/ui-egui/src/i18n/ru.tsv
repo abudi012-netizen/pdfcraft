@@ -2333,3 +2333,24 @@ animation effects	Off	Выкл
 	German	Немецкий
 	French	Французский
 	Spanish	Испанский
+
+# AI assistant (Ollama)
+	AI answer · check important facts	Ответ ИИ · проверьте важные факты
+	Ask	Спросить
+	Ask a question about this lecture	Задайте вопрос по этой лекции
+	Download the model	Скачать модель
+	Downloading {model}…	Скачивание {model}…
+	Explain with AI	Объяснить с помощью ИИ
+	Get Ollama (free)	Установить Ollama (бесплатно)
+	On this Mac, with Ollama	На этом Mac, с Ollama
+	Reading the lecture…	Чтение лекции…
+	Starting…	Запуск…
+	Stop	Остановить
+	The answer comes from the lecture's text, on this Mac.	Ответ строится по тексту лекции, на этом Mac.
+	Thinking…	Думаю…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	В этом PDF нет текста. Сначала выполните распознавание текста (Сканирование и OCR).
+	Try again	Повторить
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} ещё не скачана ({size}). Её скачивают один раз, затем она работает офлайн.
+	The AI assistant runs in the Mac app with Ollama.	ИИ-помощник работает в приложении для Mac с Ollama.
+	Select the text first, then choose this again.	Сначала выделите текст, затем выберите это снова.
+	Model	Модель

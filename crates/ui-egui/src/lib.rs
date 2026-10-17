@@ -34,6 +34,7 @@ pub use combine_grid::ThumbState as CombineThumb;
 mod combine_ui;
 pub mod docking;
 pub use combine_ui::{Columns as CombineColumns, CombineView, Lock as CombineLock, SortKey};
+pub mod ai;
 mod camera_ui;
 mod commands;
 mod comment_props;
@@ -662,6 +663,11 @@ pub struct PdfCraftApp {
     pub(crate) lookup: Option<lookup_ui::LookupCard>,
     pub(crate) dictionaries: lookup_ui::Dictionaries,
     pub lookup_language: String,
+    /// The AI assistant's model runner (the Mac app sets it; `None` elsewhere), its window and
+    /// the model chosen.
+    pub ai: Option<std::sync::Arc<dyn ai::AiBackend>>,
+    pub(crate) ai_window: Option<ai::AiWindow>,
+    pub ai_model: String,
     /// While drawing the half of side by side that isn't being worked on.
     pub(crate) secondary_pane: bool,
     pub ocr_batch: Option<std::sync::Arc<std::sync::Mutex<ocr_ui::BatchProgress>>>,
@@ -992,6 +998,9 @@ impl PdfCraftApp {
             lookup: None,
             dictionaries: Default::default(),
             lookup_language: "ar".into(),
+            ai: None,
+            ai_window: None,
+            ai_model: ai::DEFAULT_MODEL.into(),
             secondary_pane: false,
             ocr_batch: None,
             run_inline: false,
@@ -2241,6 +2250,7 @@ impl PdfCraftApp {
         if let Some(map) = state.as_object_mut() {
             map.insert("last_pages".into(), serde_json::to_value(&self.last_pages).unwrap_or_default());
             map.insert("lookup_language".into(), serde_json::Value::String(self.lookup_language.clone()));
+            map.insert("ai_model".into(), serde_json::Value::String(self.ai_model.clone()));
             map.insert("night_theme".into(), serde_json::to_value(self.night_theme).unwrap_or_default());
         }
         state.to_string()
@@ -2270,6 +2280,9 @@ impl PdfCraftApp {
             #[cfg(not(target_arch = "wasm32"))]
             let r: Vec<RecentFile> = r.into_iter().filter(|f| std::path::Path::new(&f.path).exists()).collect();
             self.recent = r;
+        }
+        if let Some(m) = v["ai_model"].as_str().filter(|m| ai::MODELS.iter().any(|(id, _)| id == m)) {
+            self.ai_model = m.to_owned();
         }
         if let Some(code) = v["lookup_language"].as_str().filter(|c| pdfcraft_engine::dictionary::LANGUAGES.iter().any(|(l, _)| l == c)) {
             self.lookup_language = code.to_owned();

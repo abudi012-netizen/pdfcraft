@@ -38,6 +38,8 @@ mod logging;
 mod mac_menu;
 #[cfg(target_os = "windows")]
 mod motion;
+#[cfg(target_os = "macos")]
+mod ollama;
 mod reopen;
 mod single_instance;
 mod text_scale;
@@ -369,6 +371,8 @@ fn app_creator<'a>(
         {
             app.os_events = Some(apple_events.connect(&cc.egui_ctx));
             app.menu_events = Some(mac_menu::install(&cc.egui_ctx));
+            // The AI assistant, answered by Ollama on this Mac (nothing leaves the computer).
+            app.ai = Some(std::sync::Arc::new(ollama::Ollama::new()));
         }
         if let Some(server) = instance {
             app.os_events = Some(server.connect(&cc.egui_ctx));

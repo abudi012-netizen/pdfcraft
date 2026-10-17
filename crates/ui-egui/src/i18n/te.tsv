@@ -2333,3 +2333,23 @@ animation effects	Off	ఆఫ్
 	German	జర్మన్
 	French	ఫ్రెంచ్
 	Spanish	స్పానిష్
+
+# AI assistant (Ollama)
+	AI answer · check important facts	AI జవాబు · ముఖ్యమైన వాస్తవాలను తనిఖీ చేయండి
+	Ask	అడగండి
+	Ask a question about this lecture	ఈ ఉపన్యాసం గురించి ప్రశ్న అడగండి
+	Download the model	మోడల్‌ను డౌన్‌లోడ్ చేయండి
+	Downloading {model}…	{model} డౌన్‌లోడ్ అవుతోంది…
+	Explain with AI	AIతో వివరించండి
+	Get Ollama (free)	Ollama పొందండి (ఉచితం)
+	On this Mac, with Ollama	ఈ Macలో, Ollamaతో
+	Reading the lecture…	ఉపన్యాసాన్ని చదువుతోంది…
+	Starting…	ప్రారంభమవుతోంది…
+	Stop	ఆపివేయి
+	The answer comes from the lecture's text, on this Mac.	జవాబు ఈ Macలోని ఉపన్యాస వచనం నుండి వస్తుంది.
+	Thinking…	ఆలోచిస్తోంది…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	ఈ PDFలో చదవడానికి వచనం లేదు. ముందుగా వచన గుర్తింపు (స్కాన్ & OCR) చేయండి.
+	Try again	మళ్లీ ప్రయత్నించండి
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} ఇంకా డౌన్‌లోడ్ కాలేదు ({size}). ఒకసారి డౌన్‌లోడ్ చేస్తే ఆఫ్‌లైన్‌లో పనిచేస్తుంది.
+	The AI assistant runs in the Mac app with Ollama.	AI సహాయకుడు Mac యాప్‌లో Ollamaతో పనిచేస్తుంది.
+	Select the text first, then choose this again.	ముందుగా వచనాన్ని ఎంచుకుని, మళ్లీ దీన్ని ఎంచుకోండి.

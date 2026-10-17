@@ -2420,3 +2420,23 @@ animation effects	Off	オフ
 	German	ドイツ語
 	French	フランス語
 	Spanish	スペイン語
+
+# AI assistant (Ollama)
+	AI answer · check important facts	AI の回答 · 重要な事実は確認してください
+	Ask	質問
+	Ask a question about this lecture	この講義について質問する
+	Download the model	モデルをダウンロード
+	Downloading {model}…	{model} をダウンロードしています…
+	Explain with AI	AI で説明
+	Get Ollama (free)	Ollama を入手 (無料)
+	On this Mac, with Ollama	この Mac で、Ollama を使用
+	Reading the lecture…	講義を読んでいます…
+	Starting…	開始しています…
+	Stop	停止
+	The answer comes from the lecture's text, on this Mac.	回答はこの Mac 上で講義のテキストから作られます。
+	Thinking…	考えています…
+	This PDF has no text to read. Recognize text (Scan & OCR) first.	この PDF には読めるテキストがありません。先にテキスト認識 (スキャンと OCR) を実行してください。
+	Try again	再試行
+	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} はまだダウンロードされていません ({size})。一度ダウンロードすればオフラインで使えます。
+	The AI assistant runs in the Mac app with Ollama.	AI アシスタントは Mac アプリで Ollama を使って動作します。
+	Select the text first, then choose this again.	先にテキストを選択してから、もう一度選んでください。
