@@ -1,0 +1,56 @@
+name: My Windows app
+
+# Builds PdfCraft for 64-bit Windows from this fork and publishes it as the "my-windows-build"
+# release, ready to download: PdfCraft-windows.zip holds pdfcraft.exe. It is not code-signed,
+# so the first time Windows SmartScreen may warn: click "More info" ▸ "Run anyway".
+#
+# Runs on every push to main or a feat/ branch, and by hand from the Actions tab.
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: my-windows-app
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        run: rustup toolchain install stable --profile minimal; rustup default stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      # Faster than the official release profile (thin LTO, one codegen unit); the app is the
+      # same, a little larger. PDFCRAFT_REQUIRE_WINRES makes a missing icon an error.
+      - name: Build
+        env:
+          PDFCRAFT_REQUIRE_WINRES: "1"
+        run: cargo build --release -p pdfcraft --config profile.release.lto=false --config profile.release.codegen-units=16
+
+      - name: Make PdfCraft-windows.zip
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force PdfCraft | Out-Null
+          Copy-Item target/release/pdfcraft.exe PdfCraft/
+          Compress-Archive -Path PdfCraft -DestinationPath PdfCraft-windows.zip -Force
+
+      - name: Publish the download
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete my-windows-build --yes --cleanup-tag || true
+          gh release create my-windows-build PdfCraft-windows.zip \
+            --title "PdfCraft for Windows (my build)" \
+            --notes "Built from ${GITHUB_REF_NAME} at ${GITHUB_SHA}. Download PdfCraft-windows.zip, unzip it, and double-click pdfcraft.exe. If SmartScreen warns, click More info, then Run anyway." \
+            --target "$GITHUB_SHA" --prerelease
