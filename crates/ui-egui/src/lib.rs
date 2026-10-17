@@ -3103,17 +3103,34 @@ impl PdfCraftApp {
         self.combine_thumbs_frame(ctx);
         // Retire hidden documents before admitting the visible document's textures, so the
         // three cache limits apply to the application, regardless of how many tabs are open.
+        // Side by side shows a second document: it renders too.
+        let partner = self.side_by_side_partner();
+        let shown = |i: usize| Some(i) == self.active || Some(i) == partner;
         for (i, view) in self.views.iter_mut().enumerate() {
-            if Some(i) != self.active
+            if !shown(i)
                 && let Some(doc) = self.session.get(view.id)
             {
                 view.suspend_rendering(&doc.renderer);
             }
         }
-        if let Some(view) = self.active.and_then(|i| self.views.get_mut(i))
-            && let Some(doc) = self.session.get(view.id)
-        {
-            view.finish_render_frame(ctx, &doc.info, &doc.renderer);
+        for i in [self.active, partner].into_iter().flatten() {
+            if let Some(view) = self.views.get_mut(i)
+                && let Some(doc) = self.session.get(view.id)
+            {
+                view.finish_render_frame(ctx, &doc.info, &doc.renderer);
+            }
+        }
+    }
+
+    /// The other document on screen in side by side, when the active one is one of the pair.
+    pub(crate) fn side_by_side_partner(&self) -> Option<usize> {
+        let (l, r) = self.side_by_side?;
+        let li = self.views.iter().position(|v| v.id == l)?;
+        let ri = self.views.iter().position(|v| v.id == r)?;
+        match self.active {
+            Some(a) if a == li => Some(ri),
+            Some(a) if a == ri => Some(li),
+            _ => None,
         }
     }
 }
