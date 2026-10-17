@@ -2436,3 +2436,4 @@ animation effects	Off	Kapalı
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} henüz indirilmedi ({size}). Bir kez indirilir, sonra çevrimdışı çalışır.
 	The AI assistant runs in the Mac app with Ollama.	Yapay zekâ asistanı Mac uygulamasında Ollama ile çalışır.
 	Select the text first, then choose this again.	Önce metni seçin, sonra bunu yeniden seçin.
+	Starting the AI…	Yapay zekâ başlatılıyor…

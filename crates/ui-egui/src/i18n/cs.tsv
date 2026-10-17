@@ -2514,3 +2514,4 @@ animation effects	Off	Vypnuto
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} ještě není stažen ({size}). Stáhne se jednou a pak funguje offline.
 	The AI assistant runs in the Mac app with Ollama.	Asistent AI běží v aplikaci pro Mac s Ollama.
 	Select the text first, then choose this again.	Nejprve vyberte text a pak to zvolte znovu.
+	Starting the AI…	Spouštění AI…

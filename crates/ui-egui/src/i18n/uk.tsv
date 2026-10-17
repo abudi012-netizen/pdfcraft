@@ -2462,3 +2462,4 @@ animation effects	Off	Вимкнено
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} ще не завантажено ({size}). Її завантажують один раз, далі вона працює офлайн.
 	The AI assistant runs in the Mac app with Ollama.	Помічник ШІ працює в застосунку для Mac з Ollama.
 	Select the text first, then choose this again.	Спершу виділіть текст, потім виберіть це знову.
+	Starting the AI…	Запуск ШІ…

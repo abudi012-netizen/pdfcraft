@@ -2440,3 +2440,4 @@ animation effects	Off	Désactivés
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} n’est pas encore téléchargé ({size}). Il est téléchargé une fois, puis fonctionne hors ligne.
 	The AI assistant runs in the Mac app with Ollama.	L’assistant IA fonctionne dans l’app Mac avec Ollama.
 	Select the text first, then choose this again.	Sélectionnez d’abord le texte, puis choisissez de nouveau cette option.
+	Starting the AI…	Démarrage de l’IA…

@@ -62,10 +62,48 @@ impl Ollama {
     }
 }
 
+impl Ollama {
+    fn tags(&self) -> Result<String, String> {
+        let mut response = self.quick.get(format!("{BASE}/api/tags")).call().map_err(Self::not_running)?;
+        response.body_mut().with_config().limit(4 << 20).read_to_string().map_err(Self::not_running)
+    }
+
+    /// Start Ollama in the background when it isn't running (the Ollama app, hidden, or the
+    /// `ollama` command), and wait up to 20 seconds for it to answer.
+    fn start(&self) -> Result<String, String> {
+        let started = std::process::Command::new("/usr/bin/open").args(["-g", "-j", "-a", "Ollama"]).status().is_ok_and(|s| s.success())
+            || ["/opt/homebrew/bin/ollama", "/usr/local/bin/ollama"].iter().any(|bin| {
+                std::path::Path::new(bin).is_file()
+                    && std::process::Command::new(bin)
+                        .arg("serve")
+                        .stdin(std::process::Stdio::null())
+                        .stdout(std::process::Stdio::null())
+                        .stderr(std::process::Stdio::null())
+                        .spawn()
+                        .is_ok()
+            });
+        if !started {
+            return Err("Ollama isn't installed. Get it free from ollama.com, then try again.".into());
+        }
+        let mut last = String::new();
+        for _ in 0..40 {
+            std::thread::sleep(Duration::from_millis(500));
+            match self.tags() {
+                Ok(body) => return Ok(body),
+                Err(e) => last = e,
+            }
+        }
+        Err(last)
+    }
+}
+
 impl AiBackend for Ollama {
     fn models(&self) -> Result<Vec<String>, String> {
-        let mut response = self.quick.get(format!("{BASE}/api/tags")).call().map_err(Self::not_running)?;
-        let body = response.body_mut().with_config().limit(4 << 20).read_to_string().map_err(Self::not_running)?;
+        // Not running yet: start it, so the AI buttons just work.
+        let body = match self.tags() {
+            Ok(body) => body,
+            Err(_) => self.start()?,
+        };
         let v: serde_json::Value = serde_json::from_str(&body).map_err(|e| format!("unreadable answer from Ollama ({e})"))?;
         Ok(v["models"].as_array().into_iter().flatten().filter_map(|m| m["name"].as_str().map(str::to_owned)).collect())
     }

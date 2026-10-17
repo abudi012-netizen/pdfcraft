@@ -159,6 +159,7 @@ impl PdfCraftApp {
             };
             let stopped = || job.lock().map(|j| j.stop).unwrap_or(true);
             let run = || -> Result<(), String> {
+                set(&mut |j| j.status = tl!("Starting the AI…").to_owned());
                 let installed = backend.models()?;
                 let have = installed.iter().any(|m| m == &model || m.strip_suffix(":latest") == Some(model.as_str()));
                 if !have && !download {

@@ -2445,3 +2445,4 @@ animation effects	Off	Izklopljeni
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} še ni prenesen ({size}). Prenese se enkrat, nato deluje brez povezave.
 	The AI assistant runs in the Mac app with Ollama.	Pomočnik UI deluje v aplikaciji za Mac z Ollama.
 	Select the text first, then choose this again.	Najprej izberite besedilo, nato to znova izberite.
+	Starting the AI…	Zaganjanje UI …

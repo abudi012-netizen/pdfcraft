@@ -2440,3 +2440,4 @@ animation effects	Off	オフ
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} はまだダウンロードされていません ({size})。一度ダウンロードすればオフラインで使えます。
 	The AI assistant runs in the Mac app with Ollama.	AI アシスタントは Mac アプリで Ollama を使って動作します。
 	Select the text first, then choose this again.	先にテキストを選択してから、もう一度選んでください。
+	Starting the AI…	AI を起動しています…

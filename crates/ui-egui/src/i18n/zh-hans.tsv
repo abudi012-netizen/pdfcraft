@@ -2404,3 +2404,4 @@ animation effects	Off	关
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} 尚未下载（{size}）。下载一次后即可离线使用。
 	The AI assistant runs in the Mac app with Ollama.	AI 助手在 Mac 应用中通过 Ollama 运行。
 	Select the text first, then choose this again.	请先选择文字，然后再次选择此项。
+	Starting the AI…	正在启动 AI…

@@ -2353,3 +2353,4 @@ animation effects	Off	ఆఫ్
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	{model} ఇంకా డౌన్‌లోడ్ కాలేదు ({size}). ఒకసారి డౌన్‌లోడ్ చేస్తే ఆఫ్‌లైన్‌లో పనిచేస్తుంది.
 	The AI assistant runs in the Mac app with Ollama.	AI సహాయకుడు Mac యాప్‌లో Ollamaతో పనిచేస్తుంది.
 	Select the text first, then choose this again.	ముందుగా వచనాన్ని ఎంచుకుని, మళ్లీ దీన్ని ఎంచుకోండి.
+	Starting the AI…	AI ప్రారంభమవుతోంది…

@@ -2461,3 +2461,4 @@ animation effects	Off	معطّلة
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	لم يتم تنزيل {model} بعد ({size}). يُنزَّل مرة واحدة ثم يعمل دون اتصال.
 	The AI assistant runs in the Mac app with Ollama.	يعمل مساعد الذكاء الاصطناعي في تطبيق الماك باستخدام Ollama.
 	Select the text first, then choose this again.	حدّد النص أولًا، ثم اختر هذا مرة أخرى.
+	Starting the AI…	جارٍ تشغيل الذكاء الاصطناعي…

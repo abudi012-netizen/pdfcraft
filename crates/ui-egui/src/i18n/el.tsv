@@ -2450,3 +2450,4 @@ animation effects	Off	Ανενεργά
 	{model} isn't downloaded yet ({size}). It's downloaded once, then works offline.	Το {model} δεν έχει ληφθεί ακόμη ({size}). Λαμβάνεται μία φορά και μετά λειτουργεί εκτός σύνδεσης.
 	The AI assistant runs in the Mac app with Ollama.	Ο βοηθός AI λειτουργεί στην εφαρμογή Mac με το Ollama.
 	Select the text first, then choose this again.	Επιλέξτε πρώτα το κείμενο και μετά επιλέξτε ξανά αυτό.
+	Starting the AI…	Εκκίνηση του AI…
