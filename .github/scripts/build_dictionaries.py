@@ -5,6 +5,7 @@ Downloads three free sources and writes compact, sorted tab-separated files:
 
   define.tsv     key \t term \t source \t part of speech \t definition
   translate.tsv  key \t language code \t part of speech \t translations \t sense
+  see.tsv        key \t key it is another name for (MeSH entry terms), so a definition is stored once
   CREDITS.txt    where each source comes from and its licence
 
 `key` is the term folded for lookup: lower case, hyphens and runs of spaces turned into one
@@ -28,6 +29,10 @@ import xml.etree.ElementTree as ET
 LANGS = {"ar": "Arabic", "de": "German", "fr": "French", "es": "Spanish"}
 MAX_DEF = 600  # characters per definition kept
 MAX_SENSES = 6  # definitions kept per term and source
+WIKI_SENSES = 2  # Wiktionary fills gaps only: its first senses are enough
+# Glosses that only point at another entry: the other entry is looked up instead.
+SKIP_GLOSS = re.compile(r"^(alternative|obsolete|archaic|dated|rare) (form|spelling)|^(misspelling|plural|eye dialect|nonstandard)", re.I)
+WIKI_TERM = re.compile(r"^[A-Za-z][A-Za-z' .-]*$")
 
 WORDNET_URLS = ["https://github.com/globalwordnet/english-wordnet/releases/download/2025-edition/english-wordnet-2025.xml.gz",
                 "https://en-word.net/static/english-wordnet-2025.xml.gz"]
@@ -109,7 +114,7 @@ def wordnet(path, out):
     log("  WordNet definitions:", n)
 
 
-def mesh(path, out):
+def mesh(path, out, see):
     log("reading MeSH")
     n = 0
     for _, el in ET.iterparse(path, events=("end",)):
@@ -125,30 +130,59 @@ def mesh(path, out):
         else:
             terms = []
         if name and note:
-            d = clean(note)
-            seen = set()
-            for t in [name] + terms:
+            main = key(name)
+            out.append((main, name, "MeSH", "medical", clean(note)))
+            n += 1
+            for t in terms:
                 k = key(t)
-                if k and k not in seen:
-                    seen.add(k)
-                    out.append((k, name, "MeSH", "medical", d))
-                    n += 1
+                if k and k != main:
+                    see.append((k, main))
         el.clear()
-    log("  MeSH definitions:", n)
+    log("  MeSH definitions:", n, "other names:", len(see))
+
+
+REVERSE_MAX_WORDS = 3  # an English gloss this short reads as a translation ("evaporation")
+GLOSS_SPLIT = re.compile(r"\s*[;,]\s*")
+GLOSS_DROP = re.compile(r"\([^)]*\)")
+
+
+def reverse_glosses(e, out):
+    """An Arabic (German, French, Spanish) entry glossed in English, turned round: its short
+    glosses become English keys that translate to the entry's word."""
+    code = e.get("lang_code")
+    word = (e.get("word") or "").strip()
+    if not word:
+        return
+    pos = POS.get(e.get("pos", ""), e.get("pos", ""))
+    for s in (e.get("senses") or [])[:3]:
+        tags = s.get("tags") or []
+        if "form-of" in tags or "alt-of" in tags:
+            continue
+        for g in (s.get("glosses") or [])[-1:]:
+            g = GLOSS_DROP.sub("", g)
+            for part in GLOSS_SPLIT.split(g):
+                part = re.sub(r"^(to|a|an|the) ", "", part.strip().rstrip("."), flags=re.I)
+                if part and WIKI_TERM.match(part) and len(part.split()) <= REVERSE_MAX_WORDS:
+                    out.setdefault((key(part), code), []).append((pos, word))
 
 
 def wiktionary(path, defs_out, trans_out, have):
     log("reading Wiktionary")
     n_def = n_tr = lines = 0
-    marker = b'"lang_code": "en"'
+    markers = [b'"lang_code": "en"'] + [f'"lang_code": "{c}"'.encode() for c in LANGS]
+    reverse = {}
+    direct = set()
     with gzip.open(path, "rb") as f:
         for raw in f:
             lines += 1
-            if marker not in raw:
+            if not any(m in raw for m in markers):
                 continue
             try:
                 e = json.loads(raw)
             except ValueError:
+                continue
+            if e.get("lang_code") in LANGS:
+                reverse_glosses(e, reverse)
                 continue
             if e.get("lang_code") != "en":
                 continue
@@ -158,15 +192,16 @@ def wiktionary(path, defs_out, trans_out, have):
                 continue
             pos = POS.get(e.get("pos", ""), e.get("pos", ""))
             # English definitions only for terms the other two sources don't have (drug names, newer terms).
-            if k not in have:
+            if k not in have and WIKI_TERM.match(word) and k.count(" ") <= 2 and e.get("pos") not in ("name", "character", "symbol"):
                 kept = 0
                 for s in e.get("senses", []):
                     g = s.get("glosses") or s.get("raw_glosses") or []
-                    if g and "form-of" not in (s.get("tags") or []):
+                    tags = s.get("tags") or []
+                    if g and "form-of" not in tags and "alt-of" not in tags and not SKIP_GLOSS.match(g[-1]):
                         defs_out.append((k, word, "Wiktionary", pos, clean(g[-1])))
                         n_def += 1
                         kept += 1
-                        if kept >= MAX_SENSES:
+                        if kept >= WIKI_SENSES:
                             break
             trs = list(e.get("translations") or [])
             for s in e.get("senses", []):
@@ -183,9 +218,23 @@ def wiktionary(path, defs_out, trans_out, have):
             for (code, sense), words in by.items():
                 trans_out.append((k, code, pos, "; ".join(words[:8]), sense))
                 n_tr += 1
+                direct.add((k, code))
             if lines % 2_000_000 == 0:
                 log(f"  {lines} lines, {n_def} definitions, {n_tr} translations")
-    log("  Wiktionary definitions:", n_def, "translations:", n_tr)
+    # Words a translation section doesn't list, from the other language's own entries.
+    n_rev = 0
+    for (k, code), pairs in reverse.items():
+        if (k, code) in direct or not k:
+            continue
+        by_pos = {}
+        for pos, w in pairs:
+            by_pos.setdefault(pos, [])
+            if w not in by_pos[pos]:
+                by_pos[pos].append(w)
+        for pos, words in by_pos.items():
+            trans_out.append((k, code, pos, "; ".join(words[:6]), ""))
+            n_rev += 1
+    log("  Wiktionary definitions:", n_def, "translations:", n_tr, "from other-language entries:", n_rev)
 
 
 def write(path, rows):
@@ -222,13 +271,14 @@ def main():
     work = sys.argv[2] if len(sys.argv) > 2 else os.path.join(out_dir, "..", "dict-work")
     os.makedirs(out_dir, exist_ok=True)
     os.makedirs(work, exist_ok=True)
-    defs, trans = [], []
+    defs, trans, see = [], [], []
     wordnet(fetch(WORDNET_URLS, os.path.join(work, "wordnet.xml.gz")), defs)
-    mesh(fetch(MESH_URLS, os.path.join(work, "mesh.xml")), defs)
-    have = {r[0] for r in defs}
+    mesh(fetch(MESH_URLS, os.path.join(work, "mesh.xml")), defs, see)
+    have = {r[0] for r in defs} | {r[0] for r in see}
     wiktionary(fetch(WIKTIONARY_URLS, os.path.join(work, "wiktextract.jsonl.gz")), defs, trans, have)
     write(os.path.join(out_dir, "define.tsv"), defs)
     write(os.path.join(out_dir, "translate.tsv"), trans)
+    write(os.path.join(out_dir, "see.tsv"), see)
     with open(os.path.join(out_dir, "CREDITS.txt"), "w", encoding="utf-8") as f:
         f.write(CREDITS)
 
