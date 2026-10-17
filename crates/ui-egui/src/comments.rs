@@ -35,6 +35,8 @@ pub enum CommentTool {
     Line,
     Arrow,
     Rectangle,
+    /// A white rectangle that covers a label, for self-testing on diagrams.
+    HideLabel,
     Oval,
     Polygon,
     PolyLine,
@@ -55,6 +57,7 @@ pub const GROUPS: [&[CommentTool]; 3] = [
         CommentTool::Line,
         CommentTool::Arrow,
         CommentTool::Rectangle,
+        CommentTool::HideLabel,
         CommentTool::Oval,
         CommentTool::PolyLine,
         CommentTool::Polygon,
@@ -63,7 +66,7 @@ pub const GROUPS: [&[CommentTool]; 3] = [
     ],
 ];
 
-pub const ALL: [CommentTool; 19] = [
+pub const ALL: [CommentTool; 20] = [
     CommentTool::Eraser,
     CommentTool::ReplaceText,
     CommentTool::Attach,
@@ -82,6 +85,7 @@ pub const ALL: [CommentTool; 19] = [
     CommentTool::Line,
     CommentTool::Arrow,
     CommentTool::Rectangle,
+    CommentTool::HideLabel,
     CommentTool::Oval,
 ];
 
@@ -98,6 +102,7 @@ impl CommentTool {
             Self::Line => "comment.line",
             Self::Arrow => "comment.arrow",
             Self::Rectangle => "comment.square",
+            Self::HideLabel => "comment.hidelabel",
             Self::Oval => "comment.circle",
             Self::Polygon => "comment.polygon",
             Self::PolyLine => "comment.polyline",
@@ -126,6 +131,7 @@ impl CommentTool {
             Self::Line => "Line",
             Self::Arrow => "Arrow",
             Self::Rectangle => "Rectangle",
+            Self::HideLabel => "Hide label",
             Self::Oval => "Oval",
             Self::Polygon => "Polygon",
             Self::PolyLine => "Connected lines",
@@ -150,6 +156,7 @@ impl CommentTool {
             Self::Line => "minus",
             Self::Arrow => "move-right",
             Self::Rectangle => "square",
+            Self::HideLabel => "eye-off",
             Self::Oval => "circle",
             Self::Polygon => "pentagon",
             Self::PolyLine => "spline",
@@ -178,7 +185,7 @@ impl CommentTool {
 
     /// Tools that draw with a drag gesture.
     pub fn draws(self) -> bool {
-        matches!(self, Self::Ink | Self::Line | Self::Arrow | Self::Rectangle | Self::Oval | Self::Eraser)
+        matches!(self, Self::Ink | Self::Line | Self::Arrow | Self::Rectangle | Self::HideLabel | Self::Oval | Self::Eraser)
     }
 
     /// Tools that place points one click at a time (double-click or Enter finishes).
@@ -193,7 +200,19 @@ impl CommentTool {
 
     /// Whether the fill-colour control applies: shapes with an interior (#686).
     pub fn has_fill(self) -> bool {
-        matches!(self, Self::Rectangle | Self::Oval | Self::Polygon | Self::Cloud)
+        matches!(self, Self::Rectangle | Self::HideLabel | Self::Oval | Self::Polygon | Self::Cloud)
+    }
+
+    /// The tool's style before the user changes it. Hide label is an opaque white box with a
+    /// white border, so it covers the label underneath when printed or viewed.
+    fn default_style(self) -> Style {
+        let mut style = Style::default_for(&self.sample());
+        if self == Self::HideLabel {
+            style.color = WHITE;
+            style.fill = Some(WHITE);
+            style.opacity = 1.0;
+        }
+        style
     }
 
     /// A placeholder shape of this kind (for per-tool default styles).
@@ -207,7 +226,7 @@ impl CommentTool {
             Self::Ink => Shape::Ink { strokes: Vec::new() },
             Self::Line => Shape::Line { from: [0.0; 2], to: [0.0; 2], start: LineEnding::None, end: LineEnding::None },
             Self::Arrow => Shape::Line { from: [0.0; 2], to: [0.0; 2], start: LineEnding::None, end: LineEnding::OpenArrow },
-            Self::Rectangle => Shape::Rectangle { rect: [0.0; 4] },
+            Self::Rectangle | Self::HideLabel => Shape::Rectangle { rect: [0.0; 4] },
             Self::Oval => Shape::Oval { rect: [0.0; 4] },
             Self::Polygon => Shape::Polygon { vertices: Vec::new(), cloud: false },
             Self::Cloud => Shape::Polygon { vertices: Vec::new(), cloud: true },
@@ -235,6 +254,8 @@ pub const SWATCHES: [(&str, Rgb); 10] = [
     ("Black", [0.0, 0.0, 0.0]),
 ];
 
+const WHITE: Rgb = [1.0, 1.0, 1.0];
+
 pub fn color32(c: Rgb) -> Color32 {
     let b = |v: f64| (v.clamp(0.0, 1.0) * 255.0).round() as u8;
     Color32::from_rgb(b(c[0]), b(c[1]), b(c[2]))
@@ -256,7 +277,7 @@ impl Default for CommentPrefs {
     fn default() -> Self {
         Self {
             author: login_name(),
-            styles: ALL.iter().map(|t| (*t, Style::default_for(&t.sample()))).collect(),
+            styles: ALL.iter().map(|t| (*t, t.default_style())).collect(),
             pinned: false,
             group_tool: [CommentTool::Note, CommentTool::Highlight, CommentTool::Ink],
         }
@@ -1087,6 +1108,12 @@ fn paint_gesture(painter: &egui::Painter, cx: &PageCx<'_>, view: &DocView) {
                     }
                 }
             }
+            CommentTool::HideLabel if pts.len() == 2 => {
+                // The box as it will look, with a faint outline so it shows on white pages.
+                let r = Rect::from_two_pos(pts[0], pts[1]);
+                painter.rect_filled(r, CornerRadius::ZERO, color32(style.fill.unwrap_or(WHITE)));
+                painter.rect_stroke(r, CornerRadius::ZERO, Stroke::new(1.0, Color32::from_gray(150)), egui::StrokeKind::Inside);
+            }
             CommentTool::Rectangle if pts.len() == 2 => {
                 painter.rect_stroke(Rect::from_two_pos(pts[0], pts[1]), CornerRadius::ZERO, stroke, egui::StrokeKind::Inside);
             }
@@ -1128,7 +1155,7 @@ fn drawn_shape(tool: CommentTool, points: &[[f64; 2]]) -> Option<Shape> {
             start: LineEnding::None,
             end: if tool == CommentTool::Arrow { LineEnding::OpenArrow } else { LineEnding::None },
         }),
-        CommentTool::Rectangle if big => Some(Shape::Rectangle { rect }),
+        CommentTool::Rectangle | CommentTool::HideLabel if big => Some(Shape::Rectangle { rect }),
         CommentTool::Oval if big => Some(Shape::Oval { rect }),
         CommentTool::Polygon | CommentTool::Cloud if points.len() >= 3 => {
             Some(Shape::Polygon { vertices: points.to_vec(), cloud: tool == CommentTool::Cloud })
@@ -1884,6 +1911,18 @@ mod tests {
             assert!(icons::exists(t.icon()), "icon {}", t.icon());
             assert!(GROUPS[t.group()].contains(&t));
         }
+    }
+
+    #[test]
+    fn hide_label_draws_an_opaque_white_box() {
+        let style = CommentPrefs::default().style(CommentTool::HideLabel);
+        assert_eq!(style.color, WHITE);
+        assert_eq!(style.fill, Some(WHITE));
+        assert_eq!(style.opacity, 1.0);
+        assert_eq!(drawn_shape(CommentTool::HideLabel, &[[10.0, 0.0], [0.0, 10.0]]), Some(Shape::Rectangle { rect: [0.0, 0.0, 10.0, 10.0] }));
+        assert_eq!(drawn_shape(CommentTool::HideLabel, &[[0.0, 0.0], [1.0, 1.0]]), None);
+        // The plain rectangle keeps its own, unfilled default.
+        assert_eq!(CommentPrefs::default().style(CommentTool::Rectangle).fill, None);
     }
 
     #[test]

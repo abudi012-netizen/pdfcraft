@@ -234,6 +234,7 @@ pub const COMMANDS: &[CommandSpec] = &[
     c("comment.arrow", "Draw an arrow", None, None, Annotate, "move-right"),
     c("comment.square", "Draw a rectangle", None, None, Annotate, "square"),
     c("comment.circle", "Draw an oval", None, None, Annotate, "circle"),
+    c("comment.hidelabel", "Hide a label with a white box", None, None, Annotate, "eye-off"),
     c("comment.polygon", "Draw a polygon", None, None, Annotate, "pentagon"),
     c("comment.polyline", "Draw connected lines", None, None, Annotate, "spline"),
     c("comment.cloud", "Draw a cloud", None, None, Annotate, "cloud"),

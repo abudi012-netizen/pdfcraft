@@ -223,6 +223,7 @@ pub static TOOL_GROUPS: &[ToolGroup] = &[
                     item("Draw freehand", "pencil", "comment.ink", Ready),
                     item("Rectangle", "square", "comment.square", Ready),
                     item("Oval", "circle", "comment.circle", Ready),
+                    item("Hide label", "eye-off", "comment.hidelabel", Ready),
                     item("Line", "minus", "comment.line", Ready),
                     item("Arrow", "move-right", "comment.arrow", Ready),
                     item("Cloud", "cloud", "comment.cloud", Planned("M5")),
