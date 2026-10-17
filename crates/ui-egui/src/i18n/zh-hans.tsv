@@ -2371,3 +2371,16 @@ animation effects	Off	关
 	Other files	其他文件
 	Close side by side	关闭并排
 	Open a second PDF to see two side by side.	请再打开一个 PDF 以并排查看两个文档。
+
+# Define and Translate
+	Define	释义
+	Define “{w}”	释义“{w}”
+	Dictionaries unavailable: {e}	词典不可用：{e}
+	Loading dictionaries…	正在加载词典…
+	Not in the dictionaries.	词典中没有此词。
+	No definition found.	未找到释义。
+	Offline · WordNet, Wiktionary, MeSH	离线 · WordNet、Wiktionary、MeSH
+	Arabic	阿拉伯语
+	German	德语
+	French	法语
+	Spanish	西班牙语

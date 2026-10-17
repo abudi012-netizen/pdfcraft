@@ -2320,3 +2320,16 @@ animation effects	Off	Выкл
 	Other files	Другие файлы
 	Close side by side	Закрыть режим «рядом»
 	Open a second PDF to see two side by side.	Откройте второй PDF, чтобы видеть два рядом.
+
+# Define and Translate
+	Define	Определение
+	Define “{w}”	Определение «{w}»
+	Dictionaries unavailable: {e}	Словари недоступны: {e}
+	Loading dictionaries…	Загрузка словарей…
+	Not in the dictionaries.	Нет в словарях.
+	No definition found.	Определение не найдено.
+	Offline · WordNet, Wiktionary, MeSH	Офлайн · WordNet, Wiktionary, MeSH
+	Arabic	Арабский
+	German	Немецкий
+	French	Французский
+	Spanish	Испанский

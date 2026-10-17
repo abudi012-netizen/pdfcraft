@@ -2416,3 +2416,16 @@ animation effects	Off	Disattivati
 	Other files	Altri file
 	Close side by side	Chiudi affiancati
 	Open a second PDF to see two side by side.	Apri un secondo PDF per vederne due affiancati.
+
+# Define and Translate
+	Define	Definisci
+	Define “{w}”	Definisci «{w}»
+	Dictionaries unavailable: {e}	Dizionari non disponibili: {e}
+	Loading dictionaries…	Caricamento dei dizionari…
+	Not in the dictionaries.	Non presente nei dizionari.
+	No definition found.	Nessuna definizione trovata.
+	Offline · WordNet, Wiktionary, MeSH	Offline · WordNet, Wiktionary, MeSH
+	Arabic	Arabo
+	German	Tedesco
+	French	Francese
+	Spanish	Spagnolo

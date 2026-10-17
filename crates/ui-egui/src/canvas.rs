@@ -392,6 +392,8 @@ pub struct DocView {
     select_anchor: Option<usize>,
     /// An edit requested by the view (organize toolbar, keys), applied by the app this frame.
     pub pending_edit: Option<Edit>,
+    /// Define / Translate asked for on the selection: the text, where to show the card, translate?
+    pub lookup_request: Option<(String, Pos2, bool)>,
     /// Edit text: the lines per page (with the document generation they were read at), and the
     /// line being edited.
     pub(crate) edit_lines: HashMap<usize, (u64, Vec<pdfcraft_engine::TextBlock>)>,
@@ -637,6 +639,7 @@ impl DocView {
             select_anchor: None,
             organize_range: Default::default(),
             pending_edit: None,
+            lookup_request: None,
             edit_lines: HashMap::new(),
             line_editor: None,
             text_background: Default::default(),
@@ -3167,6 +3170,23 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
                 }
                 return;
             }
+            // Selected text: look it up in the offline dictionaries.
+            if view.comments.selected.is_none()
+                && let Some(text) = view.selected_text().filter(|t| !pdfcraft_engine::dictionary::fold(t).is_empty())
+            {
+                let at = ui.ctx().input(|i| i.pointer.interact_pos()).unwrap_or_default();
+                let short: String = text.chars().take(24).collect();
+                let more = if text.chars().count() > 24 { "…" } else { "" };
+                if ui.button(crate::i18n::fmt(tl!("Define “{w}”"), &[("w", &format!("{short}{more}"))])).clicked() {
+                    view.lookup_request = Some((text.clone(), at, false));
+                    ui.close();
+                }
+                if ui.button(tl!("Translate")).clicked() {
+                    view.lookup_request = Some((text, at, true));
+                    ui.close();
+                }
+                ui.separator();
+            }
             // Over a picture (and no comment): Copy Image, as in Acrobat's page menu.
             let mut copy_image = None;
             if view.comments.selected.is_none()
@@ -3482,6 +3502,9 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     if let Some((name, action)) = app.views[index].forms.button.take() {
         run_button(app, index, &name, action);
     }
+    if let Some((text, at, translate)) = app.views[index].lookup_request.take() {
+        app.open_lookup(text, at, translate);
+    }
     // Side by side: the tools float over the document being worked on only.
     if !app.secondary_pane {
         quick_bar(app, avail, ui);
@@ -3493,6 +3516,8 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
 
 #[derive(Clone, Copy)]
 enum SelectionAction {
+    Define,
+    Translate,
     Note,
     Markup(comments::CommentTool),
     Replace,
@@ -3516,12 +3541,20 @@ fn selection_actions(ui: &mut egui::Ui, viewport: Rect, view: &mut DocView, info
     if !viewport.intersects(rect) {
         return;
     }
-    let x = rect.left().clamp(viewport.left() + 8.0, (viewport.right() - 520.0).max(viewport.left() + 8.0));
+    let x = rect.left().clamp(viewport.left() + 8.0, (viewport.right() - 680.0).max(viewport.left() + 8.0));
     let y = if rect.bottom() + 48.0 < viewport.bottom() { rect.bottom() + 6.0 } else { (rect.top() - 44.0).max(viewport.top() + 6.0) };
     let mut chosen = None;
     egui::Area::new(egui::Id::new(("text-selection-actions", view.id.0))).order(egui::Order::Foreground).fixed_pos(pos2(x, y)).show(ui.ctx(), |ui| {
         egui::Frame::popup(ui.style()).show(ui, |ui| {
             ui.horizontal(|ui| {
+                // Offline dictionaries: no permission needed, nothing is changed.
+                if ui.button(tl!("Define")).clicked() {
+                    chosen = Some(SelectionAction::Define);
+                }
+                if ui.button(tl!("Translate")).clicked() {
+                    chosen = Some(SelectionAction::Translate);
+                }
+                ui.separator();
                 for (label, action) in [
                     (tl!("Add comment"), SelectionAction::Note),
                     (tl!("Highlight"), SelectionAction::Markup(comments::CommentTool::Highlight)),
@@ -3540,9 +3573,16 @@ fn selection_actions(ui: &mut egui::Ui, viewport: Rect, view: &mut DocView, info
         });
     });
     let Some(action) = chosen else { return };
-    if let SelectionAction::Copy = action {
-        ui.ctx().copy_text(selected);
-        return;
+    match action {
+        SelectionAction::Copy => {
+            ui.ctx().copy_text(selected);
+            return;
+        }
+        SelectionAction::Define | SelectionAction::Translate => {
+            view.lookup_request = Some((selected, pos2(x, y + 44.0), matches!(action, SelectionAction::Translate)));
+            return;
+        }
+        _ => {}
     }
     let Some((page, quads)) = view.selection_quads(info) else { return };
     let last = quads.last().copied().unwrap_or_default();
@@ -3572,8 +3612,8 @@ fn selection_actions(ui: &mut egui::Ui, viewport: Rect, view: &mut DocView, info
                 author: prefs.author.clone(),
             }));
         }
-        // Copied above.
-        SelectionAction::Copy => {}
+        // Done above.
+        SelectionAction::Copy | SelectionAction::Define | SelectionAction::Translate => {}
     }
 }
 

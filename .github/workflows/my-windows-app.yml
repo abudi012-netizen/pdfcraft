@@ -41,6 +41,15 @@ jobs:
       - name: Fetch the OCR models
         run: cargo xtask models
 
+      # Offline dictionaries for Define and Translate (built by the Dictionary data workflow).
+      - name: Fetch the dictionaries
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download dictionary-data -p dictionaries.tar.gz -R "$GITHUB_REPOSITORY" || echo "no dictionary data yet"
+          if [ -f dictionaries.tar.gz ]; then tar -xzf dictionaries.tar.gz; fi
+
       - name: Make PdfCraft-windows.zip
         shell: pwsh
         run: |
@@ -48,6 +57,7 @@ jobs:
           Copy-Item target/release/pdfcraft.exe PdfCraft/
           New-Item -ItemType Directory -Force PdfCraft/models | Out-Null
           Copy-Item assets/models/* PdfCraft/models/
+          if (Test-Path dictionaries) { Copy-Item -Recurse dictionaries PdfCraft/dictionaries }
           Compress-Archive -Path PdfCraft -DestinationPath PdfCraft-windows.zip -Force
 
       - name: Publish the download

@@ -2429,3 +2429,16 @@ animation effects	Off	Вимкнено
 	Other files	Інші файли
 	Close side by side	Закрити режим «поруч»
 	Open a second PDF to see two side by side.	Відкрийте другий PDF, щоб бачити два поруч.
+
+# Define and Translate
+	Define	Визначення
+	Define “{w}”	Визначення «{w}»
+	Dictionaries unavailable: {e}	Словники недоступні: {e}
+	Loading dictionaries…	Завантаження словників…
+	Not in the dictionaries.	Немає в словниках.
+	No definition found.	Визначення не знайдено.
+	Offline · WordNet, Wiktionary, MeSH	Офлайн · WordNet, Wiktionary, MeSH
+	Arabic	Арабська
+	German	Німецька
+	French	Французька
+	Spanish	Іспанська

@@ -2481,3 +2481,16 @@ animation effects	Off	Vypnuto
 	Other files	Další soubory
 	Close side by side	Zavřít zobrazení vedle sebe
 	Open a second PDF to see two side by side.	Otevřete druhé PDF, abyste viděli dvě vedle sebe.
+
+# Define and Translate
+	Define	Definovat
+	Define “{w}”	Definovat „{w}“
+	Dictionaries unavailable: {e}	Slovníky nejsou k dispozici: {e}
+	Loading dictionaries…	Načítání slovníků…
+	Not in the dictionaries.	Není ve slovnících.
+	No definition found.	Definice nebyla nalezena.
+	Offline · WordNet, Wiktionary, MeSH	Bez připojení · WordNet, Wiktionary, MeSH
+	Arabic	Arabština
+	German	Němčina
+	French	Francouzština
+	Spanish	Španělština

@@ -2537,3 +2537,16 @@ animation effects	Off	Desactivados
 	Other files	Otros archivos
 	Close side by side	Cerrar vista en paralelo
 	Open a second PDF to see two side by side.	Abra un segundo PDF para ver dos en paralelo.
+
+# Define and Translate
+	Define	Definir
+	Define “{w}”	Definir «{w}»
+	Dictionaries unavailable: {e}	Diccionarios no disponibles: {e}
+	Loading dictionaries…	Cargando diccionarios…
+	Not in the dictionaries.	No está en los diccionarios.
+	No definition found.	No se encontró ninguna definición.
+	Offline · WordNet, Wiktionary, MeSH	Sin conexión · WordNet, Wiktionary, MeSH
+	Arabic	Árabe
+	German	Alemán
+	French	Francés
+	Spanish	Español

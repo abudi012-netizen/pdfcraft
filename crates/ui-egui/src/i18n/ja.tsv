@@ -2407,3 +2407,16 @@ animation effects	Off	オフ
 	Other files	その他のファイル
 	Close side by side	左右表示を閉じる
 	Open a second PDF to see two side by side.	左右に並べるには 2 つ目の PDF を開いてください。
+
+# Define and Translate
+	Define	定義
+	Define “{w}”	「{w}」を定義
+	Dictionaries unavailable: {e}	辞書を使用できません: {e}
+	Loading dictionaries…	辞書を読み込んでいます…
+	Not in the dictionaries.	辞書に見つかりません。
+	No definition found.	定義が見つかりません。
+	Offline · WordNet, Wiktionary, MeSH	オフライン · WordNet、Wiktionary、MeSH
+	Arabic	アラビア語
+	German	ドイツ語
+	French	フランス語
+	Spanish	スペイン語

@@ -50,6 +50,7 @@ mod export_ui;
 mod hide_labels_ui;
 mod highlights_ui;
 mod js_ui;
+mod lookup_ui;
 mod marks_ui;
 mod measure_ui;
 mod ocr_ui;
@@ -657,6 +658,10 @@ pub struct PdfCraftApp {
     pub(crate) highlights_window: Option<highlights_ui::HighlightsWindow>,
     /// View ▸ Side by side: the documents shown left and right.
     pub side_by_side: Option<(DocId, DocId)>,
+    /// Define / Translate on selected text: the card, the dictionaries and the chosen language.
+    pub(crate) lookup: Option<lookup_ui::LookupCard>,
+    pub(crate) dictionaries: lookup_ui::Dictionaries,
+    pub lookup_language: String,
     /// While drawing the half of side by side that isn't being worked on.
     pub(crate) secondary_pane: bool,
     pub ocr_batch: Option<std::sync::Arc<std::sync::Mutex<ocr_ui::BatchProgress>>>,
@@ -984,6 +989,9 @@ impl PdfCraftApp {
             hide_run: None,
             highlights_window: None,
             side_by_side: None,
+            lookup: None,
+            dictionaries: Default::default(),
+            lookup_language: "ar".into(),
             secondary_pane: false,
             ocr_batch: None,
             run_inline: false,
@@ -2232,6 +2240,7 @@ impl PdfCraftApp {
         // Added outside the `json!` above, which is at the macro's recursion limit.
         if let Some(map) = state.as_object_mut() {
             map.insert("last_pages".into(), serde_json::to_value(&self.last_pages).unwrap_or_default());
+            map.insert("lookup_language".into(), serde_json::Value::String(self.lookup_language.clone()));
             map.insert("night_theme".into(), serde_json::to_value(self.night_theme).unwrap_or_default());
         }
         state.to_string()
@@ -2261,6 +2270,9 @@ impl PdfCraftApp {
             #[cfg(not(target_arch = "wasm32"))]
             let r: Vec<RecentFile> = r.into_iter().filter(|f| std::path::Path::new(&f.path).exists()).collect();
             self.recent = r;
+        }
+        if let Some(code) = v["lookup_language"].as_str().filter(|c| pdfcraft_engine::dictionary::LANGUAGES.iter().any(|(l, _)| l == c)) {
+            self.lookup_language = code.to_owned();
         }
         if let Ok(pages) = serde_json::from_value::<std::collections::BTreeMap<String, usize>>(v["last_pages"].clone()) {
             // Only the files still in Recent.

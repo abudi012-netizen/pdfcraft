@@ -2405,3 +2405,16 @@ animation effects	Off	Өшірулі
 	Other files	Басқа файлдар
 	Close side by side	Қатар көрінісін жабу
 	Open a second PDF to see two side by side.	Екеуін қатар көру үшін екінші PDF ашыңыз.
+
+# Define and Translate
+	Define	Анықтама
+	Define “{w}”	«{w}» анықтамасы
+	Dictionaries unavailable: {e}	Сөздіктер қолжетімсіз: {e}
+	Loading dictionaries…	Сөздіктер жүктелуде…
+	Not in the dictionaries.	Сөздіктерде жоқ.
+	No definition found.	Анықтама табылмады.
+	Offline · WordNet, Wiktionary, MeSH	Офлайн · WordNet, Wiktionary, MeSH
+	Arabic	Араб тілі
+	German	Неміс тілі
+	French	Француз тілі
+	Spanish	Испан тілі

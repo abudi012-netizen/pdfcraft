@@ -2403,3 +2403,16 @@ animation effects	Off	Kapalı
 	Other files	Diğer dosyalar
 	Close side by side	Yan yana görünümü kapat
 	Open a second PDF to see two side by side.	İkisini yan yana görmek için ikinci bir PDF açın.
+
+# Define and Translate
+	Define	Tanımla
+	Define “{w}”	“{w}” tanımı
+	Dictionaries unavailable: {e}	Sözlükler kullanılamıyor: {e}
+	Loading dictionaries…	Sözlükler yükleniyor…
+	Not in the dictionaries.	Sözlüklerde yok.
+	No definition found.	Tanım bulunamadı.
+	Offline · WordNet, Wiktionary, MeSH	Çevrimdışı · WordNet, Wiktionary, MeSH
+	Arabic	Arapça
+	German	Almanca
+	French	Fransızca
+	Spanish	İspanyolca

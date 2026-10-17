@@ -2417,3 +2417,16 @@ animation effects	Off	Ανενεργά
 	Other files	Άλλα αρχεία
 	Close side by side	Κλείσιμο προβολής δίπλα-δίπλα
 	Open a second PDF to see two side by side.	Ανοίξτε ένα δεύτερο PDF για να δείτε δύο δίπλα-δίπλα.
+
+# Define and Translate
+	Define	Ορισμός
+	Define “{w}”	Ορισμός «{w}»
+	Dictionaries unavailable: {e}	Τα λεξικά δεν είναι διαθέσιμα: {e}
+	Loading dictionaries…	Φόρτωση λεξικών…
+	Not in the dictionaries.	Δεν υπάρχει στα λεξικά.
+	No definition found.	Δεν βρέθηκε ορισμός.
+	Offline · WordNet, Wiktionary, MeSH	Εκτός σύνδεσης · WordNet, Wiktionary, MeSH
+	Arabic	Αραβικά
+	German	Γερμανικά
+	French	Γαλλικά
+	Spanish	Ισπανικά

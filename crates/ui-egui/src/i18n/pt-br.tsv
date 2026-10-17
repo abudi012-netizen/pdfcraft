@@ -2421,3 +2421,16 @@ animation effects	Off	Desativados
 	Other files	Outros arquivos
 	Close side by side	Fechar lado a lado
 	Open a second PDF to see two side by side.	Abra um segundo PDF para ver dois lado a lado.
+
+# Define and Translate
+	Define	Definir
+	Define “{w}”	Definir “{w}”
+	Dictionaries unavailable: {e}	Dicionários indisponíveis: {e}
+	Loading dictionaries…	Carregando dicionários…
+	Not in the dictionaries.	Não está nos dicionários.
+	No definition found.	Nenhuma definição encontrada.
+	Offline · WordNet, Wiktionary, MeSH	Offline · WordNet, Wiktionary, MeSH
+	Arabic	Árabe
+	German	Alemão
+	French	Francês
+	Spanish	Espanhol

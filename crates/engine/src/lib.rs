@@ -23,6 +23,7 @@ pub mod commands;
 pub mod compare;
 mod copy_image;
 pub mod dates;
+pub mod dictionary;
 pub mod export;
 pub mod highlights;
 pub mod js;

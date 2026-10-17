@@ -2428,3 +2428,16 @@ animation effects	Off	معطّلة
 	Other files	ملفات أخرى
 	Close side by side	إغلاق العرض جنبًا إلى جنب
 	Open a second PDF to see two side by side.	افتح ملف PDF ثانيًا لعرض ملفين جنبًا إلى جنب.
+
+# Define and Translate
+	Define	تعريف
+	Define “{w}”	تعريف «{w}»
+	Dictionaries unavailable: {e}	القواميس غير متاحة: {e}
+	Loading dictionaries…	جارٍ تحميل القواميس…
+	Not in the dictionaries.	غير موجود في القواميس.
+	No definition found.	لم يتم العثور على تعريف.
+	Offline · WordNet, Wiktionary, MeSH	بدون إنترنت · WordNet وWiktionary وMeSH
+	Arabic	العربية
+	German	الألمانية
+	French	الفرنسية
+	Spanish	الإسبانية

@@ -2387,3 +2387,16 @@ animation effects	Off	Wyłączone
 	Other files	Inne pliki
 	Close side by side	Zamknij widok obok siebie
 	Open a second PDF to see two side by side.	Otwórz drugi plik PDF, aby zobaczyć dwa obok siebie.
+
+# Define and Translate
+	Define	Definicja
+	Define “{w}”	Definicja „{w}”
+	Dictionaries unavailable: {e}	Słowniki niedostępne: {e}
+	Loading dictionaries…	Wczytywanie słowników…
+	Not in the dictionaries.	Brak w słownikach.
+	No definition found.	Nie znaleziono definicji.
+	Offline · WordNet, Wiktionary, MeSH	Bez połączenia · WordNet, Wiktionary, MeSH
+	Arabic	Arabski
+	German	Niemiecki
+	French	Francuski
+	Spanish	Hiszpański

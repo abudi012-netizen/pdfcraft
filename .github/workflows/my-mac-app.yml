@@ -42,6 +42,14 @@ jobs:
       - name: Fetch the OCR models
         run: cargo xtask models
 
+      # Offline dictionaries for Define and Translate (built by the Dictionary data workflow).
+      - name: Fetch the dictionaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download dictionary-data -p dictionaries.tar.gz -R "$GITHUB_REPOSITORY" || echo "no dictionary data yet"
+          if [ -f dictionaries.tar.gz ]; then tar -xzf dictionaries.tar.gz; fi
+
       - name: Make PdfCraft.app
         run: |
           set -euo pipefail
@@ -55,6 +63,7 @@ jobs:
           cp assets/app-icon/pdfcraft.icns "$APP/Contents/Resources/PdfCraft.icns"
           mkdir -p "$APP/Contents/Resources/models"
           cp assets/models/* "$APP/Contents/Resources/models/"
+          if [ -d dictionaries ]; then cp -R dictionaries "$APP/Contents/Resources/dictionaries"; fi
           codesign --force --deep --sign - "$APP"
           ditto -c -k --keepParent "$APP" PdfCraft-mac.zip
 

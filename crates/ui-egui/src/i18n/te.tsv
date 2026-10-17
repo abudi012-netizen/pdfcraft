@@ -2320,3 +2320,16 @@ animation effects	Off	ఆఫ్
 	Other files	ఇతర ఫైళ్లు
 	Close side by side	పక్కపక్కన వీక్షణను మూసివేయండి
 	Open a second PDF to see two side by side.	రెండింటిని పక్కపక్కనే చూడటానికి రెండవ PDFను తెరవండి.
+
+# Define and Translate
+	Define	నిర్వచనం
+	Define “{w}”	“{w}” నిర్వచనం
+	Dictionaries unavailable: {e}	నిఘంటువులు అందుబాటులో లేవు: {e}
+	Loading dictionaries…	నిఘంటువులు లోడ్ అవుతున్నాయి…
+	Not in the dictionaries.	నిఘంటువులలో లేదు.
+	No definition found.	నిర్వచనం కనబడలేదు.
+	Offline · WordNet, Wiktionary, MeSH	ఆఫ్‌లైన్ · WordNet, Wiktionary, MeSH
+	Arabic	అరబిక్
+	German	జర్మన్
+	French	ఫ్రెంచ్
+	Spanish	స్పానిష్

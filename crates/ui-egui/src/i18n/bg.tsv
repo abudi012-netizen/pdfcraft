@@ -2370,3 +2370,16 @@ animation effects	Off	Изключени
 	Other files	Други файлове
 	Close side by side	Затваряне на изгледа един до друг
 	Open a second PDF to see two side by side.	Отворете втори PDF, за да видите два един до друг.
+
+# Define and Translate
+	Define	Определение
+	Define “{w}”	Определение на „{w}“
+	Dictionaries unavailable: {e}	Речниците не са налични: {e}
+	Loading dictionaries…	Зареждане на речниците…
+	Not in the dictionaries.	Няма го в речниците.
+	No definition found.	Не е намерено определение.
+	Offline · WordNet, Wiktionary, MeSH	Офлайн · WordNet, Wiktionary, MeSH
+	Arabic	Арабски
+	German	Немски
+	French	Френски
+	Spanish	Испански

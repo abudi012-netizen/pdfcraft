@@ -2406,3 +2406,16 @@ animation effects	Off	Ki
 	Other files	Egyéb fájlok
 	Close side by side	Egymás melletti nézet bezárása
 	Open a second PDF to see two side by side.	Nyisson meg egy második PDF-et, hogy kettőt lásson egymás mellett.
+
+# Define and Translate
+	Define	Meghatározás
+	Define “{w}”	„{w}” meghatározása
+	Dictionaries unavailable: {e}	A szótárak nem érhetők el: {e}
+	Loading dictionaries…	Szótárak betöltése…
+	Not in the dictionaries.	Nincs benne a szótárakban.
+	No definition found.	Nem található meghatározás.
+	Offline · WordNet, Wiktionary, MeSH	Kapcsolat nélkül · WordNet, Wiktionary, MeSH
+	Arabic	Arab
+	German	Német
+	French	Francia
+	Spanish	Spanyol

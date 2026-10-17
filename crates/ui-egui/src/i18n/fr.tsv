@@ -2407,3 +2407,16 @@ animation effects	Off	Désactivés
 	Other files	Autres fichiers
 	Close side by side	Fermer l’affichage côte à côte
 	Open a second PDF to see two side by side.	Ouvrez un second PDF pour en voir deux côte à côte.
+
+# Define and Translate
+	Define	Définir
+	Define “{w}”	Définir « {w} »
+	Dictionaries unavailable: {e}	Dictionnaires indisponibles : {e}
+	Loading dictionaries…	Chargement des dictionnaires…
+	Not in the dictionaries.	Absent des dictionnaires.
+	No definition found.	Aucune définition trouvée.
+	Offline · WordNet, Wiktionary, MeSH	Hors ligne · WordNet, Wiktionary, MeSH
+	Arabic	Arabe
+	German	Allemand
+	French	Français
+	Spanish	Espagnol

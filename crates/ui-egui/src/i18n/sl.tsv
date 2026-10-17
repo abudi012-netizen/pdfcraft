@@ -2412,3 +2412,16 @@ animation effects	Off	Izklopljeni
 	Other files	Druge datoteke
 	Close side by side	Zapri pogled drug ob drugem
 	Open a second PDF to see two side by side.	Odprite drugi PDF, da vidite dva drug ob drugem.
+
+# Define and Translate
+	Define	Opredeli
+	Define “{w}”	Opredeli »{w}«
+	Dictionaries unavailable: {e}	Slovarji niso na voljo: {e}
+	Loading dictionaries…	Nalaganje slovarjev …
+	Not in the dictionaries.	Ni v slovarjih.
+	No definition found.	Opredelitve ni bilo mogoče najti.
+	Offline · WordNet, Wiktionary, MeSH	Brez povezave · WordNet, Wiktionary, MeSH
+	Arabic	Arabščina
+	German	Nemščina
+	French	Francoščina
+	Spanish	Španščina

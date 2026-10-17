@@ -2651,3 +2651,16 @@ key	Space	Tarpas
 	Other files	Kiti failai
 	Close side by side	Uždaryti rodinį greta
 	Open a second PDF to see two side by side.	Atverkite antrą PDF, kad matytumėte du greta.
+
+# Define and Translate
+	Define	Apibrėžti
+	Define “{w}”	Apibrėžti „{w}“
+	Dictionaries unavailable: {e}	Žodynai nepasiekiami: {e}
+	Loading dictionaries…	Įkeliami žodynai…
+	Not in the dictionaries.	Žodynuose nėra.
+	No definition found.	Apibrėžimas nerastas.
+	Offline · WordNet, Wiktionary, MeSH	Neprisijungus · WordNet, Wiktionary, MeSH
+	Arabic	Arabų
+	German	Vokiečių
+	French	Prancūzų
+	Spanish	Ispanų
