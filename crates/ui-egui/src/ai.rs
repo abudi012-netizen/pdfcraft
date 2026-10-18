@@ -38,9 +38,28 @@ pub trait AiBackend: Send + Sync {
 pub const MODELS: &[(&str, &str)] = &[
     ("gemma3:4b", "Gemma 3 4B — fast, 3.4 GB"),
     ("gemma4:e4b", "Gemma 4 E4B — newer, 6.6 GB"),
+    ("gemma4:12b", "Gemma 4 12B — smarter, slower, 7.7 GB"),
     ("deepseek-r1:8b", "DeepSeek-R1 8B — reasons step by step, 5.2 GB"),
 ];
 pub const DEFAULT_MODEL: &str = "gemma3:4b";
+
+/// Whether `name` can be an Ollama model name (`family:tag`), for a choice read back from
+/// settings: one the user downloaded themselves is kept, not only those in [`MODELS`].
+pub fn is_model_name(name: &str) -> bool {
+    !name.is_empty() && name.len() <= 128 && name.chars().all(|c| c.is_ascii_alphanumeric() || "._-:/".contains(c))
+}
+
+/// The model menu: [`MODELS`], then every other installed model under its own name.
+fn menu_models(installed: &[String]) -> Vec<(String, String)> {
+    let offered = |m: &str| MODELS.iter().any(|(id, _)| *id == m || m.strip_suffix(":latest") == Some(*id));
+    let mut menu: Vec<(String, String)> = MODELS.iter().map(|(m, l)| ((*m).to_owned(), (*l).to_owned())).collect();
+    for m in installed {
+        if !offered(m) && !menu.iter().any(|(id, _)| id == m) {
+            menu.push((m.clone(), m.clone()));
+        }
+    }
+    menu
+}
 
 /// Most characters of a document sent with a question (about 12,000 tokens).
 const MAX_DOCUMENT: usize = 48_000;
@@ -100,6 +119,8 @@ pub struct AiWindow {
     asking: Option<String>,
     /// The follow-up being typed.
     follow_up: String,
+    /// The models installed in Ollama, once listed (for the model menu).
+    installed: Arc<Mutex<Vec<String>>>,
     job: Option<Arc<Mutex<Job>>>,
 }
 
@@ -158,7 +179,18 @@ impl PdfCraftApp {
             self.notify_tr("Select the text first, then choose this again.");
             return;
         }
-        self.ai_window = Some(AiWindow { doc: id, task, input, page, turns: Vec::new(), asking: None, follow_up: String::new(), job: None });
+        self.ai_window = Some(AiWindow {
+            doc: id,
+            task,
+            input,
+            page,
+            turns: Vec::new(),
+            asking: None,
+            follow_up: String::new(),
+            installed: Arc::default(),
+            job: None,
+        });
+        self.list_models();
         if task != Task::Ask {
             self.start_ai();
         }
@@ -273,6 +305,28 @@ impl PdfCraftApp {
         }
     }
 
+    /// List the installed models in the background, so the menu offers ones the user added.
+    fn list_models(&mut self) {
+        let (Some(backend), Some(w)) = (self.ai.clone(), self.ai_window.as_ref()) else { return };
+        let installed = w.installed.clone();
+        let ctx = self.ctx.clone();
+        let work = move || {
+            if let Ok(Ok(models)) = pdfcraft_engine::guard(|| backend.models())
+                && let Ok(mut list) = installed.lock()
+            {
+                *list = models;
+            }
+            if let Some(c) = &ctx {
+                c.request_repaint();
+            }
+        };
+        if self.run_inline {
+            work();
+        } else {
+            std::thread::Builder::new().name("pdfcraft-ai-models".into()).spawn(work).ok();
+        }
+    }
+
     fn start_ai(&mut self) {
         self.start_ai_with(false);
     }
@@ -341,11 +395,12 @@ pub fn window(app: &mut PdfCraftApp, ctx: &egui::Context) {
         .show(ctx, |ui| {
             ui.horizontal(|ui| {
                 ui.label(egui::RichText::new(tl!("Model")).color(t.text_muted));
-                let label = MODELS.iter().find(|(m, _)| *m == current_model).map_or(current_model.as_str(), |(_, l)| l);
+                let menu = menu_models(&w.installed.lock().map(|l| l.clone()).unwrap_or_default());
+                let label = menu.iter().find(|(m, _)| *m == current_model).map_or(current_model.as_str(), |(_, l)| l.as_str());
                 egui::ComboBox::from_id_salt("ai-model").selected_text(label).width(300.0).show_ui(ui, |ui| {
-                    for (m, l) in MODELS {
-                        if ui.selectable_label(current_model == *m, *l).clicked() {
-                            model = Some((*m).to_owned());
+                    for (m, l) in &menu {
+                        if ui.selectable_label(current_model == *m, l.as_str()).clicked() {
+                            model = Some(m.clone());
                         }
                     }
                 });
@@ -503,6 +558,25 @@ mod tests {
         assert!(p.len() < MAX_DOCUMENT + 400);
         assert!(prompt(Task::Translate, "half-life", "", "de").contains("German"));
         assert!(prompt(Task::Ask, "What is Vd?", "lecture", "ar").contains("What is Vd?"));
+    }
+
+    #[test]
+    fn the_menu_offers_every_installed_model_once() {
+        let installed = ["gemma4:e4b", "gemma3:4b:latest", "llama3.2:3b", "llama3.2:3b"].map(String::from);
+        let menu = menu_models(&installed);
+        let ids: Vec<_> = menu.iter().map(|(m, _)| m.as_str()).collect();
+        assert_eq!(ids, ["gemma3:4b", "gemma4:e4b", "gemma4:12b", "deepseek-r1:8b", "llama3.2:3b"]);
+        assert_eq!(menu.last().map(|(_, l)| l.as_str()), Some("llama3.2:3b"));
+        assert_eq!(menu_models(&[]).len(), MODELS.len());
+    }
+
+    #[test]
+    fn saved_model_names_are_checked() {
+        assert!(MODELS.iter().all(|(m, _)| is_model_name(m)));
+        assert!(is_model_name("hf.co/user/model:Q4_K_M"));
+        for bad in ["", "a b", "x\nrm", &"a".repeat(129)] {
+            assert!(!is_model_name(bad), "{bad:?}");
+        }
     }
 
     #[test]

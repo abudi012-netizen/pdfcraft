@@ -2281,7 +2281,7 @@ impl PdfCraftApp {
             let r: Vec<RecentFile> = r.into_iter().filter(|f| std::path::Path::new(&f.path).exists()).collect();
             self.recent = r;
         }
-        if let Some(m) = v["ai_model"].as_str().filter(|m| ai::MODELS.iter().any(|(id, _)| id == m)) {
+        if let Some(m) = v["ai_model"].as_str().filter(|m| ai::is_model_name(m)) {
             self.ai_model = m.to_owned();
         }
         if let Some(code) = v["lookup_language"].as_str().filter(|c| pdfcraft_engine::dictionary::LANGUAGES.iter().any(|(l, _)| l == c)) {
