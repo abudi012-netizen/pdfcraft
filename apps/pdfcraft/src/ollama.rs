@@ -126,10 +126,7 @@ impl AiBackend for Ollama {
         let body = serde_json::json!({
             "model": ask.model,
             "stream": true,
-            "messages": [
-                { "role": "system", "content": ask.system },
-                { "role": "user", "content": ask.prompt },
-            ],
+            "messages": messages(ask),
             // Room for a whole lecture; Ollama's default context is much smaller.
             "options": { "num_ctx": ask.context, "temperature": 0.3 },
         });
@@ -139,5 +136,35 @@ impl AiBackend for Ollama {
             received = received.saturating_add(part.len());
             received <= MAX_ANSWER && text(part)
         })
+    }
+}
+
+/// The chat sent: the instructions, the conversation so far, then the new question.
+fn messages(ask: &Ask) -> Vec<serde_json::Value> {
+    let mut messages = vec![serde_json::json!({ "role": "system", "content": ask.system })];
+    for (question, answer) in &ask.history {
+        messages.push(serde_json::json!({ "role": "user", "content": question }));
+        messages.push(serde_json::json!({ "role": "assistant", "content": answer }));
+    }
+    messages.push(serde_json::json!({ "role": "user", "content": ask.prompt }));
+    messages
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn follow_ups_carry_the_conversation_in_order() {
+        let ask = Ask {
+            model: "gemma3:4b".into(),
+            system: "sys".into(),
+            prompt: "why?".into(),
+            history: vec![("explain Vd".into(), "Vd is…".into())],
+            context: 16_384,
+        };
+        let roles: Vec<_> =
+            messages(&ask).iter().map(|m| format!("{}={}", m["role"].as_str().unwrap_or(""), m["content"].as_str().unwrap_or(""))).collect();
+        assert_eq!(roles, ["system=sys", "user=explain Vd", "assistant=Vd is…", "user=why?"]);
     }
 }

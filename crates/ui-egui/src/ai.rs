@@ -17,6 +17,8 @@ pub struct Ask {
     pub model: String,
     pub system: String,
     pub prompt: String,
+    /// The conversation so far, oldest first: what was asked, what the model answered.
+    pub history: Vec<(String, String)>,
     /// Context window asked for, in tokens.
     pub context: u32,
 }
@@ -43,6 +45,8 @@ pub const DEFAULT_MODEL: &str = "gemma3:4b";
 /// Most characters of a document sent with a question (about 12,000 tokens).
 const MAX_DOCUMENT: usize = 48_000;
 const CONTEXT: u32 = 16_384;
+/// The largest context a follow-up asks for: a long conversation about a whole lecture.
+const MAX_CONTEXT: u32 = 32_768;
 
 const SYSTEM: &str = "You are a careful study assistant for a pharmacy student. Base your answers on the lecture text you are given. \
 Be concise and accurate; use short bullet points where they help. If the lecture does not say, say so plainly, and mark anything you add from general knowledge as such. \
@@ -69,6 +73,8 @@ impl Task {
 
 #[derive(Default)]
 struct Job {
+    /// What was sent to the model (kept for follow-up questions).
+    prompt: String,
     text: String,
     status: String,
     /// Download progress, while a model downloads.
@@ -88,7 +94,33 @@ pub struct AiWindow {
     input: String,
     /// The page the selection is on (Explain): its text is the context.
     page: Option<usize>,
+    /// Answered questions, oldest first; the running or last job is not among them.
+    turns: Vec<Turn>,
+    /// The follow-up question the job answers (`None` for the first question).
+    asking: Option<String>,
+    /// The follow-up being typed.
+    follow_up: String,
     job: Option<Arc<Mutex<Job>>>,
+}
+
+/// One answered question in the conversation.
+struct Turn {
+    /// The follow-up asked (`None` for the first question, shown above the conversation).
+    question: Option<String>,
+    prompt: String,
+    answer: String,
+}
+
+/// A follow-up question, answered from what was said before.
+fn follow_up_prompt(question: &str) -> String {
+    format!("Follow-up question about the text above: {question}")
+}
+
+/// The context to ask for: room for the whole conversation (about 3 characters a token) and
+/// the answer, between [`CONTEXT`] and [`MAX_CONTEXT`].
+fn context_for(history: &[(String, String)], prompt: &str) -> u32 {
+    let chars = history.iter().map(|(q, a)| q.len().saturating_add(a.len())).fold(prompt.len(), usize::saturating_add);
+    u32::try_from(chars / 3).unwrap_or(u32::MAX).saturating_add(4_096).clamp(CONTEXT, MAX_CONTEXT)
 }
 
 fn lang_name(code: &str) -> &'static str {
@@ -126,7 +158,7 @@ impl PdfCraftApp {
             self.notify_tr("Select the text first, then choose this again.");
             return;
         }
-        self.ai_window = Some(AiWindow { doc: id, task, input, page, job: None });
+        self.ai_window = Some(AiWindow { doc: id, task, input, page, turns: Vec::new(), asking: None, follow_up: String::new(), job: None });
         if task != Task::Ask {
             self.start_ai();
         }
@@ -140,6 +172,9 @@ impl PdfCraftApp {
         let bytes = doc.bytes.clone();
         let password = doc.password.as_deref().map(Arc::from);
         let (task, input, page) = (w.task, w.input.clone(), w.page);
+        // A follow-up: the conversation so far carries the lecture; don't read it again.
+        let follow_up =
+            w.asking.as_deref().map(|q| (w.turns.iter().map(|t| (t.prompt.clone(), t.answer.clone())).collect::<Vec<_>>(), follow_up_prompt(q)));
         let model = self.ai_model.clone();
         let language = self.lookup_language.clone();
         let job = Arc::new(Mutex::new(Job { status: tl!("Starting…").to_owned(), ..Default::default() }));
@@ -177,6 +212,23 @@ impl PdfCraftApp {
                     })?;
                     set(&mut |j| j.progress = None);
                 }
+                if let Some((history, prompt)) = &follow_up {
+                    set(&mut |j| {
+                        j.prompt = prompt.clone();
+                        j.status = tl!("Thinking…").to_owned();
+                    });
+                    let ask = Ask {
+                        model: model.clone(),
+                        system: SYSTEM.to_owned(),
+                        prompt: prompt.clone(),
+                        context: context_for(history, prompt),
+                        history: history.clone(),
+                    };
+                    return backend.ask(&ask, &mut |piece| {
+                        set(&mut |j| j.text.push_str(piece));
+                        !stopped()
+                    });
+                }
                 set(&mut |j| j.status = tl!("Reading the lecture…").to_owned());
                 // The document's text: all of it, or the selection's page (Explain).
                 let document = if task == Task::Translate {
@@ -195,9 +247,12 @@ impl PdfCraftApp {
                     }
                     pages.into_iter().map(|(i, t)| format!("[Page {}]\n{t}", i + 1)).collect::<Vec<_>>().join("\n\n")
                 };
-                set(&mut |j| j.status = tl!("Thinking…").to_owned());
-                let ask =
-                    Ask { model: model.clone(), system: SYSTEM.to_owned(), prompt: prompt(task, &input, &document, &language), context: CONTEXT };
+                let prompt = prompt(task, &input, &document, &language);
+                set(&mut |j| {
+                    j.prompt = prompt.clone();
+                    j.status = tl!("Thinking…").to_owned();
+                });
+                let ask = Ask { model: model.clone(), system: SYSTEM.to_owned(), prompt, history: Vec::new(), context: CONTEXT };
                 backend.ask(&ask, &mut |piece| {
                     set(&mut |j| j.text.push_str(piece));
                     !stopped()
@@ -220,6 +275,26 @@ impl PdfCraftApp {
 
     fn start_ai(&mut self) {
         self.start_ai_with(false);
+    }
+
+    /// Ask the typed follow-up: the finished answer joins the conversation, then the model
+    /// answers the new question with everything said so far.
+    fn ask_follow_up(&mut self) {
+        let Some(w) = self.ai_window.as_mut() else { return };
+        let question = w.follow_up.trim().to_owned();
+        let finished = w.job.as_ref().and_then(|j| {
+            let j = j.lock().ok()?;
+            let answer = visible_answer(&j.text).0.trim();
+            (j.done && j.error.is_none() && !j.prompt.is_empty() && !answer.is_empty()).then(|| (j.prompt.clone(), answer.to_owned()))
+        });
+        let Some((prompt, answer)) = finished else { return };
+        if question.is_empty() {
+            return;
+        }
+        w.turns.push(Turn { question: w.asking.take(), prompt, answer });
+        w.asking = Some(question);
+        w.follow_up.clear();
+        self.start_ai();
     }
 }
 
@@ -249,6 +324,7 @@ pub fn window(app: &mut PdfCraftApp, ctx: &egui::Context) {
     let mut start = false;
     let mut download = false;
     let mut stop = false;
+    let mut follow_up = false;
     let mut copy = None;
     let mut model = None;
     let task = w.task;
@@ -274,7 +350,7 @@ pub fn window(app: &mut PdfCraftApp, ctx: &egui::Context) {
                     }
                 });
             });
-            if task == Task::Ask {
+            if task == Task::Ask && job.is_none() {
                 ui.horizontal(|ui| {
                     let r = ui.add(
                         egui::TextEdit::singleline(&mut w.input).hint_text(tl!("Ask a question about this lecture")).desired_width(f32::INFINITY),
@@ -300,6 +376,27 @@ pub fn window(app: &mut PdfCraftApp, ctx: &egui::Context) {
                     }
                 }
                 Some((text, status, progress, missing, error, done)) => {
+                    let (answer, thinking) = visible_answer(text);
+                    if !w.turns.is_empty() || w.asking.is_some() || !answer.is_empty() {
+                        let question = |ui: &mut egui::Ui, q: &str| {
+                            ui.label(egui::RichText::new(format!("{}: {q}", tl!("You"))).strong().color(t.text_muted));
+                        };
+                        egui::ScrollArea::vertical().max_height(340.0).stick_to_bottom(true).show(ui, |ui| {
+                            for turn in &w.turns {
+                                if let Some(q) = &turn.question {
+                                    question(ui, q);
+                                }
+                                ui.label(egui::RichText::new(&turn.answer).font(theme::regular(13.5)));
+                                ui.add_space(10.0);
+                            }
+                            if let Some(q) = &w.asking {
+                                question(ui, q);
+                            }
+                            if !answer.is_empty() {
+                                ui.label(egui::RichText::new(answer).font(theme::regular(13.5)));
+                            }
+                        });
+                    }
                     if *missing {
                         let size = MODELS.iter().find(|(m, _)| *m == current_model).map_or("", |(_, l)| l);
                         ui.label(crate::i18n::fmt(
@@ -317,16 +414,34 @@ pub fn window(app: &mut PdfCraftApp, ctx: &egui::Context) {
                     if let Some(p) = progress {
                         ui.add(egui::ProgressBar::new(*p).show_percentage().text(status.clone()));
                     }
-                    let (answer, thinking) = visible_answer(text);
                     if !*done && (answer.is_empty() || thinking) && progress.is_none() && !*missing {
                         ui.horizontal(|ui| {
                             ui.spinner();
                             ui.label(if thinking { tl!("Thinking…").to_owned() } else { status.clone() });
                         });
                     }
-                    if !answer.is_empty() {
-                        egui::ScrollArea::vertical().max_height(340.0).stick_to_bottom(!*done).show(ui, |ui| {
-                            ui.label(egui::RichText::new(answer).font(theme::regular(13.5)));
+                    if *done && error.is_none() && !*missing && !answer.trim().is_empty() {
+                        ui.add_space(4.0);
+                        ui.horizontal(|ui| {
+                            let button_width = 56.0;
+                            let r = ui.add(
+                                egui::TextEdit::singleline(&mut w.follow_up)
+                                    .hint_text(tl!("Ask a follow-up question"))
+                                    .desired_width((ui.available_width() - button_width).max(80.0)),
+                            );
+                            // Screen readers name the box by its hint.
+                            let value = w.follow_up.clone();
+                            r.widget_info(|| egui::WidgetInfo {
+                                label: Some(tl!("Ask a follow-up question").to_owned()),
+                                ..egui::WidgetInfo::text_edit(true, value.clone(), value.clone(), "")
+                            });
+                            let ready = !w.follow_up.trim().is_empty();
+                            if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) && ready {
+                                follow_up = true;
+                            }
+                            if ui.add_enabled(ready, egui::Button::new(tl!("Ask"))).clicked() {
+                                follow_up = true;
+                            }
                         });
                     }
                     ui.separator();
@@ -357,6 +472,8 @@ pub fn window(app: &mut PdfCraftApp, ctx: &egui::Context) {
     }
     if start || download {
         app.start_ai_with(download);
+    } else if follow_up {
+        app.ask_follow_up();
     }
     if !open {
         if let Some(j) = app.ai_window.as_ref().and_then(|w| w.job.as_ref())
@@ -386,5 +503,15 @@ mod tests {
         assert!(p.len() < MAX_DOCUMENT + 400);
         assert!(prompt(Task::Translate, "half-life", "", "de").contains("German"));
         assert!(prompt(Task::Ask, "What is Vd?", "lecture", "ar").contains("What is Vd?"));
+    }
+
+    #[test]
+    fn follow_ups_ask_for_room_for_the_conversation() {
+        assert_eq!(context_for(&[], "short"), CONTEXT);
+        let lecture = ("x".repeat(MAX_DOCUMENT), "an answer".to_owned());
+        let c = context_for(std::slice::from_ref(&lecture), &follow_up_prompt("and then?"));
+        assert!(c > CONTEXT && c <= MAX_CONTEXT, "{c}");
+        let long = vec![lecture; 50];
+        assert_eq!(context_for(&long, "why?"), MAX_CONTEXT);
     }
 }
