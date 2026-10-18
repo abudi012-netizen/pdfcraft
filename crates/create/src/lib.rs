@@ -5,7 +5,9 @@
 use pdfcraft_cos::{Dict, Document, ObjRef, Object, PdfString, Stream};
 
 mod extract;
+mod office;
 pub use extract::{ExtractedImage, ImageExport, extract_images, image_file};
+pub use office::{OFFICE, OfficeReport, from_office, is_office};
 use pdfcraft_fonts::{literal, win_ansi, wrap};
 
 #[derive(Debug, thiserror::Error, PartialEq)]
@@ -483,10 +485,14 @@ pub enum SourceKind {
     Pdf,
     Image,
     Text,
+    /// Word, PowerPoint, RTF or a web page ([`from_office`]).
+    Office,
 }
 
-/// File extensions Create converts to PDF (images and plain text).
-pub const CONVERTIBLE: [&str; 12] = ["png", "jpg", "jpeg", "tif", "tiff", "gif", "bmp", "jp2", "j2k", "jpx", "txt", "text"];
+/// File extensions Create converts to PDF (images, plain text, and Word, PowerPoint, RTF and
+/// web pages).
+pub const CONVERTIBLE: [&str; 17] =
+    ["png", "jpg", "jpeg", "tif", "tiff", "gif", "bmp", "jp2", "j2k", "jpx", "txt", "text", "docx", "pptx", "rtf", "html", "htm"];
 
 /// A classic TIFF or a BigTIFF (version 43), in either byte order.
 fn is_tiff(bytes: &[u8]) -> bool {
@@ -511,8 +517,8 @@ fn is_image(bytes: &[u8]) -> bool {
             && bytes.get(14..18).and_then(|h| <[u8; 4]>::try_from(h).ok()).is_some_and(|h| matches!(u32::from_le_bytes(h), 12 | 40 | 52 | 56 | 108 | 124)))
 }
 
-/// Whether `bytes` named `name` is a PDF, an image Create can embed, or plain text (a `.txt` or
-/// `.text` file). `None` for anything else.
+/// Whether `bytes` named `name` is a PDF, an image Create can embed, plain text (a `.txt` or
+/// `.text` file), or a Word, PowerPoint, RTF or HTML file. `None` for anything else.
 pub fn source_kind(name: &str, bytes: &[u8]) -> Option<SourceKind> {
     let head = bytes.get(..bytes.len().min(1024)).unwrap_or_default();
     if head.windows(5).any(|w| w == b"%PDF-") {
@@ -520,6 +526,9 @@ pub fn source_kind(name: &str, bytes: &[u8]) -> Option<SourceKind> {
     }
     if is_image(bytes) {
         return Some(SourceKind::Image);
+    }
+    if is_office(name, bytes) {
+        return Some(SourceKind::Office);
     }
     let lower = name.to_ascii_lowercase();
     (lower.ends_with(".txt") || lower.ends_with(".text")).then_some(SourceKind::Text)

@@ -601,6 +601,11 @@ impl PdfCraftApp {
             "create.multiple" => self.create_multiple_dialog(),
             "create.multiple_separate" => self.create_multiple_separate_dialog(),
             "create.images" => self.create_from_images_dialog(),
+            "create.word" => self.create_from_kind_dialog("Word", &["docx"]),
+            "create.powerpoint" => self.create_from_kind_dialog("PowerPoint", &["pptx"]),
+            "create.web" => self.create_from_kind_dialog("HTML", &["html", "htm"]),
+            "create.rtf" => self.create_from_kind_dialog("RTF", &["rtf"]),
+            "create.text" => self.create_from_kind_dialog(tl!("Text"), &["txt", "text"]),
             "create.clipboard" => self.create_from_clipboard(),
             "optimize.reduce" => self.reduce_file_size(),
             "page.duplicate" => {

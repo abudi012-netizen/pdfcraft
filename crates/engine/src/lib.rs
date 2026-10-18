@@ -50,7 +50,7 @@ pub use pdfcraft_organize::LabelStyle;
 pub use pdfcraft_organize::view::{InitialView, Layout as InitialLayout, Magnification, Navigation};
 
 pub use pdfcraft_cos::Algorithm;
-pub use pdfcraft_create::{CONVERTIBLE, CreateError, ImageResolution, SourceKind, decode_text, source_kind};
+pub use pdfcraft_create::{CONVERTIBLE, CreateError, ImageResolution, OFFICE, OfficeReport, SourceKind, decode_text, source_kind};
 pub use pdfcraft_edit::{
     Added, AddedImage, AddedText, Align as TextAlign, Background, Content as AddedContent, Family as FontFamily, HeaderFooter, MarkKind, Watermark,
 };
@@ -3870,6 +3870,13 @@ impl Session {
         self.write_new(&pdfcraft_create::from_text(title, text, pdfcraft_create::LETTER, 11.0)?)
     }
 
+    /// A PDF from a Word, PowerPoint, RTF or HTML file, laid out by PdfCraft (see
+    /// `pdfcraft_create::from_office`), and what the conversion could not keep.
+    pub fn create_from_office(&self, name: &str, bytes: &[u8]) -> Result<(Arc<Vec<u8>>, OfficeReport), EditError> {
+        let (doc, report) = pdfcraft_create::from_office(name, bytes)?;
+        Ok((self.write_new(&doc)?, report))
+    }
+
     /// [`Self::create_from_text`] for a report PdfCraft writes from documents (comment summaries,
     /// compare reports), which can quote any language: characters Helvetica can't draw are written
     /// as `[U+XXXX]`, and the report's first line says so, rather than the report being refused.
@@ -3878,21 +3885,32 @@ impl Session {
         self.write_new(&doc)
     }
 
-    /// Convert a file Create understands (an image or plain text) to PDF bytes; a PDF is checked
-    /// (it must open and allow copying pages) and returned as it is.
+    /// Convert a file Create understands (an image, plain text, or a Word, PowerPoint, RTF or
+    /// HTML file) to PDF bytes; a PDF is checked (it must open and allow copying pages) and
+    /// returned as it is.
     pub fn convert_to_pdf(&self, name: &str, bytes: &Arc<Vec<u8>>) -> Result<(SourceKind, Arc<Vec<u8>>), EditError> {
+        self.convert_to_pdf_reporting(name, bytes).map(|(kind, pdf, _)| (kind, pdf))
+    }
+
+    /// [`Self::convert_to_pdf`], with what a Word, PowerPoint, RTF or HTML conversion could not
+    /// keep (pictures in formats PdfCraft can't draw, characters the font lacks).
+    pub fn convert_to_pdf_reporting(&self, name: &str, bytes: &Arc<Vec<u8>>) -> Result<(SourceKind, Arc<Vec<u8>>, OfficeReport), EditError> {
         let Some(kind) = source_kind(name, bytes) else {
-            return Err(EditError::Source(format!("{name}: this file type can't be converted; use a PDF, an image or a .txt file")));
+            return Err(EditError::Source(format!(
+                "{name}: this file type can't be converted; use a PDF, an image, a .txt, Word (.docx), PowerPoint (.pptx), .rtf or .html file"
+            )));
         };
         let title = name.rsplit_once('.').map_or(name, |(s, _)| s);
-        // Image decoders read untrusted bytes: a panic in one must not take the app down.
+        // Decoders read untrusted bytes: a panic in one must not take the app down.
         let created = guard(|| match kind {
-            SourceKind::Pdf => open_source(name, bytes).map(|_| bytes.clone()),
-            SourceKind::Image => self.create_from_images(&[(name.to_string(), bytes.to_vec())]),
-            SourceKind::Text => self.create_from_text(title, &decode_text(bytes)),
+            SourceKind::Pdf => open_source(name, bytes).map(|_| (bytes.clone(), OfficeReport::default())),
+            SourceKind::Image => self.create_from_images(&[(name.to_string(), bytes.to_vec())]).map(|pdf| (pdf, OfficeReport::default())),
+            SourceKind::Text => self.create_from_text(title, &decode_text(bytes)).map(|pdf| (pdf, OfficeReport::default())),
+            SourceKind::Office => self.create_from_office(name, bytes),
         })
         .map_err(|_| EditError::Source(format!("{name}: the file could not be read")))?;
-        Ok((kind, created?))
+        let (pdf, report) = created?;
+        Ok((kind, pdf, report))
     }
 
     /// A file for Combine as PDF bytes: an image or text file is converted; a PDF is returned as
@@ -3901,7 +3919,7 @@ impl Session {
     pub fn as_pdf(&self, name: &str, bytes: &Arc<Vec<u8>>) -> Result<Arc<Vec<u8>>, EditError> {
         let pdf = match source_kind(name, bytes) {
             Some(SourceKind::Pdf) => true,
-            Some(SourceKind::Image | SourceKind::Text) => false,
+            Some(SourceKind::Image | SourceKind::Text | SourceKind::Office) => false,
             None => name.to_ascii_lowercase().ends_with(".pdf"),
         };
         if pdf { Ok(bytes.clone()) } else { self.convert_to_pdf(name, bytes).map(|(_, pdf)| pdf) }

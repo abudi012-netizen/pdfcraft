@@ -6853,11 +6853,11 @@ title = "Create PDF from an HTML file"
 area = "J"
 tier = "P2"
 milestone = "M10"
-status = "planned"
-commands = []
+status = "partial"
+commands = ["create.web", "create.file"]
 tools = []
-evidence = []
-notes = ""
+evidence = ["crates/create/src/office/tests.rs::web_pages_keep_structure_and_drop_what_is_not_shown", "crates/engine/src/tests.rs::web_pages_and_rich_text_convert_to_searchable_text"]
+notes = "Built-in reader, no browser engine: headings, paragraphs, bold/italic, lists, tables, line breaks and data: pictures, set in embedded Inter on A4. CSS layout, colours, fonts, linked pictures and scripts are not applied; nothing is fetched. Characters Inter lacks (Arabic, CJK) are drawn as ? and counted."
 
 [[feature]]
 id = "create.from-web-page"
@@ -6877,11 +6877,11 @@ title = "Create PDF from Office documents (LibreOffice sidecar)"
 area = "J"
 tier = "P2"
 milestone = "M10"
-status = "planned"
-commands = []
+status = "partial"
+commands = ["create.word", "create.powerpoint", "create.rtf", "create.file"]
 tools = []
-evidence = []
-notes = ""
+evidence = ["crates/create/src/office/tests.rs::word_documents_keep_headings_lists_breaks_pictures_and_tables", "crates/create/src/office/tests.rs::slides_become_pages_with_their_boxes_in_place", "crates/create/src/office/tests.rs::rich_text_keeps_styles_code_pages_unicode_tables_and_pictures", "crates/create/src/office/tests.rs::damaged_files_are_refused_not_crashed_on"]
+notes = "Built-in simplified conversion of .docx, .pptx and .rtf (no LibreOffice sidecar): text with bold/italic/sizes, headings, lists, alignment, tables, PNG/JPEG/GIF/BMP/TIFF pictures, page size and margins; slides as pages with text boxes, pictures and tables placed, text shrunk to fit. Not kept: fonts, colours, backgrounds, shapes, charts, SmartArt, EMF/WMF/SVG pictures, headers/footers, footnotes, text boxes in Word; .doc/.ppt/.xlsx are not read. Characters Inter lacks (Arabic, CJK) are drawn as ? and counted in the notice."
 
 [[feature]]
 id = "create.create-multiple"

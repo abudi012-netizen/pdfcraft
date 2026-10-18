@@ -406,7 +406,9 @@ fn source_kind_tells_pdfs_images_and_text_apart() {
     // Text that merely starts like a BMP stays text; a truncated BMP header is not an image.
     assert_eq!(source_kind("b.txt", b"BMW drivers"), Some(SourceKind::Text));
     assert_eq!(source_kind("b.bmp", b"BM"), None);
-    assert_eq!(source_kind("a.docx", b"PK\x03\x04"), None);
+    assert_eq!(source_kind("a.xlsx", b"PK\x03\x04"), None);
+    assert_eq!(source_kind("a.docx", b"PK\x03\x04"), Some(SourceKind::Office));
+    assert_eq!(source_kind("a.docx", b"not a zip"), None, "a .docx must be a ZIP archive");
     assert_eq!(source_kind("", b""), None);
     // Only the GIF versions Create decodes count as images, so detection never promises a
     // conversion that then fails.

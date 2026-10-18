@@ -767,6 +767,23 @@ fn jpeg_bytes() -> Vec<u8> {
 }
 
 #[test]
+fn web_pages_and_rich_text_convert_to_searchable_text() {
+    let s = Session::new();
+    let html = Arc::new("<h1>Renal clearance</h1><p>CL = k × Vd, with β-blockers ≤ 10 µg</p><p>دواء</p>".as_bytes().to_vec());
+    let (kind, pdf, report) = s.convert_to_pdf_reporting("lecture.html", &html).unwrap();
+    assert_eq!((kind, report.replaced_chars), (SourceKind::Office, 4));
+    let mut s = s;
+    let id = s.open_new("lecture.pdf", pdf).unwrap();
+    let text = page_texts(&s, id).join(" ");
+    assert!(text.contains("Renal clearance") && text.contains("β-blockers ≤ 10 µg"), "{text}");
+    let rtf = Arc::new(br"{\rtf1\ansi Caf\'e9 \b bold\b0\par}".to_vec());
+    let (kind, pdf) = s.convert_to_pdf("notes.rtf", &rtf).unwrap();
+    assert_eq!(kind, SourceKind::Office);
+    let id = s.open_new("notes.pdf", pdf).unwrap();
+    assert_eq!(page_texts(&s, id), ["Café bold"]);
+}
+
+#[test]
 fn mixed_files_convert_and_combine_in_order() {
     let mut s = Session::new();
     let pdf = Arc::new(fixture(2));
@@ -923,8 +940,18 @@ fn a_page_with_a_form_field_shown_twice_keeps_one_field() {
 #[test]
 fn files_that_cannot_be_converted_are_refused_clearly() {
     let s = Session::new();
-    let err = s.convert_to_pdf("report.docx", &Arc::new(b"PK\x03\x04".to_vec())).unwrap_err();
-    assert_eq!(err, EditError::Source("report.docx: this file type can't be converted; use a PDF, an image or a .txt file".into()));
+    let err = s.convert_to_pdf("report.xlsx", &Arc::new(b"PK\x03\x04".to_vec())).unwrap_err();
+    assert_eq!(
+        err,
+        EditError::Source(
+            "report.xlsx: this file type can't be converted; use a PDF, an image, a .txt, Word (.docx), PowerPoint (.pptx), .rtf or .html file"
+                .into()
+        )
+    );
+    // A damaged Word file is refused with why, not a panic.
+    assert!(
+        matches!(s.convert_to_pdf("report.docx", &Arc::new(b"PK\x03\x04".to_vec())), Err(EditError::Create(crate::CreateError::Invalid(m))) if m.contains("report.docx"))
+    );
     assert!(matches!(s.convert_to_pdf("empty", &Arc::new(Vec::new())), Err(EditError::Source(_))));
     // Damaged inputs of a known type fail with an error, not a panic.
     assert!(s.convert_to_pdf("bad.png", &Arc::new(b"\x89PNG\r\n\x1a\nnope".to_vec())).is_err());
@@ -945,8 +972,8 @@ fn files_for_combine_are_made_into_pdfs_and_pdfs_pass_through() {
     assert!(Arc::ptr_eq(&s.as_pdf("old.PDF", &headless).unwrap(), &headless));
     assert!(s.as_pdf("scan.jpg", &Arc::new(jpeg_bytes())).unwrap().starts_with(b"%PDF-"));
     assert!(s.as_pdf("notes.txt", &Arc::new(b"hello".to_vec())).unwrap().starts_with(b"%PDF-"));
-    let err = s.as_pdf("report.docx", &Arc::new(b"PK\x03\x04".to_vec())).unwrap_err();
-    assert!(matches!(err, EditError::Source(m) if m.starts_with("report.docx: this file type can't be converted")));
+    let err = s.as_pdf("report.xlsx", &Arc::new(b"PK\x03\x04".to_vec())).unwrap_err();
+    assert!(matches!(err, EditError::Source(m) if m.starts_with("report.xlsx: this file type can't be converted")));
 }
 
 fn protected(user: &str, owner: &str, permissions: i32) -> Arc<Vec<u8>> {
