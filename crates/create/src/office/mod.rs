@@ -347,9 +347,37 @@ fn heading_size(level: u8) -> f64 {
     }
 }
 
-/// Text as it is drawn: tabs as spaces, no control or invisible formatting characters.
+/// `text` without the citation markers AI chat answers leave in copied text
+/// (`[span_3](start_span)`, `[span_3](end_span)`): they mean nothing to a reader.
+fn strip_citation_markers(text: &str) -> std::borrow::Cow<'_, str> {
+    if !text.contains("_span)") {
+        return text.into();
+    }
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+    while let Some(at) = rest.find("[span_") {
+        out.push_str(rest.get(..at).unwrap_or_default());
+        let after = rest.get(at + "[span_".len()..).unwrap_or_default();
+        let digits = after.len() - after.trim_start_matches(|c: char| c.is_ascii_digit()).len();
+        let tail = after.get(digits..).unwrap_or_default();
+        let marker = ["](start_span)", "](end_span)"].iter().find(|m| digits > 0 && tail.starts_with(**m));
+        match marker {
+            Some(m) => rest = tail.get(m.len()..).unwrap_or_default(),
+            None => {
+                out.push_str("[span_");
+                rest = after;
+            }
+        }
+    }
+    out.push_str(rest);
+    out.into()
+}
+
+/// Text as it is drawn: tabs as spaces, no control or invisible formatting characters, no AI
+/// citation markers.
 fn clean(text: &str) -> String {
-    text.chars()
+    strip_citation_markers(text)
+        .chars()
         .filter_map(|c| match c {
             '\t' => Some(' '),
             '\n' => Some('\n'),

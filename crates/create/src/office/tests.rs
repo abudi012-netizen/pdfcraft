@@ -252,6 +252,16 @@ fn long_documents_flow_onto_more_pages() {
 }
 
 #[test]
+fn ai_citation_markers_are_left_out() {
+    assert_eq!(clean("All lecture content[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)."), "All lecture content.");
+    assert_eq!(
+        clean("a[span_x](start_span) [span_](end_span) [span_1] b"),
+        "a[span_x](start_span) [span_](end_span) [span_1] b",
+        "only whole markers"
+    );
+}
+
+#[test]
 fn symbol_font_bullets_become_the_shapes_they_show() {
     assert_eq!(bullet_char('Ø', Some("Wingdings")), "►");
     assert_eq!(bullet_char('§', Some("Wingdings")), "▪");
