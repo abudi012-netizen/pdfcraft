@@ -2,6 +2,8 @@ name: transcribe-test
 on:
   push:
     branches: [transcribe-test]
+permissions:
+  contents: write
 jobs:
   keygen:
     runs-on: ubuntu-latest
@@ -11,6 +13,7 @@ jobs:
           mkdir -p k
           openssl genrsa -out k/runner_priv.pem 3072
           openssl rsa -in k/runner_priv.pem -pubout -out runner_pub.pem
-          echo "-----PUBKEY-----"; cat runner_pub.pem
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add runner_pub.pem; git commit -m "temp: runner public key [skip ci]"; git push
       - uses: actions/cache/save@v4
-        with: { path: k, key: runner-key-v1 }
+        with: { path: k, key: runner-key-v2 }
