@@ -4,16 +4,34 @@ on:
     branches: [transcribe-test]
 permissions:
   contents: write
+concurrency: { group: tx, cancel-in-progress: false }
 jobs:
-  keygen:
+  transcribe:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: v3-excerpt, model: large-v3, start: 1200, dur: 600 }
+          - { name: turbo-full, model: large-v3-turbo, start: 0, dur: 0 }
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with: { path: k, key: runner-key-v2, fail-on-cache-miss: true }
       - run: |
-          mkdir -p k
-          openssl genrsa -out k/runner_priv.pem 3072
-          openssl rsa -in k/runner_priv.pem -pubout -out runner_pub.pem
+          openssl pkeyutl -decrypt -inkey k/runner_priv.pem -in key.bin.enc -out /tmp/key.bin
+          openssl enc -d -aes-256-cbc -pbkdf2 -pass file:/tmp/key.bin -in lec.opus.enc -out /tmp/lec.opus
+          if [ "${{ matrix.dur }}" != "0" ]; then ffmpeg -v error -ss ${{ matrix.start }} -t ${{ matrix.dur }} -i /tmp/lec.opus -c copy /tmp/part.opus && mv /tmp/part.opus /tmp/lec.opus; fi
+          pip install -q faster-whisper==1.2.1
+      - run: python transcribe.py /tmp/lec.opus ${{ matrix.model }} ${{ matrix.start }} /tmp/out.txt
+      - run: |
+          openssl rand -hex 32 > /tmp/ok.bin
+          mkdir -p out
+          openssl enc -aes-256-cbc -pbkdf2 -pass file:/tmp/ok.bin -in /tmp/out.txt -out out/${{ matrix.name }}.txt.enc
+          openssl pkeyutl -encrypt -pubin -inkey claude_pub.pem -in /tmp/ok.bin -out out/${{ matrix.name }}.key.enc
+          rm -f /tmp/out.txt /tmp/lec.opus /tmp/key.bin /tmp/ok.bin
           git config user.name ci; git config user.email ci@users.noreply.github.com
-          git add runner_pub.pem; git commit -m "temp: runner public key [skip ci]"; git push
-      - uses: actions/cache/save@v4
-        with: { path: k, key: runner-key-v2 }
+          git add out; git commit -m "temp: ${{ matrix.name }} result [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push && break; sleep 5; done
