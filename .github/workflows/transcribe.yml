@@ -4,7 +4,6 @@ on:
     branches: [transcribe-test]
 jobs:
   keygen:
-    if: hashFiles('lec.opus.enc') == ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,35 +14,3 @@ jobs:
           echo "-----PUBKEY-----"; cat runner_pub.pem
       - uses: actions/cache/save@v4
         with: { path: k, key: runner-key-v1 }
-  transcribe:
-    if: hashFiles('lec.opus.enc') != ''
-    runs-on: ubuntu-latest
-    timeout-minutes: 340
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { name: v3-excerpt, model: large-v3, start: 1200, dur: 600 }
-          - { name: turbo-full, model: large-v3-turbo, start: 0, dur: 0 }
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache/restore@v4
-        with: { path: k, key: runner-key-v1, fail-on-cache-miss: true }
-      - run: |
-          openssl pkeyutl -decrypt -inkey k/runner_priv.pem -in key.bin.enc -out key.bin
-          openssl enc -d -aes-256-cbc -pbkdf2 -pass file:key.bin -in lec.opus.enc -out lec.opus
-          if [ "${{ matrix.dur }}" != "0" ]; then ffmpeg -v error -ss ${{ matrix.start }} -t ${{ matrix.dur }} -i lec.opus -c copy part.opus && mv part.opus lec.opus; fi
-          pip install -q faster-whisper==1.2.1
-      - run: python transcribe.py lec.opus ${{ matrix.model }} ${{ matrix.start }} out.txt
-      - run: |
-          openssl rand -hex 32 > ok.bin
-          openssl enc -aes-256-cbc -pbkdf2 -pass file:ok.bin -in out.txt -out out.txt.enc
-          openssl pkeyutl -encrypt -pubin -inkey claude_pub.pem -in ok.bin -out ok.bin.enc
-          rm -f out.txt lec.opus key.bin ok.bin
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.name }}
-          path: |
-            out.txt.enc
-            ok.bin.enc
-          retention-days: 3
