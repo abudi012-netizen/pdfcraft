@@ -1,0 +1,45 @@
+name: phyto-tx
+on:
+  push:
+    branches: [phyto-tx]
+permissions:
+  contents: write
+jobs:
+  tx:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with: { path: k, key: runner-key-v2, fail-on-cache-miss: true }
+      - name: decrypt
+        run: |
+          openssl pkeyutl -decrypt -inkey k/runner_priv.pem -in key.bin.enc -out /tmp/key.bin
+          openssl enc -d -aes-256-cbc -pbkdf2 -pass file:/tmp/key.bin -in lec.opus.enc -out /tmp/lec.opus
+          start=$(( ${{ matrix.part }} * 500 ))
+          ffmpeg -v error -ss $start -t 505 -i /tmp/lec.opus -ar 16000 -ac 1 /tmp/part.wav
+          echo "START=$start" >> $GITHUB_ENV
+      - name: model
+        run: |
+          pip install -q faster-whisper==1.2.1 "transformers<4.50" ctranslate2 torch --extra-index-url https://download.pytorch.org/whl/cpu
+          ct2-transformers-converter --model Seif-Eldeen-Sameh/whisper-medium-arabic-codeswitched --output_dir /tmp/m --quantization int8 --copy_files tokenizer.json preprocessor_config.json \
+          || ct2-transformers-converter --model Seif-Eldeen-Sameh/whisper-medium-arabic-codeswitched --output_dir /tmp/m --quantization int8 --force
+          ls /tmp/m
+      - run: python transcribe.py /tmp/part.wav /tmp/m $START /tmp/out.txt
+      - name: return
+        if: always()
+        run: |
+          touch /tmp/out.txt
+          openssl rand -hex 32 > /tmp/ok.bin
+          mkdir -p out
+          openssl enc -aes-256-cbc -pbkdf2 -pass file:/tmp/ok.bin -in /tmp/out.txt -out out/p${{ matrix.part }}.txt.enc
+          openssl pkeyutl -encrypt -pubin -inkey claude_pub.pem -in /tmp/ok.bin -out out/p${{ matrix.part }}.key.enc
+          rm -f /tmp/out.txt /tmp/lec.opus /tmp/part.wav /tmp/key.bin /tmp/ok.bin
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add out; git commit -m "part ${{ matrix.part }} [skip ci]"
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q && git push && break; sleep $((RANDOM%10+3)); done
