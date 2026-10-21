@@ -5,8 +5,20 @@ on:
 permissions:
   contents: write
 jobs:
+  keygen:
+    if: "contains(github.event.head_commit.message, '[keygen]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p k && openssl genrsa -out k/runner_priv.pem 3072 && openssl rsa -in k/runner_priv.pem -pubout -out runner_pub.pem
+      - uses: actions/cache/save@v4
+        with: { path: k, key: phyto-key-v1 }
+      - run: |
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add runner_pub.pem; git commit -m "runner key [skip ci]"; git push
   tx:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[keygen]')"
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -16,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
-        with: { path: k, key: runner-key-v2, fail-on-cache-miss: true }
+        with: { path: k, key: phyto-key-v1, fail-on-cache-miss: true }
       - name: decrypt
         run: |
           openssl pkeyutl -decrypt -inkey k/runner_priv.pem -in key.bin.enc -out /tmp/key.bin
