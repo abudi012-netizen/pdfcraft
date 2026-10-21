@@ -31,6 +31,7 @@ jobs:
         with: { path: k, key: phyto-key-v1, fail-on-cache-miss: true }
       - name: decrypt
         run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
           openssl pkeyutl -decrypt -inkey k/runner_priv.pem -in key.bin.enc -out /tmp/key.bin
           openssl enc -d -aes-256-cbc -pbkdf2 -pass file:/tmp/key.bin -in lec.opus.enc -out /tmp/lec.opus
           start=$(( ${{ matrix.part }} * 500 ))
