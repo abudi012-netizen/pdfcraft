@@ -980,10 +980,10 @@ fn right_click_on_a_picture_copies_it_at_full_size() {
     assert_eq!(rgba, px.into_raw(), "the image's own pixels, not a rendering of the page");
 }
 
-/// A picture drawn through grouped Form artwork with a caption over it (as Word, InDesign and
-/// scanners with OCR write them): one click still selects it, and ⌘C copies the picture.
-#[test]
-fn a_picture_inside_form_artwork_under_text_is_selected_and_copied() {
+/// A page of a picture drawn through grouped Form artwork with a caption over it (as Word,
+/// InDesign and scanners with OCR write them), and a point on the caption. Frames are 1/60 s,
+/// so two clicks a frame apart make a double click.
+fn captioned_picture_harness() -> (Harness<'static, PdfCraftApp>, egui::Pos2) {
     let stream = |dict: &str, data: &[u8]| {
         let mut o = format!("<< {dict} /Length {} >>\nstream\n", data.len()).into_bytes();
         o.extend_from_slice(data);
@@ -1013,7 +1013,7 @@ fn a_picture_inside_form_artwork_under_text_is_selected_and_copied() {
         pdf.extend_from_slice(format!("{o:010} 00000 n \n").as_bytes());
     }
     pdf.extend_from_slice(format!("trailer\n<< /Size {} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n", objs.len() + 1).as_bytes());
-    let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).build_eframe(move |_cc| {
+    let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).with_step_dt(1.0 / 60.0).build_eframe(move |_cc| {
         let mut app = PdfCraftApp::new();
         app.set_option("language", "en").unwrap();
         app.open_bytes("scan.pdf", None, pdf).unwrap();
@@ -1031,11 +1031,27 @@ fn a_picture_inside_form_artwork_under_text_is_selected_and_copied() {
     let r = h.state().views[i].page_screen_rect(0).expect("on screen");
     // On the caption ("WWWWWWW" at y 130–170 of 300, from x 15).
     let at = egui::pos2(r.left() + 60.0 / 200.0 * r.width(), r.top() + (300.0 - 145.0) / 300.0 * r.height());
+    (h, at)
+}
+
+/// One click on the caption over a picture still selects the picture, and ⌘C copies it.
+#[test]
+fn a_picture_inside_form_artwork_under_text_is_selected_and_copied() {
+    let (mut h, at) = captioned_picture_harness();
+    let i = h.state().active.unwrap();
     h.hover_at(at);
     h.run_steps(1);
     h.event(egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed: true, modifiers: Default::default() });
     h.event(egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed: false, modifiers: Default::default() });
-    h.run_steps(2);
+    // On text, the picture is selected once no second click can follow.
+    h.run_steps(1);
+    assert_eq!(h.state().views[i].picked_image, None, "not until the double-click delay has passed");
+    for _ in 0..200 {
+        if h.state().views[i].picked_image.is_some() {
+            break;
+        }
+        h.run_steps(1);
+    }
     assert_eq!(h.state().views[i].picked_image.map(|p| (p.page, p.index)), Some((0, 0)));
     h.event(egui::Event::Copy);
     h.run_steps(2);
@@ -1043,6 +1059,28 @@ fn a_picture_inside_form_artwork_under_text_is_selected_and_copied() {
     assert_eq!(name, "scan p1 img1.png");
     let png = image::load_from_memory_with_format(&bytes, image::ImageFormat::Png).unwrap().into_rgba8();
     assert_eq!(png.into_raw(), vec![255, 0, 0, 255, 0, 0, 255, 255]);
+}
+
+/// Double-clicking a word drawn over a picture (a slide or an OCR'd scan saved as one page-sized
+/// image) selects the word without first flashing the whole picture as selected.
+#[test]
+fn double_clicking_text_over_a_picture_never_selects_the_picture() {
+    let (mut h, at) = captioned_picture_harness();
+    let i = h.state().active.unwrap();
+    h.hover_at(at);
+    h.run_steps(1);
+    let press = |pressed| egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed, modifiers: Default::default() };
+    h.event(press(true));
+    h.event(press(false));
+    h.run_steps(1);
+    assert_eq!(h.state().views[i].picked_image, None, "the first click shows no picture selection");
+    h.event(press(true));
+    h.event(press(false));
+    for _ in 0..40 {
+        h.run_steps(1);
+        assert_eq!(h.state().views[i].picked_image, None, "the picture never shows as selected");
+    }
+    assert_eq!(h.state().views[i].selected_text().as_deref(), Some("WWWWWWW"), "the word is selected");
 }
 #[test]
 fn mouse_wheel_scrolls_while_selecting_text() {
