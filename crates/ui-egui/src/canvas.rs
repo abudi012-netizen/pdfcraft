@@ -404,6 +404,9 @@ pub struct DocView {
     pub image_selection: Option<crate::edit_text_ui::ImageSelection>,
     /// Select tool: the picture clicked, to copy in its original format.
     pub picked_image: Option<crate::image_pick::PickedImage>,
+    /// A click on text over a picture: the picture to select and when, once no second click
+    /// follows (a double click there selects a word, and must not flash the picture first).
+    pub(crate) pending_pick: Option<(crate::image_pick::PickedImage, f64)>,
     /// A paragraph box being dragged (moved, or resized from its right edge) in Edit text.
     pub block_drag: Option<crate::edit_text_ui::BlockDrag>,
     /// Commenting state: selected comment, gestures, composer.
@@ -645,6 +648,7 @@ impl DocView {
             objects: Default::default(),
             image_selection: None,
             picked_image: None,
+            pending_pick: None,
             block_drag: None,
             pending_action: None,
             insert_at: None,
@@ -2894,6 +2898,7 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
             if tool == QuickTool::Select && !consumed {
                 crate::image_pick::page_input(&resp, &xf, i, info, doc, pointer, view);
             }
+            crate::image_pick::settle(ui.ctx(), i, view);
             crate::image_pick::paint(painter, &xf, i, info, view);
             comments::page_after_text(&resp, &pcx, view);
             if tool == QuickTool::Redact && can_modify {

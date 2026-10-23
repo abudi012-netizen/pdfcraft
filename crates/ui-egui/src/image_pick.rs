@@ -21,7 +21,9 @@ const BLUE: Color32 = Color32::from_rgb(0x3A, 0x7B, 0xF0);
 
 /// A click on page `page` (Select tool, not taken by anything else) selects the picture under
 /// it, even with text drawn over it (scans with an OCR layer, captions); dragging or a double
-/// click still selects text, and clears the picture.
+/// click still selects text, and clears the picture. A click on text selects the picture only
+/// once the double-click delay has passed without another press, so double-clicking a word on a
+/// page-sized picture (a slide or a scan) does not flash the whole picture blue first.
 pub(crate) fn page_input(
     resp: &egui::Response,
     xf: &PageXform,
@@ -34,6 +36,7 @@ pub(crate) fn page_input(
     let Some(p) = pointer.filter(|p| xf.rect.contains(*p)) else { return };
     if resp.drag_started() || resp.double_clicked() || resp.triple_clicked() {
         view.picked_image = None;
+        view.pending_pick = None;
         return;
     }
     if !resp.clicked() {
@@ -43,8 +46,41 @@ pub(crate) fn page_input(
     let (vx, vy) = xf.screen_to_view(p);
     let u = info_page.view_to_user(vx, vy);
     let at = [f64::from(u[0]), f64::from(u[1])];
-    view.picked_image =
-        doc.page_image_at(page, at).and_then(|index| doc.page_images(page).get(index).map(|i| PickedImage { page, index, rect: i.rect }));
+    let now = resp.ctx.input(|i| i.time);
+    let hit = doc.page_image_at(page, at).and_then(|index| doc.page_images(page).get(index).map(|i| PickedImage { page, index, rect: i.rect }));
+    let over_text =
+        view.texts.get(&page).is_some_and(|t| t.glyphs.iter().any(|g| vx >= g.rect[0] && vx <= g.rect[2] && vy >= g.rect[1] && vy <= g.rect[3]));
+    match hit {
+        Some(picked) if over_text => {
+            view.picked_image = None;
+            view.pending_pick = Some((picked, now));
+            let max_delay = resp.ctx.options(|o| o.input_options.max_double_click_delay);
+            resp.ctx.request_repaint_after(std::time::Duration::from_secs_f64(max_delay.max(0.0)));
+        }
+        hit => {
+            view.pending_pick = None;
+            view.picked_image = hit;
+        }
+    }
+}
+
+/// Settles a pending pick on page `page` (see [`page_input`]): any press cancels it, and the
+/// double-click delay passing without one selects the picture. Runs every frame, whatever the
+/// tool and whether or not something else took the click, so a double click that another
+/// handler consumed still cancels it.
+pub(crate) fn settle(ctx: &egui::Context, page: usize, view: &mut DocView) {
+    let Some((picked, at)) = view.pending_pick.filter(|(p, _)| p.page == page) else { return };
+    let (now, pressed) = ctx.input(|i| (i.time, i.pointer.primary_pressed()));
+    let max_delay = ctx.options(|o| o.input_options.max_double_click_delay);
+    if (pressed && now > at) || now - at > max_delay + 1.0 {
+        // Another press (a double click), or left over from before a tool switch.
+        view.pending_pick = None;
+    } else if now - at >= max_delay {
+        view.pending_pick = None;
+        view.picked_image = Some(picked);
+    } else {
+        ctx.request_repaint_after(std::time::Duration::from_secs_f64((max_delay - (now - at)).max(0.0)));
+    }
 }
 
 /// The selected picture's highlight on page `page`.
