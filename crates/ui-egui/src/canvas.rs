@@ -404,9 +404,6 @@ pub struct DocView {
     pub image_selection: Option<crate::edit_text_ui::ImageSelection>,
     /// Select tool: the picture clicked, to copy in its original format.
     pub picked_image: Option<crate::image_pick::PickedImage>,
-    /// A click on text over a picture: the picture to select and when, once no second click
-    /// follows (a double click there selects a word, and must not flash the picture first).
-    pub(crate) pending_pick: Option<(crate::image_pick::PickedImage, f64)>,
     /// A paragraph box being dragged (moved, or resized from its right edge) in Edit text.
     pub block_drag: Option<crate::edit_text_ui::BlockDrag>,
     /// Commenting state: selected comment, gestures, composer.
@@ -648,7 +645,6 @@ impl DocView {
             objects: Default::default(),
             image_selection: None,
             picked_image: None,
-            pending_pick: None,
             block_drag: None,
             pending_action: None,
             insert_at: None,
@@ -2313,7 +2309,8 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
         | QuickTool::Link
         | QuickTool::SignArea { .. }
         | QuickTool::MarqueeZoom
-        | QuickTool::Snapshot => false,
+        | QuickTool::Snapshot
+        | QuickTool::SelectImage => false,
     };
     let prefs = &app.comment_prefs;
     let units = app.units;
@@ -2895,10 +2892,12 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
                 }
             }
 
-            if tool == QuickTool::Select && !consumed {
+            if tool != QuickTool::SelectImage {
+                // A picture picked with Select image would otherwise take ⌘C from the text.
+                view.picked_image = None;
+            } else if !consumed {
                 crate::image_pick::page_input(&resp, &xf, i, info, doc, pointer, view);
             }
-            crate::image_pick::settle(ui.ctx(), i, view);
             crate::image_pick::paint(painter, &xf, i, info, view);
             comments::page_after_text(&resp, &pcx, view);
             if tool == QuickTool::Redact && can_modify {
@@ -3908,6 +3907,9 @@ fn quick_bar(app: &mut PdfCraftApp, area: Rect, ui: &mut egui::Ui) {
                 ui.vertical(|ui| {
                     if icons::button(ui, "mouse-pointer-2", 32.0, app.quick_tool == QuickTool::Select, tl!("Select (V)")).clicked() {
                         app.quick_tool = QuickTool::Select;
+                    }
+                    if icons::button(ui, "image", 32.0, app.quick_tool == QuickTool::SelectImage, tl!("Select image")).clicked() {
+                        app.quick_tool = QuickTool::SelectImage;
                     }
                     if icons::button(ui, "hand", 32.0, app.quick_tool == QuickTool::Hand, tl!("Hand (H)")).clicked() {
                         app.quick_tool = QuickTool::Hand;

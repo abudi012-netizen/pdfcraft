@@ -943,6 +943,7 @@ fn picture_harness() -> (image::RgbaImage, Harness<'static, PdfCraftApp>) {
 #[test]
 fn a_clicked_picture_is_selected_and_copied_in_its_original_format() {
     let (px, mut h) = picture_harness();
+    h.state_mut().set_option("quick", "select-image").unwrap();
     let i = h.state().active.unwrap();
     let at = h.state().views[i].page_screen_rect(0).expect("on screen").center();
     h.hover_at(at);
@@ -1034,24 +1035,18 @@ fn captioned_picture_harness() -> (Harness<'static, PdfCraftApp>, egui::Pos2) {
     (h, at)
 }
 
-/// One click on the caption over a picture still selects the picture, and ⌘C copies it.
+/// With Select image, one click on the caption over a picture selects the picture, and ⌘C
+/// copies it.
 #[test]
 fn a_picture_inside_form_artwork_under_text_is_selected_and_copied() {
     let (mut h, at) = captioned_picture_harness();
+    h.state_mut().set_option("quick", "select-image").unwrap();
     let i = h.state().active.unwrap();
     h.hover_at(at);
     h.run_steps(1);
     h.event(egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed: true, modifiers: Default::default() });
     h.event(egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed: false, modifiers: Default::default() });
-    // On text, the picture is selected once no second click can follow.
-    h.run_steps(1);
-    assert_eq!(h.state().views[i].picked_image, None, "not until the double-click delay has passed");
-    for _ in 0..200 {
-        if h.state().views[i].picked_image.is_some() {
-            break;
-        }
-        h.run_steps(1);
-    }
+    h.run_steps(2);
     assert_eq!(h.state().views[i].picked_image.map(|p| (p.page, p.index)), Some((0, 0)));
     h.event(egui::Event::Copy);
     h.run_steps(2);
@@ -1061,10 +1056,11 @@ fn a_picture_inside_form_artwork_under_text_is_selected_and_copied() {
     assert_eq!(png.into_raw(), vec![255, 0, 0, 255, 0, 0, 255, 255]);
 }
 
-/// Double-clicking a word drawn over a picture (a slide or an OCR'd scan saved as one page-sized
-/// image) selects the word without first flashing the whole picture as selected.
+/// The Select tool never selects a picture: clicking or double-clicking a word drawn over one (a
+/// slide or an OCR'd scan saved as one page-sized image) selects text, with no picture highlight.
+/// Switching from Select image back to Select drops a picked picture, so ⌘C copies the text.
 #[test]
-fn double_clicking_text_over_a_picture_never_selects_the_picture() {
+fn the_select_tool_never_selects_a_picture() {
     let (mut h, at) = captioned_picture_harness();
     let i = h.state().active.unwrap();
     h.hover_at(at);
@@ -1072,15 +1068,29 @@ fn double_clicking_text_over_a_picture_never_selects_the_picture() {
     let press = |pressed| egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed, modifiers: Default::default() };
     h.event(press(true));
     h.event(press(false));
-    h.run_steps(1);
-    assert_eq!(h.state().views[i].picked_image, None, "the first click shows no picture selection");
+    for _ in 0..30 {
+        h.run_steps(1);
+        assert_eq!(h.state().views[i].picked_image, None, "a click selects no picture");
+    }
     h.event(press(true));
     h.event(press(false));
-    for _ in 0..40 {
+    h.run_steps(1);
+    h.event(press(true));
+    h.event(press(false));
+    for _ in 0..30 {
         h.run_steps(1);
-        assert_eq!(h.state().views[i].picked_image, None, "the picture never shows as selected");
+        assert_eq!(h.state().views[i].picked_image, None, "a double click selects no picture");
     }
     assert_eq!(h.state().views[i].selected_text().as_deref(), Some("WWWWWWW"), "the word is selected");
+
+    h.state_mut().set_option("quick", "select-image").unwrap();
+    h.event(press(true));
+    h.event(press(false));
+    h.run_steps(2);
+    assert!(h.state().views[i].picked_image.is_some(), "Select image picks it");
+    h.state_mut().set_option("quick", "select").unwrap();
+    h.run_steps(1);
+    assert_eq!(h.state().views[i].picked_image, None, "back in Select, the pick is gone");
 }
 #[test]
 fn mouse_wheel_scrolls_while_selecting_text() {
