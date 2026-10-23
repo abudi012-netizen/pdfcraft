@@ -1560,10 +1560,10 @@ area = "B"
 tier = "P2"
 milestone = "M3"
 status = "partial"
-commands = []
+commands = ["edit.select_image"]
 tools = []
-evidence = ["crates/ui-egui/tests/viewer.rs::a_clicked_picture_is_selected_and_copied_in_its_original_format", "crates/ui-egui/tests/viewer.rs::right_click_on_a_picture_copies_it_at_full_size", "crates/ui-egui/tests/viewer.rs::a_picture_inside_form_artwork_under_text_is_selected_and_copied", "crates/engine/src/tests.rs::copy_image_finds_a_picture_inside_form_artwork_under_text"]
-notes = "Select tool: a click selects a raster image (also inside Form artwork or under text) and ⌘C copies it as a file in its original format (JPEG as stored, else PNG); right-click ▸ Copy Image copies its pixels at full resolution. Missing: inline images (BI/ID/EI), JPEG 2000/JBIG2/CCITT images, multi-format clipboard (file and bitmap at once), the web build"
+evidence = ["crates/ui-egui/tests/viewer.rs::a_clicked_picture_is_selected_and_copied_in_its_original_format", "crates/ui-egui/tests/viewer.rs::right_click_on_a_picture_copies_it_at_full_size", "crates/ui-egui/tests/viewer.rs::a_picture_inside_form_artwork_under_text_is_selected_and_copied", "crates/ui-egui/tests/viewer.rs::the_select_tool_never_selects_a_picture", "crates/engine/src/tests.rs::copy_image_finds_a_picture_inside_form_artwork_under_text"]
+notes = "Select image tool (quick bar; the Select tool leaves pictures alone so clicks on page-sized slide or scan images select text): a click selects a raster image (also inside Form artwork or under text) and ⌘C copies it as a file in its original format (JPEG as stored, else PNG); right-click ▸ Copy Image copies its pixels at full resolution. Missing: inline images (BI/ID/EI), JPEG 2000/JBIG2/CCITT images, multi-format clipboard (file and bitmap at once), the web build"
 
 [[feature]]
 id = "view.rulers"

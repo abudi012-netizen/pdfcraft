@@ -213,6 +213,8 @@ pub const COMMANDS: &[CommandSpec] = &[
     // drag with the Select tool does the same; this is the way in where the desktop takes
     // Alt-drag for moving windows (several Linux window managers).
     c("edit.column_select", "Column select", EDIT, None, Document, "text-select"),
+    // Click a picture to select it for ⌘C; the Select tool itself leaves pictures alone.
+    c("edit.select_image", "Select image", EDIT, None, Document, "image"),
     c("edit.snapshot", "Take a snapshot", EDIT, None, Copying, "camera"),
     c("view.full_screen", "Full screen mode", VIEW, Some(Shortcut::cmd("L")), Document, "maximize"),
     c("view.read_mode", "Read mode", VIEW, Some(Shortcut { command: true, shift: false, mac_ctrl: true, key: "H" }), Document, "book-open"),
