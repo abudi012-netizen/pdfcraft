@@ -1,4 +1,4 @@
-//! Select tool: click a picture on the page to select it, then ⌘C / Ctrl+C (or the right-click
+//! Select image tool: click a picture on the page to select it, then ⌘C / Ctrl+C (or the right-click
 //! menu) copies it in its original format: a JPEG image as the JPEG file stored in the PDF, any
 //! other image as a lossless PNG (with its transparency). The clipboard gets the file, as when a
 //! file is copied in Finder or Explorer; Copy Image copies the pixels instead.
@@ -19,9 +19,9 @@ pub struct PickedImage {
 
 const BLUE: Color32 = Color32::from_rgb(0x3A, 0x7B, 0xF0);
 
-/// A click on page `page` (Select tool, not taken by anything else) selects the picture under
-/// it, even with text drawn over it (scans with an OCR layer, captions); dragging or a double
-/// click still selects text, and clears the picture.
+/// A click on page `page` (Select image tool, not taken by anything else) selects the picture
+/// under it, even with text drawn over it (scans with an OCR layer, captions); a click on no
+/// picture, or a drag, clears it.
 pub(crate) fn page_input(
     resp: &egui::Response,
     xf: &PageXform,
@@ -32,7 +32,7 @@ pub(crate) fn page_input(
     view: &mut DocView,
 ) {
     let Some(p) = pointer.filter(|p| xf.rect.contains(*p)) else { return };
-    if resp.drag_started() || resp.double_clicked() || resp.triple_clicked() {
+    if resp.drag_started() {
         view.picked_image = None;
         return;
     }

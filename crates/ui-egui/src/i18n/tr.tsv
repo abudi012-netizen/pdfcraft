@@ -2171,6 +2171,7 @@ key	Space	Boşluk
 	Looking for printers…	Yazıcılar aranıyor…
 	Sending to {printer}…	{printer} yazıcısına gönderiliyor…
 	Column select	Sütun seçimi
+	Select image	Görüntü seçimi
 @plural	{n} object selected|{n} objects selected	{n} nesne seçildi
 	Drag the selection to move it. Esc clears the selection.	Taşımak için seçimi sürükleyin. Esc seçimi temizler.
 	Shift-click to select several objects. Drag empty space to select an area.	Birden çok nesne seçmek için Shift tuşuna basarak tıklayın. Bir alanı seçmek için boş alanı sürükleyin.

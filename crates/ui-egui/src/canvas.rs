@@ -2378,7 +2378,8 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
         | QuickTool::Link
         | QuickTool::SignArea { .. }
         | QuickTool::MarqueeZoom
-        | QuickTool::Snapshot => false,
+        | QuickTool::Snapshot
+        | QuickTool::SelectImage => false,
     };
     let prefs = &app.comment_prefs;
     let units = app.units;
@@ -2960,7 +2961,10 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
                 }
             }
 
-            if tool == QuickTool::Select && !consumed {
+            if tool != QuickTool::SelectImage {
+                // A picture picked with Select image would otherwise take ⌘C from the text.
+                view.picked_image = None;
+            } else if !consumed {
                 crate::image_pick::page_input(&resp, &xf, i, info, doc, pointer, view);
             }
             crate::image_pick::paint(painter, &xf, i, info, view);
@@ -4031,6 +4035,9 @@ fn quick_bar(app: &mut PdfCraftApp, area: Rect, ui: &mut egui::Ui) {
                 ui.vertical(|ui| {
                     if icons::button(ui, "mouse-pointer-2", 32.0, app.quick_tool == QuickTool::Select, tl!("Select (V)")).clicked() {
                         app.quick_tool = QuickTool::Select;
+                    }
+                    if icons::button(ui, "image", 32.0, app.quick_tool == QuickTool::SelectImage, tl!("Select image")).clicked() {
+                        app.quick_tool = QuickTool::SelectImage;
                     }
                     if icons::button(ui, "hand", 32.0, app.quick_tool == QuickTool::Hand, tl!("Hand (H)")).clicked() {
                         app.quick_tool = QuickTool::Hand;
