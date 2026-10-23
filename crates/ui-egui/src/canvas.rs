@@ -3524,6 +3524,7 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     // Side by side: the tools float over the document being worked on only.
     if !app.secondary_pane {
         quick_bar(app, avail, ui);
+        page_counter(&app.views[index], avail, ui);
     }
     if let Some((source, file, destination)) = remote_open {
         app.open_remote_link(source, file, destination);
@@ -4017,6 +4018,33 @@ fn notice_bar(ui: &mut egui::Ui, t: &Tokens, icon: &str, icon_color: Color32, te
             });
         });
     });
+}
+
+/// The page being viewed and the page count ("24 / 25"), floating at the top centre of the
+/// document area. Numbers only, so it needs no translation; it lets clicks through.
+fn page_counter(view: &DocView, area: Rect, ui: &mut egui::Ui) {
+    let total = view.page_count();
+    if total == 0 {
+        return;
+    }
+    let current = view.current.saturating_add(1).min(total);
+    let t = Tokens::get(ui.ctx());
+    egui::Area::new(egui::Id::new("page-counter"))
+        .order(egui::Order::Middle)
+        .pivot(egui::Align2::CENTER_TOP)
+        .fixed_pos(area.center_top() + vec2(0.0, 14.0))
+        .interactable(false)
+        .show(ui.ctx(), |ui| {
+            egui::Frame::NONE
+                .fill(t.card)
+                .stroke(Stroke::new(1.0, t.border))
+                .corner_radius(CornerRadius::same(12))
+                .shadow(egui::Shadow { offset: [0, 2], blur: 8, spread: 0, color: Color32::from_black_alpha(if t.dark() { 80 } else { 20 }) })
+                .inner_margin(egui::Margin::symmetric(12, 4))
+                .show(ui, |ui| {
+                    ui.add(egui::Label::new(egui::RichText::new(format!("{current} / {total}")).size(13.0).color(t.text)).selectable(false));
+                });
+        });
 }
 
 /// The floating quick-action bar at the left edge of the document area.

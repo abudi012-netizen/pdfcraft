@@ -50,6 +50,17 @@ fn harness() -> Harness<'static, PdfCraftApp> {
     h
 }
 
+/// The page being viewed and the page count float at the top centre, and follow the page.
+#[test]
+fn the_page_counter_shows_the_current_page_and_the_count() {
+    let mut h = harness();
+    // b.pdf, two pages, is the active document.
+    h.get_by_label("1 / 2");
+    h.state_mut().set_option("page", "2").unwrap();
+    h.run_steps(4);
+    h.get_by_label("2 / 2");
+}
+
 #[test]
 fn close_all_asks_only_for_changed_documents() {
     let mut h = harness();
